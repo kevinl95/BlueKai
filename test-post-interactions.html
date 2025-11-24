@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Interactions Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 240px;
+      margin: 20px auto;
+      padding: 10px;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+    
+    .test-container {
+      background: white;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+    }
+    
+    .test-results {
+      background: white;
+      padding: 10px;
+      border: 1px solid #ddd;
+      font-size: 12px;
+    }
+    
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    .demo-container {
+      background: #000;
+      min-height: 200px;
+      position: relative;
+    }
+  </style>
+  <link rel="stylesheet" href="src/views/PostItem.css">
+  <link rel="stylesheet" href="src/views/PostActionMenu.css">
+  <link rel="stylesheet" href="src/components/Modal.css">
+</head>
+<body>
+  <h1>Post Interactions Test</h1>
+  
+  <div class="test-container">
+    <h2 style="font-size: 14px;">Interactive Demo</h2>
+    <p style="font-size: 12px; margin-bottom: 10px;">
+      This demo shows a post with like/unlike and repost/unrepost functionality.
+    </p>
+    <button id="show-demo">Show Interactive Post</button>
+    <button id="show-menu">Show Action Menu</button>
+  </div>
+  
+  <div id="demo-container" class="demo-container"></div>
+  <div id="menu-container"></div>
+  
+  <div class="test-results">
+    <h2 style="font-size: 14px;">Instructions</h2>
+    <ul style="font-size: 12px; margin: 5px 0; padding-left: 20px;">
+      <li>Click "Show Interactive Post" to see a post</li>
+      <li>Click "Show Action Menu" to open actions</li>
+      <li>Use ↑↓ to navigate menu</li>
+      <li>Press Enter to select action</li>
+      <li>Watch for optimistic updates</li>
+      <li>Repost shows confirmation modal</li>
+    </ul>
+  </div>
+  
+  <script src="dist/bundle.js"></script>
+  <script>
+    var h = window.preact.h;
+    var render = window.preact.render;
+    var PostItem = window.PostItem;
+    var PostActionMenu = window.PostActionMenu;
+    var ATPClient = window.ATPClient;
+    
+    // Mock ATP client
+    var mockClient = new ATPClient();
+    
+    // Mock post data
+    var mockPost = {
+      uri: 'at://did:plc:test/app.bsky.feed.post/123',
+      cid: 'bafytest123',
+      author: {
+        did: 'did:plc:test',
+        handle: 'test.user',
+        displayName: 'Test User',
+        avatar: null
+      },
+      record: {
+        text: 'This is a test post for demonstrating like and repost functionality! Try interacting with it.',
+        createdAt: '2025-11-23T12:00:00.000Z'
+      },
+      likeCount: 5,
+      repostCount: 2,
+      replyCount: 3,
+      viewer: {}
+    };
+    
+    var currentPost = Object.assign({}, mockPost);
+    var currentMenu = null;
+    
+    // Action handlers
+    function handleLike(post) {
+      console.log('Like action:', post.uri);
+      
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          // Simulate success
+          currentPost.viewer.like = 'at://did:plc:test/app.bsky.feed.like/456';
+          currentPost.likeCount = (currentPost.likeCount || 0) + 1;
+          console.log('Like successful');
+          resolve();
+        }, 1000);
+      });
+    }
+    
+    function handleUnlike(post) {
+      console.log('Unlike action:', post.uri);
+      
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          // Simulate success
+          delete currentPost.viewer.like;
+          currentPost.likeCount = Math.max(0, (currentPost.likeCount || 0) - 1);
+          console.log('Unlike successful');
+          resolve();
+        }, 1000);
+      });
+    }
+    
+    function handleRepost(post) {
+      console.log('Repost action:', post.uri);
+      
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          // Simulate success
+          currentPost.viewer.repost = 'at://did:plc:test/app.bsky.feed.repost/789';
+          currentPost.repostCount = (currentPost.repostCount || 0) + 1;
+          console.log('Repost successful');
+          resolve();
+        }, 1000);
+      });
+    }
+    
+    function handleUnrepost(post) {
+      console.log('Unrepost action:', post.uri);
+      
+      return new Promise(function(resolve, reject) {
+        setTimeout(function() {
+          // Simulate success
+          delete currentPost.viewer.repost;
+          currentPost.repostCount = Math.max(0, (currentPost.repostCount || 0) - 1);
+          console.log('Unrepost successful');
+          resolve();
+        }, 1000);
+      });
+    }
+    
+    function handleReply(post) {
+      console.log('Reply action:', post.uri);
+      alert('Reply functionality will be implemented in a future task');
+    }
+    
+    function showPost() {
+      var container = document.getElementById('demo-container');
+      
+      render(h(PostItem, {
+        post: currentPost,
+        focused: true,
+        onLike: handleLike,
+        onUnlike: handleUnlike,
+        onRepost: handleRepost,
+        onUnrepost: handleUnrepost,
+        onSelect: function() {
+          console.log('Post selected');
+          showMenu();
+        }
+      }), container);
+    }
+    
+    function showMenu() {
+      var container = document.getElementById('menu-container');
+      
+      // Clear existing menu
+      if (currentMenu) {
+        render(null, container);
+      }
+      
+      // Render new menu
+      currentMenu = render(h(PostActionMenu, {
+        post: currentPost,
+        onAction: function(actionId) {
+          console.log('Menu action triggered:', actionId);
+          
+          if (actionId === 'like') {
+            return handleLike(currentPost).then(function() {
+              showPost(); // Refresh post display
+            });
+          } else if (actionId === 'unlike') {
+            return handleUnlike(currentPost).then(function() {
+              showPost(); // Refresh post display
+            });
+          } else if (actionId === 'repost') {
+            return handleRepost(currentPost).then(function() {
+              showPost(); // Refresh post display
+            });
+          } else if (actionId === 'unrepost') {
+            return handleUnrepost(currentPost).then(function() {
+              showPost(); // Refresh post display
+            });
+          } else if (actionId === 'reply') {
+            handleReply(currentPost);
+            return Promise.resolve();
+          }
+        },
+        onClose: function() {
+          console.log('Menu closed');
+          render(null, container);
+          currentMenu = null;
+        }
+      }), container);
+    }
+    
+    // Button handlers
+    document.getElementById('show-demo').addEventListener('click', function() {
+      showPost();
+    });
+    
+    document.getElementById('show-menu').addEventListener('click', function() {
+      showMenu();
+    });
+    
+    // Auto-show demo
+    showPost();
+  </script>
+</body>
+</html>

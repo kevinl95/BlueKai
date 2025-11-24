@@ -213,8 +213,8 @@
     - Write tests for timeline loading
     - _Requirements: 4.2, 4.3, 6.1, 6.2, 6.4, 9.4_
 
-- [ ] 11. Implement post interaction features
-  - [ ] 11.1 Create PostActionMenu component
+- [x] 11. Implement post interaction features
+  - [x] 11.1 Create PostActionMenu component
     - Build action menu with like, repost, reply options
     - Implement D-pad navigation within menu
     - Add visual indicators for selected action
@@ -223,7 +223,7 @@
     - Display success/error feedback
     - _Requirements: 3.1, 3.2, 4.4_
   
-  - [ ] 11.2 Implement like/unlike functionality
+  - [x] 11.2 Implement like/unlike functionality
     - Write like action handler in PostItem
     - Update local state optimistically
     - Call API to persist like
@@ -232,7 +232,7 @@
     - Write tests for like interactions
     - _Requirements: 4.4, 9.3_
   
-  - [ ] 11.3 Implement repost functionality
+  - [x] 11.3 Implement repost functionality
     - Write repost action handler
     - Show confirmation modal
     - Update local state optimistically

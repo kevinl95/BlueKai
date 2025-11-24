@@ -197,6 +197,421 @@ function runPostItemTests() {
   });
   
   // Print results
+  // Test 11: Like action handler
+  test('calls onLike callback when like action is triggered', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var likeCalled = false;
+    var likedPost = null;
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      likeCount: 5,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onLike: function(post) {
+        likeCalled = true;
+        likedPost = post;
+        return Promise.resolve();
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger like
+    if (instance && instance.handleLike) {
+      instance.handleLike();
+    }
+    
+    setTimeout(function() {
+      assert(likeCalled, 'onLike should be called');
+      assert(likedPost === mockPost, 'Should pass the post to onLike');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 12: Optimistic like update
+  test('optimistically updates like count when liking', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      likeCount: 5,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onLike: function() {
+        return new Promise(function(resolve) {
+          setTimeout(resolve, 100);
+        });
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger like
+    if (instance && instance.handleLike) {
+      instance.handleLike();
+    }
+    
+    setTimeout(function() {
+      // Check optimistic state
+      assert(instance.state.optimisticLike === 'liked', 'Should set optimistic like state');
+      assert(instance.state.optimisticLikeCount === 6, 'Should increment like count optimistically');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 13: Reverts optimistic update on error
+  test('reverts optimistic update when like fails', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      likeCount: 5,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onLike: function() {
+        return Promise.reject(new Error('Network error'));
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger like
+    if (instance && instance.handleLike) {
+      instance.handleLike();
+    }
+    
+    setTimeout(function() {
+      // Check that state was reverted
+      assert(instance.state.optimisticLike === null, 'Should revert optimistic like state');
+      assert(instance.state.optimisticLikeCount === 0, 'Should revert like count');
+      assert(instance.state.isProcessing === false, 'Should clear processing state');
+      
+      document.body.removeChild(container);
+    }, 150);
+  });
+  
+  // Test 14: Unlike action handler
+  test('calls onUnlike callback when unlike action is triggered', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var unlikeCalled = false;
+    var unlikedPost = null;
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      likeCount: 5,
+      viewer: { like: 'at://test/like/456' }
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onUnlike: function(post) {
+        unlikeCalled = true;
+        unlikedPost = post;
+        return Promise.resolve();
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger unlike
+    if (instance && instance.handleUnlike) {
+      instance.handleUnlike();
+    }
+    
+    setTimeout(function() {
+      assert(unlikeCalled, 'onUnlike should be called');
+      assert(unlikedPost === mockPost, 'Should pass the post to onUnlike');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 15: Optimistic unlike update
+  test('optimistically updates like count when unliking', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      likeCount: 5,
+      viewer: { like: 'at://test/like/456' }
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onUnlike: function() {
+        return new Promise(function(resolve) {
+          setTimeout(resolve, 100);
+        });
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger unlike
+    if (instance && instance.handleUnlike) {
+      instance.handleUnlike();
+    }
+    
+    setTimeout(function() {
+      // Check optimistic state
+      assert(instance.state.optimisticLike === 'unliked', 'Should set optimistic unlike state');
+      assert(instance.state.optimisticLikeCount === 4, 'Should decrement like count optimistically');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 16: Repost shows confirmation modal
+  test('shows confirmation modal when repost is triggered', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      repostCount: 2,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onRepost: function() {
+        return Promise.resolve();
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger repost
+    if (instance && instance.handleRepost) {
+      instance.handleRepost();
+    }
+    
+    setTimeout(function() {
+      assert(instance.state.showRepostConfirm === true, 'Should show repost confirmation modal');
+      
+      var modal = container.querySelector('.modal');
+      assert(modal !== null, 'Modal should be rendered');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 17: Confirm repost calls onRepost
+  test('confirming repost calls onRepost callback', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var repostCalled = false;
+    var repostedPost = null;
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      repostCount: 2,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onRepost: function(post) {
+        repostCalled = true;
+        repostedPost = post;
+        return Promise.resolve();
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger repost and confirm
+    if (instance && instance.confirmRepost) {
+      instance.confirmRepost();
+    }
+    
+    setTimeout(function() {
+      assert(repostCalled, 'onRepost should be called');
+      assert(repostedPost === mockPost, 'Should pass the post to onRepost');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 18: Optimistic repost update
+  test('optimistically updates repost count when reposting', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      repostCount: 2,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onRepost: function() {
+        return new Promise(function(resolve) {
+          setTimeout(resolve, 100);
+        });
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger repost confirmation
+    if (instance && instance.confirmRepost) {
+      instance.confirmRepost();
+    }
+    
+    setTimeout(function() {
+      // Check optimistic state
+      assert(instance.state.optimisticRepost === 'reposted', 'Should set optimistic repost state');
+      assert(instance.state.optimisticRepostCount === 3, 'Should increment repost count optimistically');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
+  // Test 19: Reverts optimistic repost on error
+  test('reverts optimistic update when repost fails', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      repostCount: 2,
+      viewer: {}
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onRepost: function() {
+        return Promise.reject(new Error('Network error'));
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger repost confirmation
+    if (instance && instance.confirmRepost) {
+      instance.confirmRepost();
+    }
+    
+    setTimeout(function() {
+      // Check that state was reverted
+      assert(instance.state.optimisticRepost === null, 'Should revert optimistic repost state');
+      assert(instance.state.optimisticRepostCount === 0, 'Should revert repost count');
+      assert(instance.state.isProcessing === false, 'Should clear processing state');
+      
+      document.body.removeChild(container);
+    }, 150);
+  });
+  
+  // Test 20: Unrepost action handler
+  test('calls onUnrepost callback when unrepost action is triggered', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var unrepostCalled = false;
+    var unrepostedPost = null;
+    
+    var mockPost = {
+      uri: 'at://test/post/123',
+      cid: 'cid123',
+      author: { handle: 'test.user', displayName: 'Test User' },
+      record: { text: 'Test post', createdAt: '2025-11-23T12:00:00.000Z' },
+      repostCount: 2,
+      viewer: { repost: 'at://test/repost/789' }
+    };
+    
+    var instance;
+    var component = h(PostItem, {
+      post: mockPost,
+      onUnrepost: function(post) {
+        unrepostCalled = true;
+        unrepostedPost = post;
+        return Promise.resolve();
+      },
+      ref: function(ref) { instance = ref; }
+    });
+    
+    render(component, container);
+    
+    // Trigger unrepost
+    if (instance && instance.handleUnrepost) {
+      instance.handleUnrepost();
+    }
+    
+    setTimeout(function() {
+      assert(unrepostCalled, 'onUnrepost should be called');
+      assert(unrepostedPost === mockPost, 'Should pass the post to onUnrepost');
+      
+      document.body.removeChild(container);
+    }, 50);
+  });
+  
   console.log('\n--- PostItem Test Results ---');
   console.log('Total:', results.total);
   console.log('Passed:', results.passed);

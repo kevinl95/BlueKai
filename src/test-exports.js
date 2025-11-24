@@ -21,6 +21,7 @@ import LoginView from './views/LoginView';
 import PostItem from './views/PostItem';
 import PostList from './views/PostList';
 import TimelineView from './views/TimelineView';
+import PostActionMenu from './views/PostActionMenu';
 
 // Import utilities
 import DateFormatter from './utils/date-formatter';
@@ -42,6 +43,7 @@ import SoftkeyBar from './navigation/SoftkeyBar';
 import runPostItemTests from './views/PostItem.test';
 import runPostListTests from './views/PostList.test';
 import runTimelineViewTests from './views/TimelineView.test';
+import runPostActionMenuTests from './views/PostActionMenu.test';
 
 // Expose to window for testing
 window.preact = {
@@ -63,6 +65,7 @@ window.LoginView = LoginView;
 window.PostItem = PostItem;
 window.PostList = PostList;
 window.TimelineView = TimelineView;
+window.PostActionMenu = PostActionMenu;
 
 window.DateFormatter = DateFormatter;
 window.TextProcessor = TextProcessor;
@@ -79,3 +82,4 @@ window.SoftkeyBar = SoftkeyBar;
 window.runPostItemTests = runPostItemTests;
 window.runPostListTests = runPostListTests;
 window.runTimelineViewTests = runTimelineViewTests;
+window.runPostActionMenuTests = runPostActionMenuTests;

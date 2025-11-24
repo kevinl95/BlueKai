@@ -1,0 +1,104 @@
+/**
+ * PostActionMenu Component Styles
+ * Optimized for KaiOS small screens (240x320)
+ */
+
+.post-action-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 2px solid #333333;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.post-action-menu__header {
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #dddddd;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+}
+
+.post-action-menu__list {
+  padding: 4px 0;
+}
+
+.post-action-menu__item {
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background-color 0.1s;
+}
+
+.post-action-menu__item--selected {
+  background: #e6f2ff;
+  border-left-color: #0066cc;
+  font-weight: bold;
+}
+
+.post-action-menu__item--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.post-action-menu__icon {
+  font-size: 16px;
+  margin-right: 8px;
+  display: inline-block;
+  width: 20px;
+  text-align: center;
+}
+
+.post-action-menu__label {
+  flex: 1;
+}
+
+.post-action-menu__loading {
+  padding: 12px;
+  text-align: center;
+  font-size: 13px;
+  color: #666666;
+  background: #f9f9f9;
+  border-top: 1px solid #eeeeee;
+}
+
+.post-action-menu__feedback {
+  padding: 10px 12px;
+  text-align: center;
+  font-size: 13px;
+  border-top: 1px solid #eeeeee;
+}
+
+.post-action-menu__feedback--success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.post-action-menu__feedback--error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.post-action-menu__instructions {
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 11px;
+  color: #666666;
+  background: #f5f5f5;
+  border-top: 1px solid #dddddd;
+}
+
+/* High contrast focus indicators for accessibility */
+.post-action-menu__item--selected:focus {
+  outline: 2px solid #0066cc;
+  outline-offset: -2px;
+}

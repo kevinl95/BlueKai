@@ -129,6 +129,12 @@
   font-weight: bold;
 }
 
+/* Processing state */
+.post-item--processing {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
 /* Ensure high contrast for accessibility (WCAG AA) */
 @media (prefers-contrast: high) {
   .post-item--focused {
