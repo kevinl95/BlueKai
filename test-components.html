@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base UI Components Test - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 320px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #1976d2;
+      font-size: 18px;
+      border-bottom: 2px solid #1976d2;
+      padding-bottom: 10px;
+    }
+    
+    .test-section h3 {
+      font-size: 14px;
+      color: #666;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    
+    .component-demo {
+      margin: 15px 0;
+      padding: 15px;
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+    }
+    
+    .test-controls {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .test-controls button {
+      margin: 5px;
+    }
+    
+    #test-results {
+      background: #e8f5e9;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    
+    .error-result {
+      background: #ffebee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Base UI Components Test</h1>
+  
+  <div class="test-section">
+    <h2>1. LoadingIndicator</h2>
+    
+    <h3>Default (Medium)</h3>
+    <div class="component-demo" id="loading-default"></div>
+    
+    <h3>Small</h3>
+    <div class="component-demo" id="loading-small"></div>
+    
+    <h3>Large</h3>
+    <div class="component-demo" id="loading-large"></div>
+    
+    <h3>Inline</h3>
+    <div class="component-demo" id="loading-inline"></div>
+    
+    <h3>Custom Message</h3>
+    <div class="component-demo" id="loading-custom"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>2. ErrorMessage</h2>
+    
+    <h3>Network Error</h3>
+    <div class="component-demo" id="error-network"></div>
+    
+    <h3>Auth Error</h3>
+    <div class="component-demo" id="error-auth"></div>
+    
+    <h3>With Retry Button</h3>
+    <div class="component-demo" id="error-retry"></div>
+    
+    <h3>Inline</h3>
+    <div class="component-demo" id="error-inline"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>3. TextInput</h2>
+    
+    <h3>Basic Text Input</h3>
+    <div class="component-demo" id="input-basic"></div>
+    
+    <h3>With Character Counter (Max 50)</h3>
+    <div class="component-demo" id="input-counter"></div>
+    
+    <h3>Multiline (Textarea)</h3>
+    <div class="component-demo" id="input-multiline"></div>
+    
+    <h3>With Error</h3>
+    <div class="component-demo" id="input-error"></div>
+    
+    <h3>Password Input</h3>
+    <div class="component-demo" id="input-password"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>4. Button</h2>
+    
+    <h3>Variants</h3>
+    <div class="component-demo" id="button-variants"></div>
+    
+    <h3>Sizes</h3>
+    <div class="component-demo" id="button-sizes"></div>
+    
+    <h3>States</h3>
+    <div class="component-demo" id="button-states"></div>
+    
+    <h3>Full Width</h3>
+    <div class="component-demo" id="button-fullwidth"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>5. Modal</h2>
+    
+    <div class="test-controls">
+      <button onclick="openModal('small')">Open Small Modal</button>
+      <button onclick="openModal('medium')">Open Medium Modal</button>
+      <button onclick="openModal('large')">Open Large Modal</button>
+    </div>
+    
+    <div id="modal-container"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test Results</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="test-results"></div>
+  </div>
+  
+  <script src="dist/bundle.js"></script>
+  <script>
+    // This will be populated after Webpack build
+    console.log('Component tests loaded. Build the project first with: npm run build');
+  </script>
+</body>
+</html>

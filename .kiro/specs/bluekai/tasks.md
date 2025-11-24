@@ -137,21 +137,21 @@
     - Write tests for softkey interactions
     - _Requirements: 3.5_
 
-- [ ] 8. Create base UI components
-  - [ ] 8.1 Implement LoadingIndicator component
+- [x] 8. Create base UI components
+  - [x] 8.1 Implement LoadingIndicator component
     - Create simple loading spinner or text indicator
     - Add props for different loading states
     - Style for visibility on small screens
     - _Requirements: 9.4_
   
-  - [ ] 8.2 Create ErrorMessage component
+  - [x] 8.2 Create ErrorMessage component
     - Implement error display with user-friendly messages
     - Add retry button when applicable
     - Create error message mapping utility
     - Style for readability
     - _Requirements: 9.1, 9.2, 9.3_
   
-  - [ ] 8.3 Build TextInput component
+  - [x] 8.3 Build TextInput component
     - Create input wrapper with KaiOS compatibility
     - Add character counter display
     - Implement max length enforcement
@@ -159,13 +159,13 @@
     - Style for KaiOS display
     - _Requirements: 8.1, 8.2, 8.3_
   
-  - [ ] 8.4 Create Button component
+  - [x] 8.4 Create Button component
     - Implement focusable button with navigation support
     - Add loading and disabled states
     - Style with focus indicators
     - _Requirements: 3.4_
   
-  - [ ] 8.5 Build Modal component
+  - [x] 8.5 Build Modal component
     - Create modal overlay and content container
     - Implement focus trapping within modal
     - Add close on Escape or back button

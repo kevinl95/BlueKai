@@ -1,0 +1,168 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  font-family: inherit;
+  position: relative;
+  min-width: 80px;
+  box-sizing: border-box;
+}
+
+/* Variants */
+.button--primary {
+  background-color: #1976d2;
+  color: #fff;
+}
+
+.button--primary:hover {
+  background-color: #1565c0;
+}
+
+.button--primary:active {
+  background-color: #0d47a1;
+  transform: scale(0.98);
+}
+
+.button--secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.button--secondary:hover {
+  background-color: #e0e0e0;
+}
+
+.button--secondary:active {
+  background-color: #d5d5d5;
+  transform: scale(0.98);
+}
+
+.button--danger {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+.button--danger:hover {
+  background-color: #c62828;
+}
+
+.button--danger:active {
+  background-color: #b71c1c;
+  transform: scale(0.98);
+}
+
+/* Sizes */
+.button--small {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-width: 60px;
+}
+
+.button--medium {
+  padding: 10px 20px;
+  font-size: 14px;
+  min-width: 80px;
+}
+
+.button--large {
+  padding: 14px 28px;
+  font-size: 16px;
+  min-width: 100px;
+}
+
+/* States */
+.button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button--loading {
+  cursor: wait;
+}
+
+.button--full-width {
+  width: 100%;
+}
+
+/* Focus indicator - high contrast for KaiOS */
+.button:focus {
+  outline: 3px solid #000;
+  outline-offset: 2px;
+}
+
+.button--primary:focus {
+  outline-color: #1976d2;
+}
+
+.button--secondary:focus {
+  outline-color: #666;
+}
+
+.button--danger:focus {
+  outline-color: #d32f2f;
+}
+
+/* Loading spinner */
+.button__spinner {
+  display: inline-flex;
+  gap: 4px;
+  margin-right: 8px;
+}
+
+.button__spinner-dot {
+  width: 4px;
+  height: 4px;
+  background-color: currentColor;
+  border-radius: 50%;
+  animation: button-spinner-pulse 1.4s infinite ease-in-out both;
+}
+
+.button__spinner-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.button__spinner-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes button-spinner-pulse {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.button__text {
+  display: inline-block;
+}
+
+/* KaiOS specific optimizations */
+@media screen and (max-width: 320px) {
+  .button {
+    font-size: 13px;
+    padding: 8px 16px;
+  }
+  
+  .button--small {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+  
+  .button--large {
+    font-size: 15px;
+    padding: 12px 24px;
+  }
+}
