@@ -38,8 +38,8 @@
     - Write tests for edge cases
     - _Requirements: 4.5, 8.2_
 
-- [ ] 4. Implement ATP API client
-  - [ ] 4.1 Create base HTTP client
+- [x] 4. Implement ATP API client
+  - [x] 4.1 Create base HTTP client
     - Implement XMLHttpRequest wrapper with Promise interface
     - Add request/response interceptors
     - Implement timeout handling
@@ -47,7 +47,7 @@
     - Write tests for HTTP client methods
     - _Requirements: 4.1, 6.1, 6.4, 9.1_
   
-  - [ ] 4.2 Implement authentication methods
+  - [x] 4.2 Implement authentication methods
     - Write login method (createSession endpoint)
     - Implement session refresh method
     - Add JWT token storage and retrieval
@@ -55,7 +55,7 @@
     - Write tests for auth flows
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
   
-  - [ ] 4.3 Implement timeline and post methods
+  - [x] 4.3 Implement timeline and post methods
     - Write getTimeline method with cursor pagination
     - Implement createPost method
     - Add likePost, unlikePost methods
@@ -64,14 +64,14 @@
     - Write tests for post operations
     - _Requirements: 4.2, 4.3, 4.4, 4.5_
   
-  - [ ] 4.4 Implement profile methods
+  - [x] 4.4 Implement profile methods
     - Write getProfile method
     - Implement updateProfile method for display name and bio
     - Add follow and unfollow methods
     - Write tests for profile operations
     - _Requirements: 4.7, 4.8, 4.9_
   
-  - [ ] 4.5 Implement notifications method
+  - [x] 4.5 Implement notifications method
     - Write getNotifications method with pagination
     - Add notification count method
     - Write tests for notification retrieval

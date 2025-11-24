@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTTP Client Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #333;
+    }
+    #results {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+    .pass { color: green; }
+    .fail { color: red; }
+  </style>
+</head>
+<body>
+  <h1>HTTP Client Tests</h1>
+  <div id="results">Running tests...</div>
+
+  <script src="dist/bundle.js"></script>
+  <script type="module">
+    import { runTests } from './src/services/http-client.test.js';
+    
+    // Capture console output
+    var output = [];
+    var originalLog = console.log;
+    var originalError = console.error;
+    
+    console.log = function() {
+      var args = Array.prototype.slice.call(arguments);
+      output.push(args.join(' '));
+      originalLog.apply(console, arguments);
+    };
+    
+    console.error = function() {
+      var args = Array.prototype.slice.call(arguments);
+      output.push(args.join(' '));
+      originalError.apply(console, arguments);
+    };
+    
+    // Run tests
+    runTests().then(function(results) {
+      var resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = output.join('\n');
+      
+      // Restore console
+      console.log = originalLog;
+      console.error = originalError;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATP Client Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #333;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #555;
+      margin-top: 30px;
+    }
+    .test-suite {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #results {
+      background: #f5f5f5;
+      padding: 15px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .summary {
+      background: #e8f4f8;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .pass { color: #28a745; }
+    .fail { color: #dc3545; }
+    .loading {
+      color: #666;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <h1>ATP Client Test Suite</h1>
+  
+  <div class="summary" id="summary">
+    <div class="loading">Running tests...</div>
+  </div>
+  
+  <div class="test-suite">
+    <h2>HTTP Client Tests</h2>
+    <div id="http-results" class="loading">Running...</div>
+  </div>
+  
+  <div class="test-suite">
+    <h2>Authentication Tests</h2>
+    <div id="auth-results" class="loading">Running...</div>
+  </div>
+  
+  <div class="test-suite">
+    <h2>Timeline & Post Tests</h2>
+    <div id="timeline-results" class="loading">Running...</div>
+  </div>
+  
+  <div class="test-suite">
+    <h2>Profile Tests</h2>
+    <div id="profile-results" class="loading">Running...</div>
+  </div>
+  
+  <div class="test-suite">
+    <h2>Notification Tests</h2>
+    <div id="notification-results" class="loading">Running...</div>
+  </div>
+
+  <script type="module">
+    import { runTests as runHttpTests } from './src/services/http-client.test.js';
+    import { runTests as runAuthTests } from './src/services/atp-client.test.js';
+    import { runTests as runTimelineTests } from './src/services/atp-timeline.test.js';
+    import { runTests as runProfileTests } from './src/services/atp-profile.test.js';
+    import { runTests as runNotificationTests } from './src/services/atp-notifications.test.js';
+    
+    // Capture console output for each test suite
+    function captureConsole(callback) {
+      var output = [];
+      var originalLog = console.log;
+      var originalError = console.error;
+      
+      console.log = function() {
+        var args = Array.prototype.slice.call(arguments);
+        output.push(args.join(' '));
+        originalLog.apply(console, arguments);
+      };
+      
+      console.error = function() {
+        var args = Array.prototype.slice.call(arguments);
+        output.push(args.join(' '));
+        originalError.apply(console, arguments);
+      };
+      
+      return callback().then(function(result) {
+        console.log = originalLog;
+        console.error = originalError;
+        return { output: output, result: result };
+      });
+    }
+    
+    // Run all test suites
+    var allResults = {
+      totalPassed: 0,
+      totalFailed: 0,
+      suites: []
+    };
+    
+    console.log('=== Starting ATP Client Test Suite ===\n');
+    
+    // Run HTTP Client tests
+    captureConsole(runHttpTests)
+      .then(function(data) {
+        document.getElementById('http-results').innerHTML = data.output.join('\n');
+        allResults.totalPassed += data.result.passed;
+        allResults.totalFailed += data.result.failed;
+        allResults.suites.push({ name: 'HTTP Client', result: data.result });
+        
+        // Run Auth tests
+        return captureConsole(runAuthTests);
+      })
+      .then(function(data) {
+        document.getElementById('auth-results').innerHTML = data.output.join('\n');
+        allResults.totalPassed += data.result.passed;
+        allResults.totalFailed += data.result.failed;
+        allResults.suites.push({ name: 'Authentication', result: data.result });
+        
+        // Run Timeline tests
+        return captureConsole(runTimelineTests);
+      })
+      .then(function(data) {
+        document.getElementById('timeline-results').innerHTML = data.output.join('\n');
+        allResults.totalPassed += data.result.passed;
+        allResults.totalFailed += data.result.failed;
+        allResults.suites.push({ name: 'Timeline & Posts', result: data.result });
+        
+        // Run Profile tests
+        return captureConsole(runProfileTests);
+      })
+      .then(function(data) {
+        document.getElementById('profile-results').innerHTML = data.output.join('\n');
+        allResults.totalPassed += data.result.passed;
+        allResults.totalFailed += data.result.failed;
+        allResults.suites.push({ name: 'Profile', result: data.result });
+        
+        // Run Notification tests
+        return captureConsole(runNotificationTests);
+      })
+      .then(function(data) {
+        document.getElementById('notification-results').innerHTML = data.output.join('\n');
+        allResults.totalPassed += data.result.passed;
+        allResults.totalFailed += data.result.failed;
+        allResults.suites.push({ name: 'Notifications', result: data.result });
+        
+        // Display summary
+        var summaryHTML = '<h3>Overall Test Results</h3>';
+        summaryHTML += '<div class="' + (allResults.totalFailed === 0 ? 'pass' : 'fail') + '">';
+        summaryHTML += 'Total Passed: ' + allResults.totalPassed + '<br>';
+        summaryHTML += 'Total Failed: ' + allResults.totalFailed + '<br>';
+        summaryHTML += 'Total Tests: ' + (allResults.totalPassed + allResults.totalFailed);
+        summaryHTML += '</div><br>';
+        
+        summaryHTML += '<h4>By Suite:</h4>';
+        allResults.suites.forEach(function(suite) {
+          var status = suite.result.failed === 0 ? 'pass' : 'fail';
+          summaryHTML += '<div class="' + status + '">';
+          summaryHTML += suite.name + ': ' + suite.result.passed + ' passed, ' + suite.result.failed + ' failed';
+          summaryHTML += '</div>';
+        });
+        
+        document.getElementById('summary').innerHTML = summaryHTML;
+        
+        console.log('\n=== Test Suite Complete ===');
+        console.log('Total Passed:', allResults.totalPassed);
+        console.log('Total Failed:', allResults.totalFailed);
+      })
+      .catch(function(error) {
+        console.error('Test suite error:', error);
+        document.getElementById('summary').innerHTML = '<div class="fail">Error running tests: ' + error.message + '</div>';
+      });
+  </script>
+</body>
+</html>
