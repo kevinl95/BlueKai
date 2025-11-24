@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueKai Compatibility Tests</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+    }
+    h1 {
+      color: #4ec9b0;
+    }
+    #output {
+      background: #252526;
+      padding: 15px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .pass {
+      color: #4ec9b0;
+    }
+    .fail {
+      color: #f48771;
+    }
+    button {
+      background: #0e639c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: #1177bb;
+    }
+  </style>
+</head>
+<body>
+  <h1>BlueKai Compatibility Tests</h1>
+  <button onclick="runTests()">Run Tests</button>
+  <div id="output">Click "Run Tests" to start...</div>
+
+  <script>
+    // Load polyfills inline for testing
+    (function() {
+      // Include polyfills.js content here
+      // For actual testing, this would be loaded from the built bundle
+      
+      // Simple console capture
+      var originalLog = console.log;
+      var originalError = console.error;
+      var output = [];
+      
+      console.log = function() {
+        var msg = Array.prototype.slice.call(arguments).join(' ');
+        output.push(msg);
+        originalLog.apply(console, arguments);
+      };
+      
+      console.error = function() {
+        var msg = Array.prototype.slice.call(arguments).join(' ');
+        output.push(msg);
+        originalError.apply(console, arguments);
+      };
+      
+      window.runTests = function() {
+        output = [];
+        var outputDiv = document.getElementById('output');
+        outputDiv.innerHTML = 'Running tests...\n\n';
+        
+        // Run tests after a short delay to show the message
+        setTimeout(function() {
+          try {
+            // Test Promise
+            testPromise();
+            
+            // Test Object.assign
+            testObjectAssign();
+            
+            // Test Array methods
+            testArrayMethods();
+            
+            // Test String methods
+            testStringMethods();
+            
+            // Display results
+            outputDiv.innerHTML = output.join('\n');
+            
+            // Restore console
+            console.log = originalLog;
+            console.error = originalError;
+          } catch (e) {
+            outputDiv.innerHTML = 'Error running tests: ' + e.message;
+          }
+        }, 100);
+      };
+      
+      function testPromise() {
+        console.log('Testing Promise...');
+        
+        if (typeof Promise !== 'undefined') {
+          console.log('✓ Promise exists');
+          
+          // Test Promise.resolve
+          Promise.resolve(42).then(function(value) {
+            if (value === 42) {
+              console.log('✓ Promise.resolve works');
+            } else {
+              console.error('✗ Promise.resolve failed');
+            }
+          });
+          
+          // Test Promise.reject
+          Promise.reject('error').catch(function(reason) {
+            if (reason === 'error') {
+              console.log('✓ Promise.reject works');
+            } else {
+              console.error('✗ Promise.reject failed');
+            }
+          });
+          
+          // Test Promise.all
+          Promise.all([Promise.resolve(1), Promise.resolve(2)]).then(function(values) {
+            if (values.length === 2 && values[0] === 1 && values[1] === 2) {
+              console.log('✓ Promise.all works');
+            } else {
+              console.error('✗ Promise.all failed');
+            }
+          });
+        } else {
+          console.error('✗ Promise not available');
+        }
+      }
+      
+      function testObjectAssign() {
+        console.log('\nTesting Object.assign...');
+        
+        if (typeof Object.assign === 'function') {
+          console.log('✓ Object.assign exists');
+          
+          var result = Object.assign({}, { a: 1 }, { b: 2 });
+          if (result.a === 1 && result.b === 2) {
+            console.log('✓ Object.assign works');
+          } else {
+            console.error('✗ Object.assign failed');
+          }
+        } else {
+          console.error('✗ Object.assign not available');
+        }
+      }
+      
+      function testArrayMethods() {
+        console.log('\nTesting Array methods...');
+        
+        var arr = [1, 2, 3, 4, 5];
+        
+        // Test find
+        if (typeof Array.prototype.find === 'function') {
+          var found = arr.find(function(x) { return x > 3; });
+          if (found === 4) {
+            console.log('✓ Array.prototype.find works');
+          } else {
+            console.error('✗ Array.prototype.find failed');
+          }
+        } else {
+          console.error('✗ Array.prototype.find not available');
+        }
+        
+        // Test findIndex
+        if (typeof Array.prototype.findIndex === 'function') {
+          var index = arr.findIndex(function(x) { return x > 3; });
+          if (index === 3) {
+            console.log('✓ Array.prototype.findIndex works');
+          } else {
+            console.error('✗ Array.prototype.findIndex failed');
+          }
+        } else {
+          console.error('✗ Array.prototype.findIndex not available');
+        }
+        
+        // Test includes
+        if (typeof Array.prototype.includes === 'function') {
+          if (arr.includes(3) && !arr.includes(10)) {
+            console.log('✓ Array.prototype.includes works');
+          } else {
+            console.error('✗ Array.prototype.includes failed');
+          }
+        } else {
+          console.error('✗ Array.prototype.includes not available');
+        }
+        
+        // Test Array.from
+        if (typeof Array.from === 'function') {
+          var arrayLike = { 0: 'a', 1: 'b', length: 2 };
+          var result = Array.from(arrayLike);
+          if (result.length === 2 && result[0] === 'a' && result[1] === 'b') {
+            console.log('✓ Array.from works');
+          } else {
+            console.error('✗ Array.from failed');
+          }
+        } else {
+          console.error('✗ Array.from not available');
+        }
+      }
+      
+      function testStringMethods() {
+        console.log('\nTesting String methods...');
+        
+        var str = 'hello world';
+        
+        // Test startsWith
+        if (typeof String.prototype.startsWith === 'function') {
+          if (str.startsWith('hello') && !str.startsWith('world')) {
+            console.log('✓ String.prototype.startsWith works');
+          } else {
+            console.error('✗ String.prototype.startsWith failed');
+          }
+        } else {
+          console.error('✗ String.prototype.startsWith not available');
+        }
+        
+        // Test endsWith
+        if (typeof String.prototype.endsWith === 'function') {
+          if (str.endsWith('world') && !str.endsWith('hello')) {
+            console.log('✓ String.prototype.endsWith works');
+          } else {
+            console.error('✗ String.prototype.endsWith failed');
+          }
+        } else {
+          console.error('✗ String.prototype.endsWith not available');
+        }
+        
+        // Test includes
+        if (typeof String.prototype.includes === 'function') {
+          if (str.includes('lo wo') && !str.includes('xyz')) {
+            console.log('✓ String.prototype.includes works');
+          } else {
+            console.error('✗ String.prototype.includes failed');
+          }
+        } else {
+          console.error('✗ String.prototype.includes not available');
+        }
+      }
+    })();
+  </script>
+  
+  <!-- Load the actual polyfills from the build -->
+  <script>
+    // In a real scenario, you would load the built bundle here
+    // <script src="dist/bundle.js"></script>
+    // For now, we'll load polyfills directly
+  </script>
+  <script src="src/utils/polyfills.js"></script>
+</body>
+</html>
