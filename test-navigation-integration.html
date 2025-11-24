@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation System Integration Test</title>
+    <link rel="stylesheet" href="src/navigation/softkey-bar.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 60px;
+        }
+        h1 {
+            color: #333;
+            font-size: 20px;
+        }
+        .demo-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .list-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .list-item.focused {
+            background: #0066cc;
+            color: white;
+            border-color: #0066cc;
+            outline: 2px solid #0066cc;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            background: #e8f4f8;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Navigation System Integration Test</h1>
+    
+    <div class="instructions">
+        <strong>Instructions:</strong> Use arrow keys to navigate the list below. 
+        Press Enter to select an item. Press F1 (or click "Back") and F2 (or click "Options") 
+        to test softkeys. Click "Navigate" buttons to test routing.
+    </div>
+    
+    <div class="status" id="status">
+        Ready. Use arrow keys to navigate.
+    </div>
+    
+    <div class="demo-section">
+        <h2>Navigation Test</h2>
+        <div id="list-container">
+            <div class="list-item" data-id="1">Item 1 - Timeline</div>
+            <div class="list-item" data-id="2">Item 2 - Profile</div>
+            <div class="list-item" data-id="3">Item 3 - Notifications</div>
+            <div class="list-item" data-id="4">Item 4 - Settings</div>
+            <div class="list-item" data-id="5">Item 5 - About</div>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Router Test</h2>
+        <button onclick="navigateTo('/')">Home</button>
+        <button onclick="navigateTo('/timeline')">Timeline</button>
+        <button onclick="navigateTo('/post/123')">Post 123</button>
+        <button onclick="navigateTo('/profile')">Profile</button>
+        <button onclick="goBack()">Back</button>
+        <div class="status" id="route-status">Current route: /</div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Softkey Test</h2>
+        <button onclick="triggerSoftLeft()">Trigger Left (F1)</button>
+        <button onclick="triggerSoftRight()">Trigger Right (F2)</button>
+        <button onclick="updateSoftkeys()">Update Labels</button>
+    </div>
+    
+    <div id="softkey-container"></div>
+
+    <script src="node_modules/preact/dist/preact.min.js"></script>
+    <script src="src/navigation/navigation-manager.js"></script>
+    <script src="src/navigation/router.js"></script>
+    <script src="src/navigation/SoftkeyBar.js"></script>
+    
+    <script>
+        var h = preact.h;
+        var render = preact.render;
+        
+        var status = document.getElementById('status');
+        var routeStatus = document.getElementById('route-status');
+        var softkeyContainer = document.getElementById('softkey-container');
+        
+        // Initialize NavigationManager
+        var nav = new NavigationManager({
+            onSelect: function(element, index) {
+                var id = element.getAttribute('data-id');
+                status.textContent = 'Selected: ' + element.textContent + ' (index: ' + index + ')';
+                
+                // Navigate based on selection
+                if (id === '1') router.navigate('/timeline');
+                else if (id === '2') router.navigate('/profile');
+                else if (id === '3') router.navigate('/notifications');
+                else if (id === '4') router.navigate('/settings');
+                else if (id === '5') router.navigate('/about');
+            },
+            onSoftLeft: function() {
+                status.textContent = 'Left softkey pressed (Back)';
+                if (router.canGoBack()) {
+                    router.back();
+                }
+            },
+            onSoftRight: function() {
+                status.textContent = 'Right softkey pressed (Options)';
+            },
+            circular: true,
+            focusClass: 'focused'
+        });
+        
+        // Initialize Router
+        var router = new Router();
+        
+        router.register('/', function() {
+            routeStatus.textContent = 'Current route: / (Home)';
+            updateSoftkeyBar('Menu', 'Select', 'Options');
+        }, 'home');
+        
+        router.register('/timeline', function() {
+            routeStatus.textContent = 'Current route: /timeline';
+            updateSoftkeyBar('Back', 'Select', 'Compose');
+        }, 'timeline');
+        
+        router.register('/post/:id', function(params) {
+            routeStatus.textContent = 'Current route: /post/' + params.id;
+            updateSoftkeyBar('Back', 'Like', 'Options');
+        }, 'post');
+        
+        router.register('/profile', function() {
+            routeStatus.textContent = 'Current route: /profile';
+            updateSoftkeyBar('Back', 'Edit', 'Options');
+        }, 'profile');
+        
+        router.register('/notifications', function() {
+            routeStatus.textContent = 'Current route: /notifications';
+            updateSoftkeyBar('Back', 'Select', 'Clear');
+        }, 'notifications');
+        
+        router.register('/settings', function() {
+            routeStatus.textContent = 'Current route: /settings';
+            updateSoftkeyBar('Back', 'Select', 'Save');
+        }, 'settings');
+        
+        router.register('/about', function() {
+            routeStatus.textContent = 'Current route: /about';
+            updateSoftkeyBar('Back', '', '');
+        }, 'about');
+        
+        // Helper to update softkey bar
+        function updateSoftkeyBar(left, center, right) {
+            render(h(SoftkeyBar, {
+                left: { label: left },
+                center: { label: center },
+                right: { label: right }
+            }), softkeyContainer);
+        }
+        
+        // Initialize everything
+        nav.init();
+        router.init();
+        
+        // Set up focusable elements
+        var items = document.querySelectorAll('.list-item');
+        nav.updateFocusableElements(items);
+        
+        // Initial softkey bar
+        updateSoftkeyBar('Menu', 'Select', 'Options');
+        
+        // Test functions
+        function navigateTo(path) {
+            router.navigate(path);
+        }
+        
+        function goBack() {
+            if (router.canGoBack()) {
+                router.back();
+                status.textContent = 'Navigated back';
+            } else {
+                status.textContent = 'Cannot go back (no history)';
+            }
+        }
+        
+        function triggerSoftLeft() {
+            nav.handleSoftLeft();
+        }
+        
+        function triggerSoftRight() {
+            nav.handleSoftRight();
+        }
+        
+        var softkeyToggle = false;
+        function updateSoftkeys() {
+            softkeyToggle = !softkeyToggle;
+            if (softkeyToggle) {
+                updateSoftkeyBar('Cancel', 'OK', 'Help');
+                status.textContent = 'Softkeys updated to: Cancel / OK / Help';
+            } else {
+                updateSoftkeyBar('Back', 'Select', 'Options');
+                status.textContent = 'Softkeys updated to: Back / Select / Options';
+            }
+        }
+        
+        // Log initialization
+        console.log('Navigation system initialized');
+        console.log('- NavigationManager active:', nav.isActive);
+        console.log('- Router active:', router.isActive);
+        console.log('- Focusable elements:', items.length);
+        console.log('- Registered routes:', router.routes.length);
+        
+        status.textContent = 'System initialized. ' + items.length + ' items, ' + 
+                            router.routes.length + ' routes. Use arrow keys to navigate.';
+    </script>
+</body>
+</html>

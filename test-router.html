@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Router Tests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        .pass {
+            color: green;
+        }
+        .fail {
+            color: red;
+        }
+        pre {
+            background: white;
+            padding: 10px;
+            border-radius: 3px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Router Tests</h1>
+    <div id="results">
+        <p>Running tests...</p>
+    </div>
+
+    <script src="src/navigation/router.js"></script>
+    <script src="src/navigation/router.test.js"></script>
+    <script>
+        // Run tests and display results
+        var results = runTests();
+        
+        var resultsDiv = document.getElementById('results');
+        var html = '<h2>Test Results</h2>';
+        html += '<p><strong>Passed:</strong> <span class="pass">' + results.passed + '</span></p>';
+        html += '<p><strong>Failed:</strong> <span class="fail">' + results.failed + '</span></p>';
+        html += '<p><strong>Total:</strong> ' + (results.passed + results.failed) + '</p>';
+        
+        if (results.failed > 0) {
+            html += '<h3>Failed Tests:</h3><ul>';
+            results.tests.forEach(function(test) {
+                if (test.status === 'FAIL') {
+                    html += '<li class="fail">' + test.name + '<br><em>' + test.error + '</em></li>';
+                }
+            });
+            html += '</ul>';
+        }
+        
+        resultsDiv.innerHTML = html;
+    </script>
+</body>
+</html>

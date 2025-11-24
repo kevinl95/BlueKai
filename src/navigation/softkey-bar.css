@@ -1,0 +1,57 @@
+/**
+ * SoftkeyBar Styles
+ * Optimized for KaiOS 240x320 display
+ */
+
+.softkey-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+  font-size: 12px;
+  z-index: 1000;
+  box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.softkey-left,
+.softkey-center,
+.softkey-right {
+  flex: 1;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 2px;
+}
+
+.softkey-left {
+  text-align: left;
+}
+
+.softkey-right {
+  text-align: right;
+}
+
+.softkey-center {
+  font-weight: bold;
+}
+
+/* High contrast for readability */
+.softkey-bar {
+  border-top: 1px solid #555;
+}
+
+/* Ensure text is readable on small screens */
+@media (max-width: 240px) {
+  .softkey-bar {
+    font-size: 11px;
+    height: 28px;
+  }
+}

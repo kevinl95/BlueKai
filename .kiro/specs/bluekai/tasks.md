@@ -110,8 +110,8 @@
     - Write tests for session management
     - _Requirements: 5.4, 5.5, 5.6_
 
-- [ ] 7. Implement navigation system
-  - [ ] 7.1 Create NavigationManager class
+- [x] 7. Implement navigation system
+  - [x] 7.1 Create NavigationManager class
     - Implement D-pad event handling (ArrowUp, ArrowDown, ArrowLeft, ArrowRight)
     - Add Enter key handling for selection
     - Implement softkey event handling (SoftLeft, SoftRight)
@@ -120,7 +120,7 @@
     - Write tests for navigation logic
     - _Requirements: 3.1, 3.2, 3.3, 3.4_
   
-  - [ ] 7.2 Create custom router
+  - [x] 7.2 Create custom router
     - Implement simple hash-based router
     - Add route registration and matching
     - Create navigation history management
@@ -129,7 +129,7 @@
     - Write tests for routing logic
     - _Requirements: 3.1, 3.2_
   
-  - [ ] 7.3 Build SoftkeyBar component
+  - [x] 7.3 Build SoftkeyBar component
     - Create component that displays softkey labels
     - Implement dynamic softkey context updates
     - Add softkey action binding
