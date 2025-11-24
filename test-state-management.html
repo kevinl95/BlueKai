@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>State Management Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a1a;
+      color: #00ff00;
+    }
+    h1 {
+      color: #00ffff;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #333;
+      background: #0a0a0a;
+    }
+    .pass {
+      color: #00ff00;
+    }
+    .fail {
+      color: #ff0000;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      border: 2px solid #00ffff;
+      background: #0a0a0a;
+    }
+    pre {
+      background: #000;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>BlueKai State Management Tests</h1>
+  <p>Testing state management layer for Gecko 48 compatibility</p>
+  
+  <div class="test-section">
+    <h2>Test Output</h2>
+    <pre id="output"></pre>
+  </div>
+  
+  <div class="summary" id="summary"></div>
+
+  <script>
+    // Capture console output
+    const output = document.getElementById('output');
+    const summary = document.getElementById('summary');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = function(...args) {
+      output.textContent += args.join(' ') + '\n';
+      originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+      output.textContent += args.join(' ') + '\n';
+      originalError.apply(console, args);
+    };
+  </script>
+
+  <!-- Polyfills for Gecko 48 -->
+  <script src="dist/bundle.js"></script>
+  
+  <script>
+    // Mock Preact for testing
+    if (typeof window.preact === 'undefined') {
+      window.preact = {
+        h: function() { return {}; },
+        createContext: function(defaultValue) {
+          return {
+            Provider: function() {},
+            Consumer: function() {}
+          };
+        },
+        useContext: function(context) {
+          return null;
+        },
+        useReducer: function(reducer, initialState) {
+          return [initialState, function() {}];
+        },
+        useEffect: function() {}
+      };
+    }
+    
+    // Mock require for browser
+    function createMockRequire() {
+      const modules = {};
+      
+      return function require(path) {
+        // Handle preact
+        if (path === 'preact') {
+          return window.preact;
+        }
+        
+        // Handle relative paths
+        if (path.startsWith('./')) {
+          const moduleName = path.replace('./', '').replace('.js', '');
+          if (modules[moduleName]) {
+            return modules[moduleName];
+          }
+        }
+        
+        return modules[path] || {};
+      };
+    }
+    
+    const require = createMockRequire();
+    const module = { exports: {} };
+  </script>
+
+  <!-- Load state management modules -->
+  <script src="src/state/app-state.js"></script>
+  <script src="src/state/actions.js"></script>
+  <script src="src/state/reducer.js"></script>
+  <script src="src/state/session-manager.js"></script>
+  
+  <!-- Load and run tests -->
+  <script src="src/state/app-state.test.js"></script>
+  <script src="src/state/reducer.test.js"></script>
+  <script src="src/state/session-manager.test.js"></script>
+  
+  <script>
+    // Run all tests
+    console.log('='.repeat(60));
+    console.log('RUNNING ALL STATE MANAGEMENT TESTS');
+    console.log('='.repeat(60));
+    
+    let totalPassed = 0;
+    let totalFailed = 0;
+    
+    try {
+      // Run app state tests
+      if (typeof runAppStateTests === 'function') {
+        const appStateResults = runAppStateTests();
+        totalPassed += appStateResults.passed;
+        totalFailed += appStateResults.failed;
+      }
+      
+      // Run reducer tests
+      if (typeof runReducerTests === 'function') {
+        const reducerResults = runReducerTests();
+        totalPassed += reducerResults.passed;
+        totalFailed += reducerResults.failed;
+      }
+      
+      // Run session manager tests
+      if (typeof runSessionManagerTests === 'function') {
+        const sessionResults = runSessionManagerTests();
+        totalPassed += sessionResults.passed;
+        totalFailed += sessionResults.failed;
+      }
+      
+      // Display final summary
+      console.log('\n' + '='.repeat(60));
+      console.log('FINAL TEST SUMMARY');
+      console.log('='.repeat(60));
+      console.log('Total Passed: ' + totalPassed);
+      console.log('Total Failed: ' + totalFailed);
+      console.log('Total Tests: ' + (totalPassed + totalFailed));
+      console.log('Success Rate: ' + ((totalPassed / (totalPassed + totalFailed)) * 100).toFixed(2) + '%');
+      
+      summary.innerHTML = `
+        <h2>Final Summary</h2>
+        <p class="${totalFailed === 0 ? 'pass' : 'fail'}">
+          <strong>Total Passed:</strong> ${totalPassed}<br>
+          <strong>Total Failed:</strong> ${totalFailed}<br>
+          <strong>Total Tests:</strong> ${totalPassed + totalFailed}<br>
+          <strong>Success Rate:</strong> ${((totalPassed / (totalPassed + totalFailed)) * 100).toFixed(2)}%
+        </p>
+        ${totalFailed === 0 ? '<p class="pass">✓ All tests passed!</p>' : '<p class="fail">✗ Some tests failed</p>'}
+      `;
+    } catch (error) {
+      console.error('Error running tests:', error);
+      summary.innerHTML = `<p class="fail">Error running tests: ${error.message}</p>`;
+    }
+  </script>
+</body>
+</html>
