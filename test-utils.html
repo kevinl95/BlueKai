@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Utilities Tests</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-output {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .pass { color: green; }
+        .fail { color: red; }
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-left: 4px solid #2196F3;
+            font-weight: bold;
+        }
+        .summary.all-pass {
+            background: #e8f5e9;
+            border-left-color: #4CAF50;
+        }
+        .summary.has-fail {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        .overall-summary {
+            background: white;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Core Utilities Test Suite</h1>
+    <p>Testing all utility modules for BlueKai</p>
+    
+    <div class="test-section">
+        <h2>StorageManager Tests</h2>
+        <div class="test-output" id="storage-output"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>DateFormatter Tests</h2>
+        <div class="test-output" id="date-output"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>TextProcessor Tests</h2>
+        <div class="test-output" id="text-output"></div>
+    </div>
+    
+    <div class="overall-summary" id="overall-summary"></div>
+    
+    <!-- Load all utility modules -->
+    <script src="src/utils/storage.js"></script>
+    <script src="src/utils/date-formatter.js"></script>
+    <script src="src/utils/text-processor.js"></script>
+    
+    <!-- Load all test modules -->
+    <script src="src/utils/storage.test.js"></script>
+    <script src="src/utils/date-formatter.test.js"></script>
+    <script src="src/utils/text-processor.test.js"></script>
+    
+    <script>
+        // Helper to create console logger for specific output div
+        function createLogger(outputId) {
+            var output = document.getElementById(outputId);
+            var originalLog = console.log;
+            
+            return function() {
+                var args = Array.prototype.slice.call(arguments);
+                var message = args.join(' ');
+                
+                var line = document.createElement('div');
+                if (message.indexOf('✓') === 0) {
+                    line.className = 'pass';
+                } else if (message.indexOf('✗') === 0) {
+                    line.className = 'fail';
+                }
+                line.textContent = message;
+                output.appendChild(line);
+                
+                originalLog.apply(console, arguments);
+            };
+        }
+        
+        // Run all tests
+        var allResults = [];
+        
+        // StorageManager tests
+        console.log = createLogger('storage-output');
+        var storageResults = runStorageTests();
+        allResults.push({ name: 'StorageManager', results: storageResults });
+        
+        var storageSummary = document.createElement('div');
+        storageSummary.className = 'summary ' + (storageResults.failed === 0 ? 'all-pass' : 'has-fail');
+        storageSummary.innerHTML = '<strong>Summary:</strong> ' + 
+            storageResults.passed + ' passed, ' + 
+            storageResults.failed + ' failed, ' + 
+            storageResults.total + ' total';
+        document.getElementById('storage-output').appendChild(storageSummary);
+        
+        // DateFormatter tests
+        console.log = createLogger('date-output');
+        var dateResults = runDateFormatterTests();
+        allResults.push({ name: 'DateFormatter', results: dateResults });
+        
+        var dateSummary = document.createElement('div');
+        dateSummary.className = 'summary ' + (dateResults.failed === 0 ? 'all-pass' : 'has-fail');
+        dateSummary.innerHTML = '<strong>Summary:</strong> ' + 
+            dateResults.passed + ' passed, ' + 
+            dateResults.failed + ' failed, ' + 
+            dateResults.total + ' total';
+        document.getElementById('date-output').appendChild(dateSummary);
+        
+        // TextProcessor tests
+        console.log = createLogger('text-output');
+        var textResults = runTextProcessorTests();
+        allResults.push({ name: 'TextProcessor', results: textResults });
+        
+        var textSummary = document.createElement('div');
+        textSummary.className = 'summary ' + (textResults.failed === 0 ? 'all-pass' : 'has-fail');
+        textSummary.innerHTML = '<strong>Summary:</strong> ' + 
+            textResults.passed + ' passed, ' + 
+            textResults.failed + ' failed, ' + 
+            textResults.total + ' total';
+        document.getElementById('text-output').appendChild(textSummary);
+        
+        // Overall summary
+        var totalPassed = allResults.reduce(function(sum, r) { return sum + r.results.passed; }, 0);
+        var totalFailed = allResults.reduce(function(sum, r) { return sum + r.results.failed; }, 0);
+        var totalTests = allResults.reduce(function(sum, r) { return sum + r.results.total; }, 0);
+        
+        var overallDiv = document.getElementById('overall-summary');
+        overallDiv.innerHTML = '<h2>Overall Results</h2>' +
+            '<p style="font-size: 1.5em; margin: 10px 0;">' +
+            '<span style="color: ' + (totalFailed === 0 ? 'green' : 'red') + ';">' +
+            totalPassed + ' / ' + totalTests + ' tests passed</span></p>';
+        
+        if (totalFailed > 0) {
+            overallDiv.innerHTML += '<p style="color: red;">' + totalFailed + ' tests failed</p>';
+        } else {
+            overallDiv.innerHTML += '<p style="color: green;">✓ All tests passed!</p>';
+        }
+        
+        // Restore original console.log
+        console.log = console.log || function() {};
+    </script>
+</body>
+</html>

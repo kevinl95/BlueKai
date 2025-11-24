@@ -15,22 +15,22 @@
   - Write compatibility tests to verify polyfills work correctly
   - _Requirements: 1.2, 1.4, 1.5_
 
-- [ ] 3. Create core utilities and helpers
-  - [ ] 3.1 Implement storage wrapper for LocalStorage
+- [x] 3. Create core utilities and helpers
+  - [x] 3.1 Implement storage wrapper for LocalStorage
     - Write StorageManager class with get, set, remove, and clear methods
     - Add error handling for quota exceeded scenarios
     - Implement serialization/deserialization for complex objects
     - Write unit tests for storage operations
     - _Requirements: 5.3, 5.4, 6.2_
   
-  - [ ] 3.2 Create date formatting utilities
+  - [x] 3.2 Create date formatting utilities
     - Implement relative time formatting (e.g., "2h ago", "3d ago")
     - Add locale-aware date formatting
     - Create timestamp parsing utilities
     - Write tests for various date scenarios
     - _Requirements: 10.5_
   
-  - [ ] 3.3 Build text processing utilities
+  - [x] 3.3 Build text processing utilities
     - Implement text truncation with ellipsis
     - Create URL detection and linkification
     - Add mention (@handle) detection

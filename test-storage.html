@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StorageManager Tests</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-output {
+            background: white;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .pass { color: green; }
+        .fail { color: red; }
+        .summary {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e8f4f8;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <h1>StorageManager Unit Tests</h1>
+    <div class="test-output" id="output"></div>
+    
+    <script src="src/utils/storage.js"></script>
+    <script src="src/utils/storage.test.js"></script>
+    <script>
+        var output = document.getElementById('output');
+        
+        // Override console.log to display in page
+        var originalLog = console.log;
+        console.log = function() {
+            var args = Array.prototype.slice.call(arguments);
+            var message = args.join(' ');
+            
+            var line = document.createElement('div');
+            if (message.indexOf('✓') === 0) {
+                line.className = 'pass';
+            } else if (message.indexOf('✗') === 0) {
+                line.className = 'fail';
+            }
+            line.textContent = message;
+            output.appendChild(line);
+            
+            originalLog.apply(console, arguments);
+        };
+        
+        // Run tests
+        var results = runStorageTests();
+        
+        // Display summary
+        var summary = document.createElement('div');
+        summary.className = 'summary';
+        summary.innerHTML = '<strong>Summary:</strong> ' + 
+            results.passed + ' passed, ' + 
+            results.failed + ' failed, ' + 
+            results.total + ' total';
+        output.appendChild(summary);
+    </script>
+</body>
+</html>
