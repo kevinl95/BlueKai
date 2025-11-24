@@ -1,0 +1,74 @@
+/* Global App Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;
+  color: #1a1a1a;
+  line-height: 1.4;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* KaiOS specific styles */
+@media (max-width: 240px) {
+  body {
+    font-size: 12px;
+  }
+}
+
+/* Focus styles for navigation */
+*:focus {
+  outline: 2px solid #1da1f2;
+  outline-offset: 2px;
+}
+
+button:focus,
+input:focus,
+textarea:focus {
+  outline: 2px solid #1da1f2;
+  outline-offset: 2px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #15202b;
+    color: #e1e8ed;
+  }
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

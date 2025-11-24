@@ -444,6 +444,4 @@ CacheManager.prototype._patternToRegex = function(pattern) {
 };
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = CacheManager;
-}
+export default CacheManager;

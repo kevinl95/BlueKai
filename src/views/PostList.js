@@ -5,9 +5,8 @@
  * Requirements: 3.1, 3.4, 7.2
  */
 
-var h = require('preact').h;
-var Component = require('preact').Component;
-var PostItem = require('./PostItem');
+import { h, Component } from 'preact';
+import PostItem from './PostItem.js';
 
 /**
  * @class PostList
@@ -265,4 +264,4 @@ PostListClass.prototype.render = function() {
   );
 };
 
-module.exports = PostList;
+export default PostList;

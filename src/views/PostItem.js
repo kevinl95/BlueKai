@@ -5,11 +5,10 @@
  * Requirements: 4.3, 4.6, 10.3, 4.4, 9.3
  */
 
-var h = require('preact').h;
-var Component = require('preact').Component;
-var DateFormatter = require('../utils/date-formatter');
-var TextProcessor = require('../utils/text-processor');
-var Modal = require('../components/Modal');
+import { h, Component } from 'preact';
+import DateFormatter from '../utils/date-formatter.js';
+import TextProcessor from '../utils/text-processor.js';
+import Modal from '../components/Modal.js';
 
 /**
  * @class PostItem
@@ -424,4 +423,4 @@ PostItem.prototype.render = function() {
   );
 };
 
-module.exports = PostItem;
+export default PostItem;

@@ -349,6 +349,4 @@ DateFormatter.prototype.isYesterday = function(timestamp) {
 };
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = DateFormatter;
-}
+export default DateFormatter;

@@ -5,8 +5,7 @@
  * Requirements: 3.1, 3.2, 4.4
  */
 
-var h = require('preact').h;
-var Component = require('preact').Component;
+import { h, Component } from 'preact';
 
 /**
  * @class PostActionMenu
@@ -263,4 +262,4 @@ PostActionMenu.prototype.render = function() {
   );
 };
 
-module.exports = PostActionMenu;
+export default PostActionMenu;

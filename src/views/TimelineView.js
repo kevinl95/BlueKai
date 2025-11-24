@@ -5,14 +5,13 @@
  * Requirements: 4.2, 4.3, 6.1, 6.2, 6.4, 9.4
  */
 
-var h = require('preact').h;
-var Component = require('preact').Component;
-var PostList = require('./PostList');
-var LoadingIndicator = require('../components/LoadingIndicator');
-var ErrorMessage = require('../components/ErrorMessage');
-var ATPClient = require('../services/atp-client');
-var CacheManager = require('../utils/cache-manager');
-var StorageManager = require('../utils/storage');
+import { h, Component } from 'preact';
+import PostList from './PostList.js';
+import LoadingIndicator from '../components/LoadingIndicator.js';
+import ErrorMessage from '../components/ErrorMessage.js';
+import ATPClient from '../services/atp-client.js';
+import CacheManager from '../utils/cache-manager.js';
+import StorageManager from '../utils/storage.js';
 
 /**
  * @class TimelineView
@@ -35,8 +34,8 @@ function TimelineViewClass(props) {
   };
   
   // Initialize services
-  this.atpClient = new ATPClient();
-  this.storage = new StorageManager('bluekai');
+  this.atpClient = props.atpClient || new ATPClient();
+  this.storage = new StorageManager();
   this.cacheManager = new CacheManager(this.storage, {
     defaultTTL: 5 * 60 * 1000 // 5 minutes
   });
@@ -106,8 +105,14 @@ TimelineViewClass.prototype.loadTimeline = function() {
     limit: 50
   })
   .then(function(response) {
-    var posts = response.feed || [];
+    var feed = response.feed || [];
     var cursor = response.cursor || null;
+    
+    // Extract posts from feed items
+    // BlueSky API returns feed items with a 'post' property
+    var posts = feed.map(function(item) {
+      return item.post;
+    });
     
     self.setState({
       posts: posts,
@@ -148,8 +153,13 @@ TimelineViewClass.prototype.loadMore = function() {
     cursor: this.state.cursor
   })
   .then(function(response) {
-    var newPosts = response.feed || [];
+    var feed = response.feed || [];
     var cursor = response.cursor || null;
+    
+    // Extract posts from feed items
+    var newPosts = feed.map(function(item) {
+      return item.post;
+    });
     
     self.setState({
       posts: self.state.posts.concat(newPosts),
@@ -290,4 +300,4 @@ TimelineViewClass.prototype.render = function() {
   );
 };
 
-module.exports = TimelineView;
+export default TimelineView;

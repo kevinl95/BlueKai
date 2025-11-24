@@ -165,11 +165,11 @@ function LoginView(props) {
       },
         h(TextInput, {
           id: 'login-handle',
-          label: 'Handle',
+          label: 'Handle or Email',
           type: 'text',
           value: handle,
           onChange: setHandle,
-          placeholder: 'user.bsky.social',
+          placeholder: 'user.bsky.social or email',
           error: validationErrors.handle,
           required: true,
           showCounter: false

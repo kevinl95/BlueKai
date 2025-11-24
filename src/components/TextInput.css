@@ -1,92 +1,94 @@
+/* TextInput Component Styles */
+
 .text-input {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
-  width: 100%;
+  margin-bottom: 16px;
 }
 
 .text-input__label {
-  font-size: 14px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 5px;
   display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .text-input__label {
+    color: #e1e8ed;
+  }
+  
+  .text-input__field {
+    color: #e1e8ed;
+    background-color: #15202b;
+    border-color: #38444d;
+  }
+  
+  .text-input__field::placeholder {
+    color: #657786;
+  }
+  
+  .text-input__counter {
+    color: #8899a6;
+  }
 }
 
 .text-input__required {
-  color: #d32f2f;
+  color: #e0245e;
 }
 
 .text-input__field {
   width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  border: 2px solid #ccc;
+  padding: 8px 12px;
+  border: 1px solid #ccd6dd;
   border-radius: 4px;
-  background-color: #fff;
-  color: #333;
-  box-sizing: border-box;
-  font-family: inherit;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  transition: border-color 0.2s;
 }
 
 .text-input__field:focus {
   outline: none;
-  border-color: #1976d2;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  border-color: #1da1f2;
 }
 
-.text-input--error .text-input__field {
-  border-color: #d32f2f;
-}
-
-.text-input--error .text-input__field:focus {
-  border-color: #d32f2f;
-  box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.2);
+.text-input__field::placeholder {
+  color: #8899a6;
 }
 
 textarea.text-input__field {
   resize: vertical;
-  min-height: 60px;
-  line-height: 1.4;
+  min-height: 80px;
+}
+
+.text-input--error .text-input__field {
+  border-color: #e0245e;
 }
 
 .text-input__footer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-top: 5px;
-  min-height: 20px;
+  align-items: center;
+  margin-top: 4px;
+  min-height: 18px;
 }
 
 .text-input__error {
   font-size: 12px;
-  color: #d32f2f;
+  color: #e0245e;
   flex: 1;
 }
 
 .text-input__counter {
   font-size: 12px;
-  color: #666;
+  color: #657786;
   white-space: nowrap;
-  margin-left: 10px;
+  margin-left: 8px;
 }
 
 .text-input__counter--over {
-  color: #d32f2f;
-  font-weight: bold;
-}
-
-/* KaiOS specific optimizations */
-@media screen and (max-width: 320px) {
-  .text-input__field {
-    font-size: 16px; /* Prevent zoom on focus on some devices */
-  }
-  
-  .text-input__label {
-    font-size: 13px;
-  }
-  
-  .text-input__footer {
-    font-size: 11px;
-  }
+  color: #e0245e;
+  font-weight: 600;
 }

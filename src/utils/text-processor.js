@@ -349,6 +349,4 @@ TextProcessor.prototype.normalizeWhitespace = function(text) {
 };
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = TextProcessor;
-}
+export default TextProcessor;

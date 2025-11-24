@@ -1,117 +1,78 @@
+/* Button Component Styles */
+
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 20px;
-  font-size: 14px;
-  font-weight: bold;
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  font-family: inherit;
+  transition: background-color 0.2s, opacity 0.2s;
   position: relative;
-  min-width: 80px;
-  box-sizing: border-box;
+  min-height: 36px;
 }
 
-/* Variants */
 .button--primary {
-  background-color: #1976d2;
-  color: #fff;
+  background-color: #1da1f2;
+  color: #ffffff;
 }
 
-.button--primary:hover {
-  background-color: #1565c0;
-}
-
-.button--primary:active {
-  background-color: #0d47a1;
-  transform: scale(0.98);
+.button--primary:hover:not(.button--disabled) {
+  background-color: #1a91da;
 }
 
 .button--secondary {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ccc;
+  background-color: #e1e8ed;
+  color: #1a1a1a;
 }
 
-.button--secondary:hover {
-  background-color: #e0e0e0;
-}
-
-.button--secondary:active {
-  background-color: #d5d5d5;
-  transform: scale(0.98);
+.button--secondary:hover:not(.button--disabled) {
+  background-color: #d1d8dd;
 }
 
 .button--danger {
-  background-color: #d32f2f;
-  color: #fff;
+  background-color: #e0245e;
+  color: #ffffff;
 }
 
-.button--danger:hover {
-  background-color: #c62828;
+.button--danger:hover:not(.button--disabled) {
+  background-color: #c91e52;
 }
 
-.button--danger:active {
-  background-color: #b71c1c;
-  transform: scale(0.98);
-}
-
-/* Sizes */
 .button--small {
-  padding: 6px 12px;
+  padding: 4px 12px;
   font-size: 12px;
-  min-width: 60px;
+  min-height: 28px;
 }
 
 .button--medium {
-  padding: 10px 20px;
+  padding: 8px 16px;
   font-size: 14px;
-  min-width: 80px;
+  min-height: 36px;
 }
 
 .button--large {
-  padding: 14px 28px;
+  padding: 12px 24px;
   font-size: 16px;
-  min-width: 100px;
-}
-
-/* States */
-.button--disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-
-.button--loading {
-  cursor: wait;
+  min-height: 44px;
 }
 
 .button--full-width {
   width: 100%;
 }
 
-/* Focus indicator - high contrast for KaiOS */
-.button:focus {
-  outline: 3px solid #000;
-  outline-offset: 2px;
+.button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.button--primary:focus {
-  outline-color: #1976d2;
+.button--loading {
+  pointer-events: none;
 }
 
-.button--secondary:focus {
-  outline-color: #666;
-}
-
-.button--danger:focus {
-  outline-color: #d32f2f;
-}
-
-/* Loading spinner */
 .button__spinner {
   display: inline-flex;
   gap: 4px;
@@ -123,23 +84,23 @@
   height: 4px;
   background-color: currentColor;
   border-radius: 50%;
-  animation: button-spinner-pulse 1.4s infinite ease-in-out both;
-}
-
-.button__spinner-dot:nth-child(1) {
-  animation-delay: -0.32s;
+  animation: button-spinner 1s infinite;
 }
 
 .button__spinner-dot:nth-child(2) {
-  animation-delay: -0.16s;
+  animation-delay: 0.2s;
 }
 
-@keyframes button-spinner-pulse {
-  0%, 80%, 100% {
+.button__spinner-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes button-spinner {
+  0%, 100% {
     opacity: 0.3;
     transform: scale(0.8);
   }
-  40% {
+  50% {
     opacity: 1;
     transform: scale(1);
   }
@@ -149,20 +110,8 @@
   display: inline-block;
 }
 
-/* KaiOS specific optimizations */
-@media screen and (max-width: 320px) {
-  .button {
-    font-size: 13px;
-    padding: 8px 16px;
-  }
-  
-  .button--small {
-    font-size: 11px;
-    padding: 5px 10px;
-  }
-  
-  .button--large {
-    font-size: 15px;
-    padding: 12px 24px;
-  }
+/* Focus state */
+.button:focus {
+  outline: 2px solid #1da1f2;
+  outline-offset: 2px;
 }

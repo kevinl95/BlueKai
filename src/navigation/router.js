@@ -276,6 +276,4 @@ Router.prototype.navigateToRoute = function(name, params, replace) {
 };
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = Router;
-}
+export default Router;

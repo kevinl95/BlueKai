@@ -282,6 +282,4 @@ NavigationManager.prototype.updateSoftkeys = function(callbacks) {
 };
 
 // Export for use in other modules
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = NavigationManager;
-}
+export default NavigationManager;

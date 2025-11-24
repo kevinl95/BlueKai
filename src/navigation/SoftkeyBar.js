@@ -38,6 +38,4 @@ function SoftkeyBar(props) {
 }
 
 // Export
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = SoftkeyBar;
-}
+export default SoftkeyBar;
