@@ -279,8 +279,8 @@
   - Write tests for post detail loading
   - _Requirements: 4.4_
 
-- [ ] 14. Build profile functionality
-  - [ ] 14.1 Create ProfileHeader component
+- [x] 14. Build profile functionality
+  - [x] 14.1 Create ProfileHeader component
     - Display avatar (with data saver option)
     - Show display name and handle
     - Display bio/description
@@ -290,7 +290,7 @@
     - Style for small screen
     - _Requirements: 4.7_
   
-  - [ ] 14.2 Implement ProfileView component
+  - [x] 14.2 Implement ProfileView component
     - Fetch and display user profile
     - Show ProfileHeader
     - Display user's posts using PostList
@@ -299,7 +299,7 @@
     - Write tests for profile loading
     - _Requirements: 4.7_
   
-  - [ ] 14.3 Create EditProfileView component
+  - [x] 14.3 Create EditProfileView component
     - Implement form with display name and bio inputs
     - Add character counters for both fields
     - Implement save and cancel actions

@@ -1,0 +1,138 @@
+/**
+ * ProfileHeader Component Styles
+ * Optimized for KaiOS small screens (240x320)
+ */
+
+.profile-header {
+  padding: 12px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.profile-header__avatar-container {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.profile-header__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+.profile-header__avatar-placeholder {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #6b46c1;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+  border: 2px solid #ddd;
+}
+
+.profile-header__info {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.profile-header__display-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 4px 0;
+  color: #000;
+}
+
+.profile-header__handle {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.profile-header__bio {
+  margin: 12px 0;
+  padding: 8px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.profile-header__bio p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.profile-header__stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 12px 0;
+  padding: 8px 0;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-header__stat {
+  text-align: center;
+  flex: 1;
+}
+
+.profile-header__stat-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}
+
+.profile-header__stat-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.profile-header__actions {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.profile-header__button {
+  padding: 8px 16px;
+  font-size: 14px;
+  border: 1px solid #6b46c1;
+  border-radius: 4px;
+  background: #fff;
+  color: #6b46c1;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.profile-header__button--edit {
+  background: #6b46c1;
+  color: #fff;
+}
+
+.profile-header__button--follow {
+  background: #6b46c1;
+  color: #fff;
+}
+
+.profile-header__button:focus {
+  outline: 2px solid #6b46c1;
+  outline-offset: 2px;
+}
+
+.profile-header__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* High contrast focus indicator for accessibility */
+.profile-header__button[data-focused="true"] {
+  background: #5a3aa0;
+  border-color: #5a3aa0;
+  box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.3);
+}

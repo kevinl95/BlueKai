@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Components Test - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: #6b46c1;
+    }
+    .test-results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 4px;
+    }
+    .test-pass {
+      color: #2e7d32;
+      font-weight: bold;
+    }
+    .test-fail {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+    .component-demo {
+      margin: 20px 0;
+      padding: 15px;
+      border: 2px solid #6b46c1;
+      border-radius: 8px;
+      background: #fff;
+    }
+    button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Profile Components Test</h1>
+  
+  <div class="test-section">
+    <h2>ProfileHeader Component Tests</h2>
+    <button onclick="runProfileHeaderTests()">Run ProfileHeader Tests</button>
+    <div id="profileHeaderResults" class="test-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>ProfileView Component Tests</h2>
+    <button onclick="runProfileViewTests()">Run ProfileView Tests</button>
+    <div id="profileViewResults" class="test-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>EditProfileView Component Tests</h2>
+    <button onclick="runEditProfileViewTests()">Run EditProfileView Tests</button>
+    <div id="editProfileViewResults" class="test-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>Visual Demo - ProfileHeader</h2>
+    <div id="profileHeaderDemo" class="component-demo"></div>
+    <button onclick="renderProfileHeaderDemo()">Render ProfileHeader</button>
+  </div>
+
+  <div class="test-section">
+    <h2>Visual Demo - EditProfileView</h2>
+    <div id="editProfileViewDemo" class="component-demo"></div>
+    <button onclick="renderEditProfileViewDemo()">Render EditProfileView</button>
+  </div>
+
+  <script src="src/utils/polyfills.js"></script>
+  <script src="node_modules/preact/dist/preact.umd.js"></script>
+  <script type="module">
+    import { ProfileHeader } from './src/views/ProfileHeader.js';
+    import { ProfileView } from './src/views/ProfileView.js';
+    import { EditProfileView } from './src/views/EditProfileView.js';
+
+    const { h, render } = window.preact;
+
+    // Make components available globally for tests
+    window.ProfileHeader = ProfileHeader;
+    window.ProfileView = ProfileView;
+    window.EditProfileView = EditProfileView;
+    window.h = h;
+    window.render = render;
+
+    // Test runner helper
+    function runTests(tests, resultElementId) {
+      const results = [];
+      let passed = 0;
+      let failed = 0;
+
+      tests.forEach(test => {
+        try {
+          test.fn();
+          results.push(`✓ ${test.name}`);
+          passed++;
+        } catch (error) {
+          results.push(`✗ ${test.name}: ${error.message}`);
+          failed++;
+        }
+      });
+
+      const resultElement = document.getElementById(resultElementId);
+      resultElement.innerHTML = `
+        <div class="test-pass">Passed: ${passed}</div>
+        <div class="test-fail">Failed: ${failed}</div>
+        <pre>${results.join('\n')}</pre>
+      `;
+    }
+
+    // ProfileHeader Tests
+    window.runProfileHeaderTests = function() {
+      const tests = [
+        {
+          name: 'ProfileHeader renders with profile data',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              handle: 'test.bsky.social',
+              displayName: 'Test User',
+              description: 'Test bio',
+              postsCount: 10,
+              followersCount: 50,
+              followsCount: 25
+            };
+
+            render(h(ProfileHeader, { profile, isOwnProfile: false }), container);
+
+            if (!container.querySelector('.profile-header__display-name')) {
+              throw new Error('Display name not rendered');
+            }
+            if (container.querySelector('.profile-header__display-name').textContent !== 'Test User') {
+              throw new Error('Display name incorrect');
+            }
+          }
+        },
+        {
+          name: 'ProfileHeader shows avatar placeholder in data saver mode',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              handle: 'test.bsky.social',
+              displayName: 'Test User',
+              avatar: 'https://example.com/avatar.jpg'
+            };
+
+            render(h(ProfileHeader, { profile, isOwnProfile: false, dataSaverMode: true }), container);
+
+            if (!container.querySelector('.profile-header__avatar-placeholder')) {
+              throw new Error('Avatar placeholder not shown');
+            }
+          }
+        },
+        {
+          name: 'ProfileHeader shows edit button for own profile',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              handle: 'test.bsky.social',
+              displayName: 'Test User'
+            };
+
+            render(h(ProfileHeader, { profile, isOwnProfile: true }), container);
+
+            if (!container.querySelector('.profile-header__button--edit')) {
+              throw new Error('Edit button not shown');
+            }
+          }
+        },
+        {
+          name: 'ProfileHeader shows follow button for other profiles',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              handle: 'test.bsky.social',
+              displayName: 'Test User',
+              viewer: {}
+            };
+
+            render(h(ProfileHeader, { profile, isOwnProfile: false }), container);
+
+            if (!container.querySelector('.profile-header__button--follow')) {
+              throw new Error('Follow button not shown');
+            }
+          }
+        }
+      ];
+
+      runTests(tests, 'profileHeaderResults');
+    };
+
+    // ProfileView Tests
+    window.runProfileViewTests = function() {
+      const tests = [
+        {
+          name: 'ProfileView shows loading state initially',
+          fn: () => {
+            const container = document.createElement('div');
+            const mockClient = {
+              getProfile: () => new Promise(() => {}),
+              getTimeline: () => Promise.resolve({ feed: [] })
+            };
+
+            render(h(ProfileView, {
+              atpClient: mockClient,
+              actor: 'test.bsky.social',
+              currentUserDid: 'did:plc:current'
+            }), container);
+
+            if (!container.querySelector('.loading-indicator')) {
+              throw new Error('Loading indicator not shown');
+            }
+          }
+        }
+      ];
+
+      runTests(tests, 'profileViewResults');
+    };
+
+    // EditProfileView Tests
+    window.runEditProfileViewTests = function() {
+      const tests = [
+        {
+          name: 'EditProfileView renders form with profile data',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              displayName: 'Test User',
+              description: 'Test bio'
+            };
+            const mockClient = {
+              updateProfile: () => Promise.resolve({})
+            };
+
+            render(h(EditProfileView, {
+              atpClient: mockClient,
+              profile: profile
+            }), container);
+
+            const input = container.querySelector('input[type="text"]');
+            if (!input || input.value !== 'Test User') {
+              throw new Error('Display name not populated');
+            }
+          }
+        },
+        {
+          name: 'EditProfileView shows character counters',
+          fn: () => {
+            const container = document.createElement('div');
+            const profile = {
+              displayName: 'Test',
+              description: 'Bio'
+            };
+            const mockClient = {
+              updateProfile: () => Promise.resolve({})
+            };
+
+            render(h(EditProfileView, {
+              atpClient: mockClient,
+              profile: profile
+            }), container);
+
+            const counters = container.querySelectorAll('.edit-profile-view__counter');
+            if (counters.length !== 2) {
+              throw new Error('Should show 2 character counters');
+            }
+          }
+        }
+      ];
+
+      runTests(tests, 'editProfileViewResults');
+    };
+
+    // Visual Demos
+    window.renderProfileHeaderDemo = function() {
+      const container = document.getElementById('profileHeaderDemo');
+      const profile = {
+        handle: 'alice.bsky.social',
+        displayName: 'Alice Johnson',
+        description: 'Software developer and coffee enthusiast ☕',
+        avatar: 'https://via.placeholder.com/64',
+        postsCount: 142,
+        followersCount: 523,
+        followsCount: 189,
+        viewer: {}
+      };
+
+      // Load CSS
+      if (!document.getElementById('profile-header-css')) {
+        const link = document.createElement('link');
+        link.id = 'profile-header-css';
+        link.rel = 'stylesheet';
+        link.href = './src/views/ProfileHeader.css';
+        document.head.appendChild(link);
+      }
+
+      render(h(ProfileHeader, {
+        profile: profile,
+        isOwnProfile: false,
+        dataSaverMode: false,
+        onFollowToggle: () => alert('Follow/Unfollow clicked!'),
+        followLoading: false
+      }), container);
+    };
+
+    window.renderEditProfileViewDemo = function() {
+      const container = document.getElementById('editProfileViewDemo');
+      const profile = {
+        displayName: 'Alice Johnson',
+        description: 'Software developer and coffee enthusiast'
+      };
+
+      const mockClient = {
+        updateProfile: (updates) => {
+          console.log('Updating profile:', updates);
+          return new Promise((resolve) => {
+            setTimeout(() => {
+              alert('Profile updated successfully!');
+              resolve(Object.assign({}, profile, updates));
+            }, 1000);
+          });
+        }
+      };
+
+      // Load CSS
+      if (!document.getElementById('edit-profile-css')) {
+        const link = document.createElement('link');
+        link.id = 'edit-profile-css';
+        link.rel = 'stylesheet';
+        link.href = './src/views/EditProfileView.css';
+        document.head.appendChild(link);
+      }
+
+      if (!document.getElementById('text-input-css')) {
+        const link = document.createElement('link');
+        link.id = 'text-input-css';
+        link.rel = 'stylesheet';
+        link.href = './src/components/TextInput.css';
+        document.head.appendChild(link);
+      }
+
+      render(h(EditProfileView, {
+        atpClient: mockClient,
+        profile: profile,
+        onSave: (updatedProfile) => {
+          console.log('Profile saved:', updatedProfile);
+        },
+        onCancel: () => {
+          alert('Edit cancelled');
+        }
+      }), container);
+    };
+
+    console.log('Profile components test page loaded');
+  </script>
+</body>
+</html>
