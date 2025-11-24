@@ -1,0 +1,23 @@
+{
+  "name": "BlueKai",
+  "description": "BlueSky client for KaiOS",
+  "version": "0.1.0",
+  "launch_path": "/index.html",
+  "type": "web",
+  "icons": {
+    "56": "/icons/icon-56.png",
+    "112": "/icons/icon-112.png",
+    "128": "/icons/icon-128.png"
+  },
+  "developer": {
+    "name": "BlueKai Team",
+    "url": "https://github.com/yourusername/bluekai"
+  },
+  "default_locale": "en-US",
+  "permissions": {},
+  "orientation": "portrait-primary",
+  "chrome": {
+    "navigation": true
+  },
+  "cursor": false
+}

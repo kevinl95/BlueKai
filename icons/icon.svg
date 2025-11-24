@@ -1,0 +1,7 @@
+<svg width="112" height="112" viewBox="0 0 112 112" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="112" height="112" fill="#0066cc" rx="16"/>
+  
+  <!-- Butterfly icon -->
+  <text x="56" y="76" font-size="64" text-anchor="middle" fill="white">🦋</text>
+</svg>

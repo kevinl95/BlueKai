@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0066cc">
+  <title>BlueKai - BlueSky for KaiOS</title>
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="56x56" href="/icons/icon-56.png">
+  <link rel="icon" type="image/png" sizes="112x112" href="/icons/icon-112.png">
+  <link rel="apple-touch-icon" sizes="112x112" href="/icons/icon-112.png">
+  
+  <!-- KaiOS specific meta tags -->
+  <meta name="defaultLanguage" content="en-US">
+  <meta name="availableLanguages" content="en-US">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      color: #333333;
+      width: 240px;
+      height: 320px;
+      overflow: hidden;
+    }
+    
+    #app {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+    
+    /* Loading screen */
+    .loading-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      background: #0066cc;
+      color: white;
+    }
+    
+    .loading-screen__logo {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    
+    .loading-screen__text {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .loading-screen__spinner {
+      margin-top: 16px;
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="loading-screen">
+      <div class="loading-screen__logo">🦋</div>
+      <div class="loading-screen__text">BlueKai</div>
+      <div class="loading-screen__spinner"></div>
+    </div>
+  </div>
+  
+  <!-- Main application bundle -->
+  <script src="dist/bundle.js"></script>
+</body>
+</html>

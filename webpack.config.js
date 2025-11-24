@@ -67,13 +67,24 @@ module.exports = (env = {}) => {
       minimize: isProduction
     },
     devServer: {
-      static: {
-        directory: path.join(__dirname, 'dist')
-      },
+      static: [
+        {
+          directory: path.join(__dirname, 'dist')
+        },
+        {
+          directory: path.join(__dirname),
+          publicPath: '/',
+          serveIndex: false,
+          watch: false
+        }
+      ],
       compress: true,
       port: 8080,
       hot: true,
-      open: false
+      open: false,
+      headers: {
+        'Access-Control-Allow-Origin': '*'
+      }
     },
     devtool: isProduction ? false : 'eval-source-map',
     performance: {
