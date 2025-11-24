@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostItem Component Tests</title>
+  <link rel="stylesheet" href="src/views/PostItem.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    #test-results {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+    
+    #visual-test {
+      background: #000;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    
+    .test-section {
+      margin-bottom: 30px;
+    }
+    
+    .test-section h2 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>PostItem Component Tests</h1>
+  
+  <div class="test-section">
+    <h2>Automated Tests</h2>
+    <div id="test-results">Running tests...</div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Visual Tests</h2>
+    <div id="visual-test"></div>
+  </div>
+  
+  <script src="dist/bundle.js"></script>
+  <script>
+    // Capture console output
+    var testOutput = '';
+    var originalLog = console.log;
+    var originalError = console.error;
+    
+    console.log = function() {
+      testOutput += Array.prototype.slice.call(arguments).join(' ') + '\n';
+      originalLog.apply(console, arguments);
+    };
+    
+    console.error = function() {
+      testOutput += Array.prototype.slice.call(arguments).join(' ') + '\n';
+      originalError.apply(console, arguments);
+    };
+    
+    // Run tests
+    var h = window.preact.h;
+    var render = window.preact.render;
+    var PostItem = window.PostItem;
+    
+    // Import and run tests
+    var runTests = window.runPostItemTests;
+    if (runTests) {
+      runTests();
+    }
+    
+    // Display results
+    document.getElementById('test-results').textContent = testOutput;
+    
+    // Restore console
+    console.log = originalLog;
+    console.error = originalError;
+    
+    // Visual test - render sample posts
+    var visualContainer = document.getElementById('visual-test');
+    
+    var mockPosts = [
+      {
+        uri: 'at://did:plc:test1/app.bsky.feed.post/1',
+        cid: 'bafytest1',
+        author: {
+          did: 'did:plc:test1',
+          handle: 'alice.bsky.social',
+          displayName: 'Alice Smith',
+          avatar: 'https://via.placeholder.com/32'
+        },
+        record: {
+          text: 'Just setting up my BlueSky account! 🎉',
+          createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString() // 5 min ago
+        },
+        likeCount: 12,
+        repostCount: 3,
+        replyCount: 5,
+        viewer: { like: 'at://like1', repost: null }
+      },
+      {
+        uri: 'at://did:plc:test2/app.bsky.feed.post/2',
+        cid: 'bafytest2',
+        author: {
+          did: 'did:plc:test2',
+          handle: 'bob.bsky.social',
+          displayName: 'Bob Johnson',
+          avatar: 'https://via.placeholder.com/32'
+        },
+        record: {
+          text: 'Check out this cool link: https://example.com - it has some great content!',
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString() // 2 hours ago
+        },
+        likeCount: 45,
+        repostCount: 12,
+        replyCount: 8,
+        viewer: { like: null, repost: 'at://repost1' }
+      },
+      {
+        uri: 'at://did:plc:test3/app.bsky.feed.post/3',
+        cid: 'bafytest3',
+        author: {
+          did: 'did:plc:test3',
+          handle: 'charlie.bsky.social',
+          displayName: 'Charlie Brown',
+          avatar: 'https://via.placeholder.com/32'
+        },
+        record: {
+          text: 'This is a longer post to test text wrapping and how it looks on the small KaiOS screen. It should wrap nicely and remain readable.',
+          createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() // 1 day ago
+        },
+        likeCount: 0,
+        repostCount: 0,
+        replyCount: 0,
+        viewer: { like: null, repost: null }
+      }
+    ];
+    
+    // Render posts
+    mockPosts.forEach(function(post, index) {
+      render(
+        h(PostItem, {
+          post: post,
+          focused: index === 0,
+          dataSaverMode: false,
+          onSelect: function(p) {
+            console.log('Selected post:', p.uri);
+            alert('Selected post by ' + p.author.handle);
+          }
+        }),
+        visualContainer,
+        visualContainer.lastChild
+      );
+    });
+    
+    // Add data saver mode example
+    var dataSaverTitle = document.createElement('h3');
+    dataSaverTitle.textContent = 'Data Saver Mode (No Images)';
+    dataSaverTitle.style.color = '#fff';
+    dataSaverTitle.style.marginTop = '20px';
+    visualContainer.appendChild(dataSaverTitle);
+    
+    render(
+      h(PostItem, {
+        post: mockPosts[0],
+        focused: false,
+        dataSaverMode: true,
+        onSelect: function(p) {
+          console.log('Selected post:', p.uri);
+        }
+      }),
+      visualContainer
+    );
+  </script>
+</body>
+</html>

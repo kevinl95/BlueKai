@@ -1,0 +1,58 @@
+/**
+ * TimelineView Component Styles
+ * Optimized for KaiOS small screens
+ * Requirements: 4.2, 4.3, 9.4
+ */
+
+.timeline-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Loading state */
+.timeline-view--loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Error state */
+.timeline-view--error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Error banner (when showing cached content) */
+.timeline-view__error-banner {
+  padding: 8px;
+  background-color: #331a00;
+  border-bottom: 1px solid #664400;
+}
+
+/* Loading more indicator */
+.timeline-view__loading-more {
+  padding: 12px;
+  text-align: center;
+  background-color: #1a1a1a;
+  border-top: 1px solid #333;
+}
+
+/* Load more trigger (invisible) */
+.timeline-view__load-more {
+  height: 1px;
+  width: 100%;
+}
+
+/* Ensure post list takes remaining space */
+.timeline-view > .post-list {
+  flex: 1;
+  overflow-y: auto;
+}

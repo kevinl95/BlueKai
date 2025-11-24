@@ -60,6 +60,29 @@ Run tests with: `open test-login-view.html`
 
 See `example-usage.js` for more examples.
 
+### Timeline Components
+
+See [README-TIMELINE.md](./README-TIMELINE.md) for detailed documentation on timeline components.
+
+**Components:**
+- `PostItem` - Displays a single post
+- `PostList` - List with virtual scrolling
+- `TimelineView` - Main timeline view
+
+**Requirements:** 3.1, 3.4, 4.2, 4.3, 4.6, 6.1, 6.2, 6.4, 7.2, 9.4, 10.3
+
+**Features:**
+- Virtual scrolling for performance
+- Cache-first loading
+- Infinite scroll pagination
+- D-pad navigation
+- Data saver mode
+- Error handling with retry
+- Offline support
+
+**Testing:**
+Run tests with: `open test-timeline.html`
+
 ## File Structure
 
 ```
@@ -67,8 +90,18 @@ src/views/
 ├── LoginView.js          # LoginView component
 ├── LoginView.css         # LoginView styles
 ├── LoginView.test.js     # LoginView tests
+├── PostItem.js           # Post item component
+├── PostItem.css          # Post item styles
+├── PostItem.test.js      # Post item tests
+├── PostList.js           # Post list with virtual scrolling
+├── PostList.css          # Post list styles
+├── PostList.test.js      # Post list tests
+├── TimelineView.js       # Timeline view component
+├── TimelineView.css      # Timeline view styles
+├── TimelineView.test.js  # Timeline view tests
 ├── example-usage.js      # Usage examples
-└── README.md            # This file
+├── README.md            # This file
+└── README-TIMELINE.md   # Timeline components documentation
 ```
 
 ## Design Principles
@@ -102,9 +135,12 @@ All view components should have comprehensive tests covering:
 
 Run all view tests:
 ```bash
+# Build test bundle first
+npm run build -- --config webpack.test.config.js
+
 # Open test files in browser
 open test-login-view.html
-# Add more test files as views are created
+open test-timeline.html
 ```
 
 ## Styling

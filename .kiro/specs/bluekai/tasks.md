@@ -182,8 +182,8 @@
   - Write tests for login flow
   - _Requirements: 5.1, 5.2, 9.2_
 
-- [ ] 10. Build timeline functionality
-  - [ ] 10.1 Create PostItem component
+- [x] 10. Build timeline functionality
+  - [x] 10.1 Create PostItem component
     - Implement component to display single post
     - Show author info (avatar, display name, handle)
     - Display post text with linkified URLs
@@ -193,7 +193,7 @@
     - Style for readability on small screen
     - _Requirements: 4.3, 4.6, 10.3_
   
-  - [ ] 10.2 Implement PostList component with virtual scrolling
+  - [x] 10.2 Implement PostList component with virtual scrolling
     - Create list component that renders PostItem components
     - Implement virtual scrolling to render only visible items plus buffer
     - Add scroll position management
@@ -202,7 +202,7 @@
     - Write tests for virtual scrolling logic
     - _Requirements: 3.1, 3.4, 7.2_
   
-  - [ ] 10.3 Create TimelineView component
+  - [x] 10.3 Create TimelineView component
     - Implement view that fetches and displays timeline
     - Add pull-to-refresh via softkey action
     - Implement infinite scroll with cursor pagination

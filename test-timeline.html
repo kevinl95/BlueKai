@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timeline Components Tests</title>
+  <link rel="stylesheet" href="src/views/PostItem.css">
+  <link rel="stylesheet" href="src/views/PostList.css">
+  <link rel="stylesheet" href="src/views/TimelineView.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+    }
+    
+    .test-section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .test-section h2 {
+      color: #333;
+      margin-top: 0;
+    }
+    
+    #test-results {
+      font-family: monospace;
+      white-space: pre-wrap;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 4px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    #visual-test {
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .visual-container {
+      height: 400px;
+      overflow-y: auto;
+    }
+    
+    .test-controls {
+      padding: 10px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+    }
+    
+    .test-controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .test-controls button:hover {
+      background: #0088ff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Timeline Components Tests</h1>
+  
+  <div class="test-section">
+    <h2>Automated Tests</h2>
+    <div id="test-results">Running tests...</div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Visual Test - TimelineView</h2>
+    <div id="visual-test">
+      <div class="test-controls">
+        <button id="btn-refresh">Refresh</button>
+        <button id="btn-toggle-data-saver">Toggle Data Saver</button>
+        <button id="btn-simulate-error">Simulate Error</button>
+        <button id="btn-clear-error">Clear Error</button>
+      </div>
+      <div class="visual-container" id="timeline-container"></div>
+    </div>
+  </div>
+  
+  <script src="dist/bundle.js"></script>
+  <script>
+    // Capture console output
+    var testOutput = '';
+    var originalLog = console.log;
+    var originalError = console.error;
+    
+    console.log = function() {
+      testOutput += Array.prototype.slice.call(arguments).join(' ') + '\n';
+      originalLog.apply(console, arguments);
+    };
+    
+    console.error = function() {
+      testOutput += Array.prototype.slice.call(arguments).join(' ') + '\n';
+      originalError.apply(console, arguments);
+    };
+    
+    // Run tests
+    var h = window.preact.h;
+    var render = window.preact.render;
+    
+    // Run all timeline tests
+    console.log('=== Running PostItem Tests ===\n');
+    if (window.runPostItemTests) {
+      window.runPostItemTests();
+    }
+    
+    console.log('\n=== Running PostList Tests ===\n');
+    if (window.runPostListTests) {
+      window.runPostListTests();
+    }
+    
+    console.log('\n=== Running TimelineView Tests ===\n');
+    if (window.runTimelineViewTests) {
+      window.runTimelineViewTests();
+    }
+    
+    // Display results
+    document.getElementById('test-results').textContent = testOutput;
+    
+    // Restore console
+    console.log = originalLog;
+    console.error = originalError;
+    
+    // Visual test - render TimelineView
+    var TimelineView = window.TimelineView;
+    var timelineContainer = document.getElementById('timeline-container');
+    
+    var dataSaverMode = false;
+    var timelineComponent = null;
+    
+    function renderTimeline() {
+      timelineComponent = render(
+        h(TimelineView, {
+          dataSaverMode: dataSaverMode,
+          onNavigate: function(view, params) {
+            console.log('Navigate to:', view, params);
+            alert('Navigate to: ' + view);
+          },
+          onSoftkeyUpdate: function(softkeys) {
+            console.log('Softkeys updated:', softkeys);
+          }
+        }),
+        timelineContainer
+      );
+    }
+    
+    // Initial render
+    renderTimeline();
+    
+    // Button handlers
+    document.getElementById('btn-refresh').addEventListener('click', function() {
+      if (timelineComponent && timelineComponent.refresh) {
+        timelineComponent.refresh();
+      } else {
+        renderTimeline();
+      }
+    });
+    
+    document.getElementById('btn-toggle-data-saver').addEventListener('click', function() {
+      dataSaverMode = !dataSaverMode;
+      this.textContent = dataSaverMode ? 'Data Saver: ON' : 'Data Saver: OFF';
+      renderTimeline();
+    });
+    
+    document.getElementById('btn-simulate-error').addEventListener('click', function() {
+      if (timelineComponent && timelineComponent.setState) {
+        timelineComponent.setState({
+          error: 'Simulated network error',
+          loading: false
+        });
+      }
+    });
+    
+    document.getElementById('btn-clear-error').addEventListener('click', function() {
+      if (timelineComponent && timelineComponent.setState) {
+        timelineComponent.setState({
+          error: null
+        });
+      }
+    });
+    
+    // Keyboard navigation test
+    document.addEventListener('keydown', function(e) {
+      console.log('Key pressed:', e.key);
+    });
+  </script>
+</body>
+</html>
