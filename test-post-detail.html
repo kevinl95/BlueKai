@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostDetailView Component Tests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #0066cc;
+      padding-bottom: 10px;
+    }
+    
+    .test-results {
+      margin-top: 20px;
+    }
+    
+    .test-case {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    
+    .test-case.pass {
+      background: #d4edda;
+      border-color: #c3e6cb;
+    }
+    
+    .test-case.fail {
+      background: #f8d7da;
+      border-color: #f5c6cb;
+    }
+    
+    .test-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .test-error {
+      color: #721c24;
+      font-family: monospace;
+      font-size: 12px;
+      margin-top: 5px;
+      white-space: pre-wrap;
+    }
+    
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e7f3ff;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .summary.all-pass {
+      background: #d4edda;
+    }
+    
+    .summary.some-fail {
+      background: #fff3cd;
+    }
+    
+    #test-container {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>PostDetailView Component Tests</h1>
+  <div id="test-container"></div>
+  <div class="test-results" id="results"></div>
+  
+  <script type="module">
+    import tests from './src/views/PostDetailView.test.js';
+    
+    // Simple assertion helper
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+    
+    // Run all tests
+    async function runTests() {
+      const results = [];
+      const resultsContainer = document.getElementById('results');
+      
+      for (const [name, testFn] of Object.entries(tests)) {
+        const testCase = document.createElement('div');
+        testCase.className = 'test-case';
+        
+        const testName = document.createElement('div');
+        testName.className = 'test-name';
+        testName.textContent = name;
+        testCase.appendChild(testName);
+        
+        try {
+          await testFn(assert);
+          testCase.classList.add('pass');
+          testCase.appendChild(document.createTextNode('✓ PASS'));
+          results.push({ name, pass: true });
+        } catch (error) {
+          testCase.classList.add('fail');
+          testCase.appendChild(document.createTextNode('✗ FAIL'));
+          
+          const errorDiv = document.createElement('div');
+          errorDiv.className = 'test-error';
+          errorDiv.textContent = error.message + '\n' + error.stack;
+          testCase.appendChild(errorDiv);
+          
+          results.push({ name, pass: false, error });
+        }
+        
+        resultsContainer.appendChild(testCase);
+      }
+      
+      // Show summary
+      const summary = document.createElement('div');
+      summary.className = 'summary';
+      
+      const passed = results.filter(r => r.pass).length;
+      const failed = results.filter(r => !r.pass).length;
+      const total = results.length;
+      
+      summary.textContent = `Tests: ${passed}/${total} passed, ${failed} failed`;
+      
+      if (failed === 0) {
+        summary.classList.add('all-pass');
+      } else {
+        summary.classList.add('some-fail');
+      }
+      
+      resultsContainer.appendChild(summary);
+      
+      console.log('Test Results:', results);
+    }
+    
+    // Run tests when page loads
+    runTests().catch(error => {
+      console.error('Test runner error:', error);
+      document.getElementById('results').innerHTML = 
+        '<div class="test-case fail"><strong>Test Runner Error:</strong><br>' + 
+        error.message + '</div>';
+    });
+  </script>
+</body>
+</html>

@@ -83,6 +83,74 @@ See [README-TIMELINE.md](./README-TIMELINE.md) for detailed documentation on tim
 **Testing:**
 Run tests with: `open test-timeline.html`
 
+### PostDetailView
+
+View component for displaying a single post with its reply thread.
+
+**Requirements:** 4.4
+
+**Features:**
+- Displays full post content
+- Loads and displays reply thread
+- Nested reply rendering (max 3 levels)
+- "View more" link for deeper threads
+- Integrated PostActionMenu for interactions
+- Navigation to reply composition
+- Loading and error states
+- Data saver mode support
+
+**Props:**
+- `apiClient` (Object, required): ATP client instance
+- `postUri` (String, required): URI of the post to display
+- `onNavigateToReply` (Function, optional): Callback when user wants to reply
+- `onNavigateToPost` (Function, optional): Callback to navigate to another post
+- `dataSaverMode` (Boolean, optional): Enable data saver mode
+
+**Usage:**
+```javascript
+import { h, render } from 'preact';
+import PostDetailView from './views/PostDetailView.js';
+import ATPClient from './services/atp-client.js';
+
+const atpClient = new ATPClient();
+
+const handleNavigateToReply = (post) => {
+  console.log('Navigate to reply for:', post.uri);
+  // Navigate to compose view with reply context
+};
+
+const handleNavigateToPost = (postUri) => {
+  console.log('Navigate to post:', postUri);
+  // Navigate to another post detail view
+};
+
+render(
+  h(PostDetailView, {
+    apiClient: atpClient,
+    postUri: 'at://did:plc:xxx/app.bsky.feed.post/123',
+    onNavigateToReply: handleNavigateToReply,
+    onNavigateToPost: handleNavigateToPost,
+    dataSaverMode: false
+  }),
+  document.getElementById('app')
+);
+```
+
+**Reply Thread Rendering:**
+- Displays up to 3 levels of nested replies
+- Each level is indented by 16px
+- Replies beyond level 3 show "View more" link
+- Empty state shown when no replies exist
+
+**Interactions:**
+- Selecting a post opens PostActionMenu
+- Supports like, unlike, repost, unrepost, and reply actions
+- All interactions use optimistic updates
+- Error handling with user feedback
+
+**Testing:**
+Run tests with: `open test-post-detail.html`
+
 ## File Structure
 
 ```
@@ -99,9 +167,19 @@ src/views/
 ├── TimelineView.js       # Timeline view component
 ├── TimelineView.css      # Timeline view styles
 ├── TimelineView.test.js  # Timeline view tests
+├── PostActionMenu.js     # Post action menu component
+├── PostActionMenu.css    # Post action menu styles
+├── PostActionMenu.test.js # Post action menu tests
+├── PostDetailView.js     # Post detail view component
+├── PostDetailView.css    # Post detail view styles
+├── PostDetailView.test.js # Post detail view tests
+├── ComposeView.js        # Compose view component
+├── ComposeView.css       # Compose view styles
+├── ComposeView.test.js   # Compose view tests
 ├── example-usage.js      # Usage examples
 ├── README.md            # This file
-└── README-TIMELINE.md   # Timeline components documentation
+├── README-TIMELINE.md   # Timeline components documentation
+└── README-COMPOSE.md    # Compose view documentation
 ```
 
 ## Design Principles

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PostDetailView Visual Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .demo-container {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .controls {
+      padding: 15px;
+      background: #e7f3ff;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    .controls button {
+      margin: 5px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #0066cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+    
+    .controls button:hover {
+      background: #0052a3;
+    }
+    
+    #app {
+      min-height: 400px;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .info {
+      padding: 15px;
+      background: #fff3cd;
+      border-top: 1px solid #ddd;
+      font-size: 13px;
+    }
+  </style>
+  
+  <!-- Import component styles -->
+  <link rel="stylesheet" href="src/views/PostItem.css">
+  <link rel="stylesheet" href="src/views/PostDetailView.css">
+  <link rel="stylesheet" href="src/views/PostActionMenu.css">
+  <link rel="stylesheet" href="src/components/LoadingIndicator.css">
+  <link rel="stylesheet" href="src/components/ErrorMessage.css">
+</head>
+<body>
+  <h1>PostDetailView Visual Demo</h1>
+  
+  <div class="demo-container">
+    <div class="controls">
+      <button onclick="loadSimplePost()">Simple Post</button>
+      <button onclick="loadWithReplies()">With Replies</button>
+      <button onclick="loadNestedReplies()">Nested Replies</button>
+      <button onclick="loadDeepThread()">Deep Thread</button>
+      <button onclick="loadError()">Error State</button>
+    </div>
+    
+    <div id="app"></div>
+    
+    <div class="info">
+      Click buttons above to see different states. Use D-pad or click to interact with posts.
+    </div>
+  </div>
+  
+  <script type="module">
+    import { h, render } from 'preact';
+    import PostDetailView from './src/views/PostDetailView.js';
+    
+    // Mock API Client
+    let mockResponse = null;
+    
+    const mockApiClient = {
+      getPost: function(uri) {
+        if (mockResponse === 'error') {
+          return Promise.reject(new Error('Network error'));
+        }
+        return Promise.resolve(mockResponse);
+      },
+      likePost: function(uri, cid) {
+        console.log('Like:', uri);
+        return Promise.resolve({ uri: 'at://like/123' });
+      },
+      unlikePost: function(uri) {
+        console.log('Unlike:', uri);
+        return Promise.resolve({});
+      },
+      repost: function(uri, cid) {
+        console.log('Repost:', uri);
+        return Promise.resolve({ uri: 'at://repost/123' });
+      },
+      unrepost: function(uri) {
+        console.log('Unrepost:', uri);
+        return Promise.resolve({});
+      }
+    };
+    
+    // Mock data generators
+    function createPost(id, text, author) {
+      return {
+        uri: 'at://did:plc:test/app.bsky.feed.post/' + id,
+        cid: 'bafy' + id,
+        author: {
+          did: 'did:plc:' + author,
+          handle: author + '.bsky.social',
+          displayName: author.charAt(0).toUpperCase() + author.slice(1),
+          avatar: 'https://via.placeholder.com/32'
+        },
+        record: {
+          text: text,
+          createdAt: new Date(Date.now() - Math.random() * 86400000).toISOString()
+        },
+        likeCount: Math.floor(Math.random() * 50),
+        repostCount: Math.floor(Math.random() * 20),
+        replyCount: 0,
+        viewer: {}
+      };
+    }
+    
+    // Demo scenarios
+    window.loadSimplePost = function() {
+      mockResponse = {
+        post: createPost('main', 'This is a simple post with no replies. Click to interact!', 'alice'),
+        replies: []
+      };
+      renderDemo();
+    };
+    
+    window.loadWithReplies = function() {
+      mockResponse = {
+        post: createPost('main', 'This post has some replies. Check them out below!', 'alice'),
+        replies: [
+          {
+            post: createPost('reply1', 'Great post! I totally agree with this.', 'bob'),
+            replies: []
+          },
+          {
+            post: createPost('reply2', 'Interesting perspective. Thanks for sharing!', 'charlie'),
+            replies: []
+          },
+          {
+            post: createPost('reply3', 'This is really helpful information.', 'diana'),
+            replies: []
+          }
+        ]
+      };
+      mockResponse.post.replyCount = 3;
+      renderDemo();
+    };
+    
+    window.loadNestedReplies = function() {
+      mockResponse = {
+        post: createPost('main', 'This post has nested replies up to 3 levels deep.', 'alice'),
+        replies: [
+          {
+            post: createPost('reply1', 'Level 1 reply - This is a direct reply to the main post.', 'bob'),
+            replies: [
+              {
+                post: createPost('reply2', 'Level 2 reply - This is a reply to Bob\'s comment.', 'charlie'),
+                replies: [
+                  {
+                    post: createPost('reply3', 'Level 3 reply - This is as deep as we go!', 'diana'),
+                    replies: []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+      mockResponse.post.replyCount = 3;
+      renderDemo();
+    };
+    
+    window.loadDeepThread = function() {
+      mockResponse = {
+        post: createPost('main', 'This post has a very deep thread. Notice the "View more" link!', 'alice'),
+        replies: [
+          {
+            post: createPost('reply1', 'Level 1 - Starting a deep conversation here.', 'bob'),
+            replies: [
+              {
+                post: createPost('reply2', 'Level 2 - This is getting interesting.', 'charlie'),
+                replies: [
+                  {
+                    post: createPost('reply3', 'Level 3 - We\'re going deep!', 'diana'),
+                    replies: [
+                      {
+                        post: createPost('reply4', 'Level 4 - This won\'t render directly.', 'eve'),
+                        replies: []
+                      },
+                      {
+                        post: createPost('reply5', 'Level 4 - Another hidden reply.', 'frank'),
+                        replies: []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      };
+      mockResponse.post.replyCount = 5;
+      renderDemo();
+    };
+    
+    window.loadError = function() {
+      mockResponse = 'error';
+      renderDemo();
+    };
+    
+    function renderDemo() {
+      const container = document.getElementById('app');
+      
+      render(
+        h(PostDetailView, {
+          apiClient: mockApiClient,
+          postUri: 'at://did:plc:test/app.bsky.feed.post/main',
+          onNavigateToReply: function(post) {
+            alert('Navigate to reply for: ' + post.author.handle);
+          },
+          onNavigateToPost: function(uri) {
+            alert('Navigate to post: ' + uri);
+          },
+          dataSaverMode: false
+        }),
+        container
+      );
+    }
+    
+    // Load initial demo
+    loadSimplePost();
+  </script>
+</body>
+</html>

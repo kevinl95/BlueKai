@@ -1,0 +1,106 @@
+/**
+ * PostDetailView Styles
+ * Optimized for KaiOS 240x320 display
+ */
+
+.post-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+  background: #ffffff;
+}
+
+.post-detail__main {
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+}
+
+.post-detail__replies {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.post-detail__replies-header {
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333333;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.post-detail__reply {
+  border-bottom: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.post-detail__reply:last-child {
+  border-bottom: none;
+}
+
+/* Indentation indicator for nested replies */
+.post-detail__reply::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e0e0e0;
+}
+
+.post-detail__view-more {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: #0066cc;
+  cursor: pointer;
+  background: #f9f9f9;
+  border-top: 1px solid #e0e0e0;
+}
+
+.post-detail__view-more:hover,
+.post-detail__view-more:focus {
+  background: #f0f0f0;
+  text-decoration: underline;
+}
+
+.post-detail__no-replies {
+  padding: 24px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: #666666;
+  font-style: italic;
+}
+
+.post-detail__action-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 240px) {
+  .post-detail__replies-header {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+  
+  .post-detail__view-more {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+  
+  .post-detail__no-replies {
+    font-size: 13px;
+    padding: 20px 10px;
+  }
+}

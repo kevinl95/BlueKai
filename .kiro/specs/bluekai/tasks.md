@@ -268,7 +268,7 @@
     - Write tests for reply composition
     - _Requirements: 4.4, 8.4_
 
-- [ ] 13. Implement PostDetailView
+- [x] 13. Implement PostDetailView
   - Create PostDetailView component
   - Fetch and display single post with full content
   - Load and display reply thread
