@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComposeView Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #1da1f2;
+      border-bottom: 2px solid #1da1f2;
+      padding-bottom: 10px;
+    }
+    
+    #test-output {
+      background-color: #1a1a1a;
+      color: #00ff00;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      margin: 20px 0;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    #demo-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .demo-section {
+      margin-bottom: 30px;
+    }
+    
+    .demo-section h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+    
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    .status.info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+  </style>
+</head>
+<body>
+  <h1>ComposeView Component Tests</h1>
+  
+  <div class="status info">
+    <strong>Test Suite:</strong> ComposeView - Post composition interface<br>
+    <strong>Requirements:</strong> 4.5, 8.1, 8.2, 8.3, 8.4
+  </div>
+  
+  <div id="test-output">Running tests...</div>
+  
+  <h2>Component Demo</h2>
+  <div id="demo-container">
+    <div class="demo-section">
+      <h3>New Post Mode</h3>
+      <div id="demo-new-post"></div>
+    </div>
+    
+    <div class="demo-section">
+      <h3>Reply Mode</h3>
+      <div id="demo-reply"></div>
+    </div>
+  </div>
+  
+  <script src="dist/bundle.js"></script>
+  <script>
+    // Redirect console.log to test output
+    var testOutput = document.getElementById('test-output');
+    var originalLog = console.log;
+    var originalError = console.error;
+    
+    console.log = function() {
+      var args = Array.prototype.slice.call(arguments);
+      var message = args.join(' ');
+      testOutput.textContent += message + '\n';
+      testOutput.scrollTop = testOutput.scrollHeight;
+      originalLog.apply(console, arguments);
+    };
+    
+    console.error = function() {
+      var args = Array.prototype.slice.call(arguments);
+      var message = args.join(' ');
+      testOutput.textContent += message + '\n';
+      testOutput.scrollTop = testOutput.scrollHeight;
+      originalError.apply(console, arguments);
+    };
+    
+    // Wait for bundle to load
+    setTimeout(function() {
+      if (typeof window.preact === 'undefined') {
+        console.error('Preact not loaded');
+        return;
+      }
+      
+      var h = window.preact.h;
+      var render = window.preact.render;
+      var ComposeView = window.ComposeView;
+      var ATPClient = window.ATPClient;
+      
+      // Create mock ATP client
+      function createMockATPClient() {
+        return {
+          createPost: function(options) {
+            console.log('Mock createPost called with:', options);
+            return Promise.resolve({
+              uri: 'at://did:plc:test/app.bsky.feed.post/test123',
+              cid: 'bafytest123'
+            });
+          },
+          getSession: function() {
+            return {
+              did: 'did:plc:test',
+              handle: 'test.bsky.social'
+            };
+          }
+        };
+      }
+      
+      // Demo 1: New Post Mode
+      var atpClient1 = createMockATPClient();
+      render(h(ComposeView, {
+        atpClient: atpClient1,
+        onSubmit: function(result) {
+          console.log('Demo: Post submitted:', result);
+          alert('Post submitted successfully!');
+        },
+        onCancel: function() {
+          console.log('Demo: Composition cancelled');
+          alert('Composition cancelled');
+        }
+      }), document.getElementById('demo-new-post'));
+      
+      // Demo 2: Reply Mode
+      var atpClient2 = createMockATPClient();
+      var replyTo = {
+        post: {
+          uri: 'at://did:plc:parent/app.bsky.feed.post/parent123',
+          cid: 'bafyparent123',
+          author: {
+            handle: 'alice.bsky.social',
+            displayName: 'Alice Smith'
+          },
+          record: {
+            text: 'This is a great post about KaiOS development! Really enjoying building apps for feature phones.'
+          }
+        }
+      };
+      
+      render(h(ComposeView, {
+        atpClient: atpClient2,
+        onSubmit: function(result) {
+          console.log('Demo: Reply submitted:', result);
+          alert('Reply submitted successfully!');
+        },
+        onCancel: function() {
+          console.log('Demo: Reply cancelled');
+          alert('Reply cancelled');
+        },
+        replyTo: replyTo
+      }), document.getElementById('demo-reply'));
+      
+      // Run tests
+      if (window.runComposeViewTests) {
+        window.runComposeViewTests()
+          .then(function(results) {
+            if (results.success) {
+              var successDiv = document.createElement('div');
+              successDiv.className = 'status success';
+              successDiv.innerHTML = '<strong>✓ All tests passed!</strong><br>' +
+                'Total: ' + results.total + ' | ' +
+                'Passed: ' + results.passed + ' | ' +
+                'Failed: ' + results.failed;
+              document.body.insertBefore(successDiv, document.getElementById('test-output'));
+            } else {
+              var errorDiv = document.createElement('div');
+              errorDiv.className = 'status error';
+              errorDiv.innerHTML = '<strong>✗ Some tests failed</strong><br>' +
+                'Total: ' + results.total + ' | ' +
+                'Passed: ' + results.passed + ' | ' +
+                'Failed: ' + results.failed;
+              document.body.insertBefore(errorDiv, document.getElementById('test-output'));
+            }
+          })
+          .catch(function(err) {
+            console.error('Test execution error:', err);
+          });
+      }
+    }, 500);
+  </script>
+</body>
+</html>

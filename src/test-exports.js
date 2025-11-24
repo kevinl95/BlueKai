@@ -22,6 +22,7 @@ import PostItem from './views/PostItem';
 import PostList from './views/PostList';
 import TimelineView from './views/TimelineView';
 import PostActionMenu from './views/PostActionMenu';
+import ComposeView from './views/ComposeView';
 
 // Import utilities
 import DateFormatter from './utils/date-formatter';
@@ -44,6 +45,9 @@ import runPostItemTests from './views/PostItem.test';
 import runPostListTests from './views/PostList.test';
 import runTimelineViewTests from './views/TimelineView.test';
 import runPostActionMenuTests from './views/PostActionMenu.test';
+import { runComposeViewTests } from './views/ComposeView.test';
+import { runComposeViewDraftTests } from './views/ComposeView.draft.test';
+import { runComposeViewReplyTests } from './views/ComposeView.reply.test';
 
 // Expose to window for testing
 window.preact = {
@@ -66,6 +70,7 @@ window.PostItem = PostItem;
 window.PostList = PostList;
 window.TimelineView = TimelineView;
 window.PostActionMenu = PostActionMenu;
+window.ComposeView = ComposeView;
 
 window.DateFormatter = DateFormatter;
 window.TextProcessor = TextProcessor;
@@ -83,3 +88,6 @@ window.runPostItemTests = runPostItemTests;
 window.runPostListTests = runPostListTests;
 window.runTimelineViewTests = runTimelineViewTests;
 window.runPostActionMenuTests = runPostActionMenuTests;
+window.runComposeViewTests = runComposeViewTests;
+window.runComposeViewDraftTests = runComposeViewDraftTests;
+window.runComposeViewReplyTests = runComposeViewReplyTests;

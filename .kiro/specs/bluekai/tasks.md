@@ -241,8 +241,8 @@
     - Write tests for repost interactions
     - _Requirements: 4.4, 9.3_
 
-- [ ] 12. Build post composition
-  - [ ] 12.1 Create ComposeView component
+- [x] 12. Build post composition
+  - [x] 12.1 Create ComposeView component
     - Implement text area for post composition
     - Add character counter (300 max)
     - Implement character limit enforcement
@@ -252,7 +252,7 @@
     - Handle submission errors
     - _Requirements: 4.5, 8.1, 8.2, 8.3, 8.4_
   
-  - [ ] 12.2 Implement draft auto-save
+  - [x] 12.2 Implement draft auto-save
     - Save draft to LocalStorage on text change (debounced)
     - Restore draft on ComposeView mount
     - Clear draft on successful submission
@@ -260,7 +260,7 @@
     - Write tests for draft persistence
     - _Requirements: 8.4_
   
-  - [ ] 12.3 Add reply composition support
+  - [x] 12.3 Add reply composition support
     - Modify ComposeView to accept reply context
     - Pre-populate @mention of parent author
     - Display parent post context
