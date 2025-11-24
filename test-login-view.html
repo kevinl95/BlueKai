@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoginView Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      color: #1da1f2;
+    }
+    
+    #test-output {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+    
+    .test-pass {
+      color: #28a745;
+    }
+    
+    .test-fail {
+      color: #dc3545;
+    }
+    
+    #demo-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    
+    /* Import component styles */
+    @import url('./src/components/TextInput.css');
+    @import url('./src/components/Button.css');
+    @import url('./src/components/ErrorMessage.css');
+    @import url('./src/views/LoginView.css');
+  </style>
+</head>
+<body>
+  <h1>LoginView Component Tests</h1>
+  
+  <div id="test-output">Running tests...</div>
+  
+  <h2>Live Demo</h2>
+  <div id="demo-container"></div>
+  
+  <script src="./dist/bundle.js"></script>
+  <script type="module">
+    import { h, render } from './node_modules/preact/dist/preact.module.js';
+    import { runLoginViewTests } from './src/views/LoginView.test.js';
+    import LoginView from './src/views/LoginView.js';
+    import ATPClient from './src/services/atp-client.js';
+    
+    // Capture console output
+    const output = document.getElementById('test-output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    let logBuffer = '';
+    
+    console.log = function(...args) {
+      const message = args.join(' ');
+      logBuffer += message + '\n';
+      originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+      const message = args.join(' ');
+      logBuffer += message + '\n';
+      originalError.apply(console, args);
+    };
+    
+    // Run tests
+    try {
+      const results = runLoginViewTests();
+      
+      // Display results
+      output.innerHTML = logBuffer;
+      
+      // Add color coding
+      output.innerHTML = output.innerHTML
+        .replace(/✓/g, '<span class="test-pass">✓</span>')
+        .replace(/✗/g, '<span class="test-fail">✗</span>');
+      
+    } catch (error) {
+      output.innerHTML = 'Test execution failed:\n' + error.message + '\n' + error.stack;
+      console.error('Test execution failed:', error);
+    }
+    
+    // Restore console
+    console.log = originalLog;
+    console.error = originalError;
+    
+    // Render demo
+    const demoContainer = document.getElementById('demo-container');
+    const atpClient = new ATPClient();
+    
+    const handleLogin = (session) => {
+      alert('Login successful!\nHandle: ' + session.handle + '\nDID: ' + session.did);
+    };
+    
+    render(h(LoginView, { 
+      atpClient: atpClient,
+      onLogin: handleLogin
+    }), demoContainer);
+  </script>
+</body>
+</html>

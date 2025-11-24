@@ -1,0 +1,81 @@
+/**
+ * LoginView Styles
+ * Optimized for KaiOS 240x320 screen
+ */
+
+.login-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 16px;
+  background: #1a1a1a;
+}
+
+.login-view__container {
+  width: 100%;
+  max-width: 280px;
+}
+
+.login-view__header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.login-view__title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #1da1f2;
+  margin: 0 0 8px 0;
+}
+
+.login-view__subtitle {
+  font-size: 14px;
+  color: #8899a6;
+  margin: 0;
+}
+
+.login-view__form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-view__footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.login-view__help {
+  font-size: 12px;
+  color: #8899a6;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Focus styles for KaiOS navigation */
+.login-view input:focus,
+.login-view button:focus {
+  outline: 2px solid #1da1f2;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-height: 320px) {
+  .login-view {
+    padding: 12px;
+  }
+  
+  .login-view__header {
+    margin-bottom: 16px;
+  }
+  
+  .login-view__title {
+    font-size: 24px;
+  }
+  
+  .login-view__form {
+    gap: 12px;
+  }
+}
