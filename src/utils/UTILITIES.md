@@ -4,11 +4,12 @@ This document describes the core utility modules implemented for BlueKai.
 
 ## Overview
 
-Three utility modules have been implemented to support the BlueKai application:
+Four utility modules have been implemented to support the BlueKai application:
 
 1. **StorageManager** - LocalStorage wrapper with error handling
 2. **DateFormatter** - Date and time formatting utilities
 3. **TextProcessor** - Text processing and manipulation utilities
+4. **CacheManager** - Cache management with TTL and LRU eviction
 
 All utilities are ES5-compatible and work with Gecko 48 (Firefox 48).
 
@@ -257,6 +258,95 @@ var normalized = processor.normalizeWhitespace('  Hello    world  ');
 - `isWhitespace(text)` - Check if only whitespace
 - `normalizeWhitespace(text)` - Collapse and trim whitespace
 
+## CacheManager
+
+**File:** `src/utils/cache-manager.js`
+
+A comprehensive cache management system with TTL (Time To Live) support, LRU (Least Recently Used) eviction, and pattern-based invalidation.
+
+### Features
+
+- TTL support for automatic expiration
+- LRU eviction when approaching storage limits
+- Cache key generation utilities
+- Pattern-based cache clearing
+- Namespace invalidation
+- Automatic pruning of expired entries
+- Access tracking (count and timestamp)
+- Detailed cache statistics
+
+### Usage
+
+```javascript
+var storage = new StorageManager();
+var cache = new CacheManager(storage, {
+  defaultTTL: 5 * 60 * 1000,  // 5 minutes
+  maxStorageSize: 4 * 1024 * 1024,  // 4MB
+  pruneThreshold: 0.8  // Prune at 80% capacity
+});
+
+// Generate cache key
+var key = cache.generateKey('timeline', 'user123');
+
+// Set with TTL
+cache.set(key, { posts: [...] }, 5 * 60 * 1000);
+
+// Get cached data
+var data = cache.get(key);
+
+// Check if exists
+if (cache.has(key)) {
+  // Valid cache entry exists
+}
+
+// Remove entry
+cache.remove(key);
+
+// Clear by pattern
+cache.clear('cache_timeline:*');
+
+// Invalidate namespace
+cache.invalidate('timeline');
+
+// Prune expired entries
+var pruned = cache.prune();
+
+// Get statistics
+var stats = cache.getStats();
+console.log('Cache usage:', stats.utilizationPercent + '%');
+```
+
+### Methods
+
+- `generateKey(namespace, identifier)` - Generate cache key
+- `set(key, data, ttl?)` - Store data with TTL
+- `get(key)` - Retrieve cached data
+- `has(key)` - Check if valid entry exists
+- `remove(key)` - Remove entry
+- `clear(pattern?)` - Clear entries matching pattern
+- `invalidate(namespace)` - Invalidate namespace
+- `prune()` - Remove expired entries
+- `getStats()` - Get cache statistics
+
+### Cache Entry Structure
+
+Each entry includes metadata:
+- `data` - Cached data
+- `expiresAt` - Expiration timestamp
+- `createdAt` - Creation timestamp
+- `accessedAt` - Last access timestamp
+- `accessCount` - Number of accesses
+
+### LRU Eviction
+
+When storage exceeds threshold:
+1. Expired entries are removed first
+2. If still over threshold, LRU eviction triggers
+3. Entries sorted by access count and time
+4. Oldest 25% of entries are evicted
+
+See `src/utils/README-CACHE.md` for detailed documentation and `src/utils/cache-example.js` for usage examples.
+
 ## Testing
 
 All utilities include comprehensive unit tests.
@@ -268,7 +358,13 @@ Open the following HTML files in a browser to run tests:
 - `test-storage.html` - StorageManager tests
 - `test-date-formatter.html` - DateFormatter tests
 - `test-text-processor.html` - TextProcessor tests
+- `test-cache-manager.html` - CacheManager tests
 - `test-utils.html` - All tests combined
+
+Or run in Node.js:
+```bash
+node test-cache-simple.js
+```
 
 ### Test Coverage
 
@@ -309,6 +405,11 @@ These utilities fulfill the following requirements:
 ### TextProcessor
 - **Requirement 4.5**: Create new posts up to 300 characters
 - **Requirement 8.2**: Display character counter showing remaining characters
+
+### CacheManager
+- **Requirement 6.2**: Display previously loaded content from cache
+- **Requirement 6.4**: Automatically retry failed requests with cache integration
+- **Requirement 7.5**: Clear old cached content when memory usage exceeds thresholds
 
 ## Next Steps
 

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CacheManager Tests - BlueKai</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        #test-output {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .pass {
+            color: green;
+        }
+        .fail {
+            color: red;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .summary {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CacheManager Tests</h1>
+    <p>Tests for the CacheManager utility with TTL, LRU eviction, and cache invalidation.</p>
+    
+    <button onclick="runTests()">Run Tests</button>
+    
+    <div id="test-output"></div>
+    
+    <script src="src/utils/storage.js"></script>
+    <script src="src/utils/cache-manager.js"></script>
+    <script>
+        // Mock StorageManager for testing
+        function MockStorage() {
+            this.data = {};
+            this.prefix = 'bluekai_';
+        }
+
+        MockStorage.prototype.get = function(key) {
+            var prefixedKey = this.prefix + key;
+            var value = this.data[prefixedKey];
+            return value !== undefined ? value : null;
+        };
+
+        MockStorage.prototype.set = function(key, value) {
+            var prefixedKey = this.prefix + key;
+            this.data[prefixedKey] = value;
+            return true;
+        };
+
+        MockStorage.prototype.remove = function(key) {
+            var prefixedKey = this.prefix + key;
+            delete this.data[prefixedKey];
+            return true;
+        };
+
+        MockStorage.prototype.keys = function() {
+            var keys = [];
+            var prefixLength = this.prefix.length;
+            
+            for (var key in this.data) {
+                if (this.data.hasOwnProperty(key) && key.indexOf(this.prefix) === 0) {
+                    keys.push(key.substring(prefixLength));
+                }
+            }
+            
+            return keys;
+        };
+
+        MockStorage.prototype.getSize = function() {
+            var size = 0;
+            for (var key in this.data) {
+                if (this.data.hasOwnProperty(key)) {
+                    var value = this.data[key];
+                    size += (key.length + JSON.stringify(value).length) * 2;
+                }
+            }
+            return size;
+        };
+
+        MockStorage.prototype.clear = function() {
+            this.data = {};
+            return true;
+        };
+
+        function runTests() {
+            var output = document.getElementById('test-output');
+            output.innerHTML = 'Running tests...\n\n';
+            
+            var results = {
+                passed: 0,
+                failed: 0,
+                tests: []
+            };
+            
+            function log(message, isError) {
+                var span = document.createElement('span');
+                span.textContent = message + '\n';
+                if (isError) {
+                    span.className = 'fail';
+                }
+                output.appendChild(span);
+            }
+            
+            function assert(condition, testName, message) {
+                if (condition) {
+                    results.passed++;
+                    results.tests.push({ name: testName, status: 'PASS' });
+                    log('✓ ' + testName);
+                } else {
+                    results.failed++;
+                    results.tests.push({ name: testName, status: 'FAIL', message: message });
+                    log('✗ ' + testName + ': ' + message, true);
+                }
+            }
+            
+            // Test 1: Cache key generation
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key1 = cache.generateKey('timeline', 'user123');
+                var key2 = cache.generateKey('profile', { did: 'did:plc:123' });
+                
+                assert(
+                    key1 === 'cache_timeline:user123',
+                    'Generate cache key from string identifier',
+                    'Expected cache_timeline:user123, got ' + key1
+                );
+                
+                assert(
+                    key2.indexOf('cache_profile:') === 0,
+                    'Generate cache key from object identifier',
+                    'Expected key to start with cache_profile:, got ' + key2
+                );
+            })();
+            
+            // Test 2: Set and get cache entry
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key = cache.generateKey('test', 'data1');
+                var data = { message: 'Hello, World!' };
+                
+                var setResult = cache.set(key, data, 60000);
+                var getData = cache.get(key);
+                
+                assert(
+                    setResult === true,
+                    'Set cache entry returns true',
+                    'Expected true, got ' + setResult
+                );
+                
+                assert(
+                    getData && getData.message === 'Hello, World!',
+                    'Get cache entry returns correct data',
+                    'Expected data with message, got ' + JSON.stringify(getData)
+                );
+            })();
+            
+            // Test 3: Cache has() method
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key = cache.generateKey('test', 'exists');
+                cache.set(key, { data: 'test' }, 60000);
+                
+                var exists = cache.has(key);
+                var notExists = cache.has(cache.generateKey('test', 'notexists'));
+                
+                assert(
+                    exists === true,
+                    'has() returns true for existing entry',
+                    'Expected true, got ' + exists
+                );
+                
+                assert(
+                    notExists === false,
+                    'has() returns false for non-existing entry',
+                    'Expected false, got ' + notExists
+                );
+            })();
+            
+            // Test 4: Remove cache entry
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key = cache.generateKey('test', 'remove');
+                cache.set(key, { data: 'test' }, 60000);
+                
+                var beforeRemove = cache.has(key);
+                cache.remove(key);
+                var afterRemove = cache.has(key);
+                
+                assert(
+                    beforeRemove === true && afterRemove === false,
+                    'Remove deletes cache entry',
+                    'Expected entry to exist before and not after removal'
+                );
+            })();
+            
+            // Test 5: Clear cache with pattern
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                cache.set(cache.generateKey('timeline', 'user1'), { data: 1 }, 60000);
+                cache.set(cache.generateKey('timeline', 'user2'), { data: 2 }, 60000);
+                cache.set(cache.generateKey('profile', 'user1'), { data: 3 }, 60000);
+                
+                var cleared = cache.clear('cache_timeline:*');
+                
+                var timeline1Exists = cache.has(cache.generateKey('timeline', 'user1'));
+                var timeline2Exists = cache.has(cache.generateKey('timeline', 'user2'));
+                var profileExists = cache.has(cache.generateKey('profile', 'user1'));
+                
+                assert(
+                    cleared === 2,
+                    'Clear with pattern removes matching entries',
+                    'Expected 2 cleared, got ' + cleared
+                );
+                
+                assert(
+                    !timeline1Exists && !timeline2Exists && profileExists,
+                    'Clear preserves non-matching entries',
+                    'Timeline entries should be removed, profile should remain'
+                );
+            })();
+            
+            // Test 6: Invalidate by namespace
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                cache.set(cache.generateKey('timeline', 'user1'), { data: 1 }, 60000);
+                cache.set(cache.generateKey('timeline', 'user2'), { data: 2 }, 60000);
+                cache.set(cache.generateKey('profile', 'user1'), { data: 3 }, 60000);
+                
+                var invalidated = cache.invalidate('timeline');
+                
+                var timelineExists = cache.has(cache.generateKey('timeline', 'user1'));
+                var profileExists = cache.has(cache.generateKey('profile', 'user1'));
+                
+                assert(
+                    invalidated === 2,
+                    'Invalidate removes all entries in namespace',
+                    'Expected 2 invalidated, got ' + invalidated
+                );
+                
+                assert(
+                    !timelineExists && profileExists,
+                    'Invalidate preserves other namespaces',
+                    'Timeline should be removed, profile should remain'
+                );
+            })();
+            
+            // Test 7: Cache statistics
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                cache.set(cache.generateKey('test', 'entry1'), { data: 1 }, 60000);
+                cache.set(cache.generateKey('test', 'entry2'), { data: 2 }, 60000);
+                
+                var stats = cache.getStats();
+                
+                assert(
+                    stats && stats.totalEntries === 2,
+                    'Stats show total entries',
+                    'Expected 2 total entries, got ' + (stats ? stats.totalEntries : 'null')
+                );
+                
+                assert(
+                    stats && stats.validEntries === 2,
+                    'Stats show valid entries',
+                    'Expected 2 valid entries, got ' + (stats ? stats.validEntries : 'null')
+                );
+            })();
+            
+            // Test 8: Access count tracking
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key = cache.generateKey('test', 'accessed');
+                cache.set(key, { data: 'test' }, 60000);
+                
+                cache.get(key);
+                cache.get(key);
+                cache.get(key);
+                
+                var entry = storage.get(key);
+                
+                assert(
+                    entry && entry.accessCount === 3,
+                    'Access count is tracked',
+                    'Expected accessCount 3, got ' + (entry ? entry.accessCount : 'null')
+                );
+            })();
+            
+            // Test 9: Default TTL
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage, {
+                    defaultTTL: 100
+                });
+                
+                var key = cache.generateKey('test', 'defaultttl');
+                cache.set(key, { data: 'test' });
+                
+                var entry = storage.get(key);
+                var now = Date.now();
+                var expectedExpiry = now + 100;
+                
+                assert(
+                    entry && Math.abs(entry.expiresAt - expectedExpiry) < 50,
+                    'Default TTL is applied when not specified',
+                    'Expected expiry around ' + expectedExpiry + ', got ' + (entry ? entry.expiresAt : 'null')
+                );
+            })();
+            
+            // Test 10: Cache entry metadata
+            (function() {
+                var storage = new MockStorage();
+                var cache = new CacheManager(storage);
+                
+                var key = cache.generateKey('test', 'metadata');
+                var beforeSet = Date.now();
+                cache.set(key, { data: 'test' }, 60000);
+                var afterSet = Date.now();
+                
+                var entry = storage.get(key);
+                
+                assert(
+                    entry && entry.createdAt >= beforeSet && entry.createdAt <= afterSet,
+                    'Cache entry has createdAt timestamp',
+                    'Expected timestamp between ' + beforeSet + ' and ' + afterSet
+                );
+                
+                assert(
+                    entry && entry.accessedAt >= beforeSet && entry.accessedAt <= afterSet,
+                    'Cache entry has accessedAt timestamp',
+                    'Expected timestamp between ' + beforeSet + ' and ' + afterSet
+                );
+            })();
+            
+            // Async tests with setTimeout
+            setTimeout(function() {
+                // Test 11: Cache entry expiration
+                (function() {
+                    var storage = new MockStorage();
+                    var cache = new CacheManager(storage);
+                    
+                    var key = cache.generateKey('test', 'expiring');
+                    var data = { value: 42 };
+                    
+                    cache.set(key, data, 50);
+                    
+                    setTimeout(function() {
+                        var getData = cache.get(key);
+                        
+                        assert(
+                            getData === null,
+                            'Expired cache entry returns null',
+                            'Expected null, got ' + JSON.stringify(getData)
+                        );
+                        
+                        displaySummary();
+                    }, 100);
+                })();
+                
+                // Test 12: Prune expired entries
+                (function() {
+                    var storage = new MockStorage();
+                    var cache = new CacheManager(storage);
+                    
+                    cache.set(cache.generateKey('test', 'valid'), { data: 1 }, 60000);
+                    cache.set(cache.generateKey('test', 'expired1'), { data: 2 }, 50);
+                    cache.set(cache.generateKey('test', 'expired2'), { data: 3 }, 50);
+                    
+                    setTimeout(function() {
+                        var pruned = cache.prune();
+                        
+                        var validExists = cache.has(cache.generateKey('test', 'valid'));
+                        var expired1Exists = cache.has(cache.generateKey('test', 'expired1'));
+                        
+                        assert(
+                            pruned === 2,
+                            'Prune removes expired entries',
+                            'Expected 2 pruned, got ' + pruned
+                        );
+                        
+                        assert(
+                            validExists && !expired1Exists,
+                            'Prune preserves valid entries',
+                            'Valid entry should remain, expired should be removed'
+                        );
+                    }, 100);
+                })();
+            }, 50);
+            
+            function displaySummary() {
+                log('\n' + '='.repeat(50));
+                log('Test Summary:');
+                log('Passed: ' + results.passed);
+                log('Failed: ' + results.failed);
+                log('Total: ' + (results.passed + results.failed));
+                log('='.repeat(50));
+                
+                if (results.failed === 0) {
+                    log('\n✓ All tests passed!');
+                } else {
+                    log('\n✗ Some tests failed. See details above.', true);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
