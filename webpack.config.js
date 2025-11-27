@@ -65,7 +65,8 @@ module.exports = (env = {}) => {
         patterns: [
           { from: 'manifest.webapp', to: 'manifest.webapp' },
           { from: 'icons', to: 'icons', noErrorOnMissing: true },
-          { from: 'public/.nojekyll', to: '.nojekyll', toType: 'file', noErrorOnMissing: true }
+          { from: 'public/.nojekyll', to: '.nojekyll', toType: 'file', noErrorOnMissing: true },
+          { from: 'bluekai-logo.png', to: 'bluekai-logo.png', noErrorOnMissing: true }
         ]
       }),
       ...(env.analyze ? [new BundleAnalyzerPlugin()] : [])
