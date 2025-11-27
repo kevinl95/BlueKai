@@ -59,12 +59,14 @@ function getErrorMessage(error) {
 
 /**
  * Map technical error messages to user-friendly ones
+ * Requirements: 6.3 - Display appropriate error messages for offline actions
  */
 function mapErrorMessage(message, error) {
   var errorMap = {
     'NetworkError': 'Cannot connect. Check your connection.',
     'Network request failed': 'Cannot connect. Check your connection.',
     'Failed to fetch': 'Cannot connect. Check your connection.',
+    'No network connection': 'You are offline. Connect to continue.',
     'AuthError': 'Login expired. Please sign in again.',
     'Invalid credentials': 'Invalid username or password.',
     'Unauthorized': 'Login expired. Please sign in again.',

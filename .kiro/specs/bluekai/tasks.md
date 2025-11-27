@@ -377,7 +377,7 @@
     - Write tests for optimization logic
     - _Requirements: 2.4_
 
-- [ ] 17. Implement offline support
+- [x] 17. Implement offline support
   - Create offline detection utility
   - Add network status to app state
   - Display offline indicator in UI

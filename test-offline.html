@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Support Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #1da1f2;
+      border-bottom: 2px solid #1da1f2;
+      padding-bottom: 10px;
+    }
+    
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-controls {
+      margin: 20px 0;
+      padding: 15px;
+      background: #e8f5fe;
+      border-radius: 4px;
+    }
+    
+    button {
+      background: #1da1f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #1a8cd8;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    
+    .status.online {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status.offline {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    #test-output {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    
+    .pass {
+      color: #28a745;
+    }
+    
+    .fail {
+      color: #dc3545;
+    }
+    
+    #demo-container {
+      min-height: 200px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      background: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔌 Offline Support Tests</h1>
+  
+  <div class="test-section">
+    <h2>Network Status Monitor</h2>
+    <div id="network-status" class="status online">
+      Status: <span id="status-text">Checking...</span>
+    </div>
+    <div class="test-controls">
+      <p><strong>Simulate Network Changes:</strong></p>
+      <button onclick="simulateOffline()">Go Offline</button>
+      <button onclick="simulateOnline()">Go Online</button>
+      <p style="margin-top: 10px; font-size: 12px; color: #666;">
+        Note: These buttons simulate offline/online events. To test real offline behavior, 
+        use your browser's DevTools Network tab to throttle or disable network.
+      </p>
+    </div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Offline Indicator Demo</h2>
+    <div id="demo-container"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Automated Tests</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="test-output"></div>
+  </div>
+
+  <script src="dist/bundle.js"></script>
+  <script>
+    var networkStatus = require('./src/utils/network-status.js');
+    var testNetworkStatus = require('./src/utils/network-status.test.js');
+    var h = require('preact').h;
+    var render = require('preact').render;
+    var OfflineIndicator = require('./src/components/OfflineIndicator.js');
+    var AppStateContext = require('./src/state/app-state').AppStateContext;
+    
+    // Update status display
+    function updateStatusDisplay() {
+      var isOnline = networkStatus.getStatus();
+      var statusEl = document.getElementById('network-status');
+      var statusText = document.getElementById('status-text');
+      
+      if (isOnline) {
+        statusEl.className = 'status online';
+        statusText.textContent = 'Online ✓';
+      } else {
+        statusEl.className = 'status offline';
+        statusText.textContent = 'Offline ✗';
+      }
+    }
+    
+    // Subscribe to network status changes
+    networkStatus.subscribe(function(isOnline) {
+      console.log('Network status changed:', isOnline ? 'online' : 'offline');
+      updateStatusDisplay();
+      updateOfflineIndicatorDemo();
+    });
+    
+    // Initial status
+    updateStatusDisplay();
+    
+    // Simulate offline
+    function simulateOffline() {
+      console.log('Simulating offline...');
+      networkStatus.handleOffline();
+    }
+    
+    // Simulate online
+    function simulateOnline() {
+      console.log('Simulating online...');
+      networkStatus.handleOnline();
+    }
+    
+    // Update offline indicator demo
+    function updateOfflineIndicatorDemo() {
+      var container = document.getElementById('demo-container');
+      var isOnline = networkStatus.getStatus();
+      
+      var mockState = {
+        state: {
+          network: {
+            isOnline: isOnline,
+            lastOnlineAt: isOnline ? Date.now() : Date.now() - 60000,
+            retryQueue: []
+          }
+        }
+      };
+      
+      render(
+        h(AppStateContext.Provider, { value: mockState },
+          h('div', null,
+            h(OfflineIndicator),
+            h('p', { style: { marginTop: '10px' } },
+              isOnline 
+                ? 'The offline indicator is hidden when online.' 
+                : 'The offline indicator is shown when offline.'
+            )
+          )
+        ),
+        container
+      );
+    }
+    
+    // Initial render
+    updateOfflineIndicatorDemo();
+    
+    // Run all tests
+    function runAllTests() {
+      var output = document.getElementById('test-output');
+      output.innerHTML = 'Running tests...\n\n';
+      
+      // Capture console output
+      var originalLog = console.log;
+      var originalError = console.error;
+      
+      console.log = function() {
+        var args = Array.prototype.slice.call(arguments);
+        var message = args.join(' ');
+        output.innerHTML += message + '\n';
+        originalLog.apply(console, arguments);
+      };
+      
+      console.error = function() {
+        var args = Array.prototype.slice.call(arguments);
+        var message = args.join(' ');
+        output.innerHTML += message + '\n';
+        originalError.apply(console, arguments);
+      };
+      
+      try {
+        // Run network status tests
+        var result = testNetworkStatus();
+        
+        output.innerHTML += '\n' + (result ? '✓ All tests passed!' : '✗ Some tests failed');
+        
+        // Restore console
+        console.log = originalLog;
+        console.error = originalError;
+        
+        // Restore online state
+        networkStatus.handleOnline();
+        updateStatusDisplay();
+        updateOfflineIndicatorDemo();
+      } catch (error) {
+        console.log = originalLog;
+        console.error = originalError;
+        output.innerHTML += '\n✗ Test error: ' + error.message;
+      }
+    }
+    
+    // Make functions global
+    window.simulateOffline = simulateOffline;
+    window.simulateOnline = simulateOnline;
+    window.runAllTests = runAllTests;
+  </script>
+</body>
+</html>

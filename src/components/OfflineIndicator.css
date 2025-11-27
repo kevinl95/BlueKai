@@ -1,0 +1,30 @@
+/**
+ * Offline Indicator Styles
+ */
+
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #ff6b6b;
+  color: #ffffff;
+  padding: 4px 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.offline-indicator__icon {
+  font-size: 14px;
+}
+
+.offline-indicator__text {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

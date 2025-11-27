@@ -6,6 +6,8 @@ import SignupView from '../views/SignupView.js';
 import TimelineView from '../views/TimelineView.js';
 import ComposeView from '../views/ComposeView.js';
 import SoftkeyBar from '../navigation/SoftkeyBar.js';
+import OfflineIndicator from './OfflineIndicator.js';
+import networkStatus from '../utils/network-status.js';
 
 /**
  * Main App Component
@@ -28,6 +30,10 @@ function App() {
   var replyContext = _useState4[0];
   var setReplyContext = _useState4[1];
   
+  var _useState5 = useState(networkStatus.getStatus());
+  var isOnline = _useState5[0];
+  var setIsOnline = _useState5[1];
+  
   /**
    * Initialize ATP client and check for existing session
    */
@@ -46,6 +52,25 @@ function App() {
     } else {
       setCurrentView('login');
     }
+  }, []);
+  
+  /**
+   * Monitor network status changes
+   * Requirements: 6.1 - Add network status to app state
+   */
+  useEffect(function() {
+    var unsubscribe = networkStatus.subscribe(function(online) {
+      setIsOnline(online);
+      
+      if (online) {
+        console.log('Connection restored');
+        // Could trigger retry of failed requests here
+      } else {
+        console.log('Connection lost');
+      }
+    });
+    
+    return unsubscribe;
   }, []);
   
   /**
@@ -159,6 +184,7 @@ function App() {
    */
   if (currentView === 'login') {
     return h('div', { style: { height: '100%' } },
+      h(OfflineIndicator),
       h(LoginView, {
         atpClient: atpClient,
         onLogin: handleLogin,
@@ -172,6 +198,7 @@ function App() {
    */
   if (currentView === 'signup') {
     return h('div', { style: { height: '100%' } },
+      h(OfflineIndicator),
       h(SignupView, {
         atpClient: atpClient,
         onSignup: handleSignup,
@@ -185,6 +212,7 @@ function App() {
    */
   if (currentView === 'timeline') {
     return h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } },
+      h(OfflineIndicator),
       h(TimelineView, {
         atpClient: atpClient,
         onReply: handleReply
@@ -205,6 +233,7 @@ function App() {
    */
   if (currentView === 'compose') {
     return h('div', { style: { height: '100%' } },
+      h(OfflineIndicator),
       h(ComposeView, {
         atpClient: atpClient,
         replyTo: replyContext,

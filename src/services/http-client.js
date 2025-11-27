@@ -4,6 +4,7 @@
  */
 
 import http from '../utils/http.js';
+import networkStatus from '../utils/network-status.js';
 
 /**
  * HTTP Client with interceptors and retry logic
@@ -164,11 +165,17 @@ HttpClient.prototype.getRequestKey = function(config) {
 /**
  * Make HTTP request with retry logic and deduplication
  * Requirements: 2.4 - Request deduplication
+ * Requirements: 6.1, 6.3 - Check network status before requests
  * @param {Object} config - Request configuration
  * @returns {Promise} Promise that resolves with response
  */
 HttpClient.prototype.request = function(config) {
   var self = this;
+  
+  // Check network status before making request
+  if (!networkStatus.getStatus()) {
+    return Promise.reject(new Error('No network connection'));
+  }
   
   // Merge with default config
   var requestConfig = Object.assign({}, this.config, config);

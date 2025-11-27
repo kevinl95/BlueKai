@@ -154,6 +154,29 @@ function reducer(state, action) {
         user: Object.assign({}, state.user, action.payload)
       });
     
+    // Network actions
+    case ActionTypes.NETWORK_STATUS_CHANGE:
+      return Object.assign({}, state, {
+        network: Object.assign({}, state.network, {
+          isOnline: action.payload.isOnline,
+          lastOnlineAt: action.payload.lastOnlineAt || state.network.lastOnlineAt
+        })
+      });
+    
+    case ActionTypes.ADD_RETRY_REQUEST:
+      return Object.assign({}, state, {
+        network: Object.assign({}, state.network, {
+          retryQueue: state.network.retryQueue.concat([action.payload])
+        })
+      });
+    
+    case ActionTypes.CLEAR_RETRY_QUEUE:
+      return Object.assign({}, state, {
+        network: Object.assign({}, state.network, {
+          retryQueue: []
+        })
+      });
+    
     default:
       return state;
   }

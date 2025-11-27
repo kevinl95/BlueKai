@@ -54,6 +54,13 @@ var initialState = {
     currentView: 'login',
     history: [],
     params: {}
+  },
+  
+  // Network status
+  network: {
+    isOnline: true,
+    lastOnlineAt: null,
+    retryQueue: []
   }
 };
 

@@ -33,7 +33,12 @@ var ActionTypes = {
   TOGGLE_DATA_SAVER: 'TOGGLE_DATA_SAVER',
   
   // User actions
-  UPDATE_USER: 'UPDATE_USER'
+  UPDATE_USER: 'UPDATE_USER',
+  
+  // Network actions
+  NETWORK_STATUS_CHANGE: 'NETWORK_STATUS_CHANGE',
+  ADD_RETRY_REQUEST: 'ADD_RETRY_REQUEST',
+  CLEAR_RETRY_QUEUE: 'CLEAR_RETRY_QUEUE'
 };
 
 /**
@@ -245,6 +250,44 @@ function updateUser(user) {
 }
 
 /**
+ * Network status change action
+ * Requirements: 6.1 - Add network status to app state
+ * 
+ * @param {boolean} isOnline - Online status
+ */
+function networkStatusChange(isOnline) {
+  return {
+    type: ActionTypes.NETWORK_STATUS_CHANGE,
+    payload: {
+      isOnline: isOnline,
+      lastOnlineAt: isOnline ? Date.now() : null
+    }
+  };
+}
+
+/**
+ * Add request to retry queue
+ * Requirements: 6.4 - Automatic retry when connection restored
+ * 
+ * @param {Object} request - Request to retry
+ */
+function addRetryRequest(request) {
+  return {
+    type: ActionTypes.ADD_RETRY_REQUEST,
+    payload: request
+  };
+}
+
+/**
+ * Clear retry queue
+ */
+function clearRetryQueue() {
+  return {
+    type: ActionTypes.CLEAR_RETRY_QUEUE
+  };
+}
+
+/**
  * Export action types and creators
  */
 module.exports = {
@@ -263,5 +306,8 @@ module.exports = {
   navigateBack: navigateBack,
   updateSettings: updateSettings,
   toggleDataSaver: toggleDataSaver,
-  updateUser: updateUser
+  updateUser: updateUser,
+  networkStatusChange: networkStatusChange,
+  addRetryRequest: addRetryRequest,
+  clearRetryQueue: clearRetryQueue
 };
