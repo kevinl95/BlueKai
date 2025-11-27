@@ -162,7 +162,7 @@ function LoginView(props) {
     h('div', { className: 'login-view__container' },
       h('header', { className: 'login-view__header' },
         h('h1', { className: 'login-view__title' }, t('login.title')),
-        h('p', { className: 'login-view__subtitle' }, 'BlueSky for KaiOS')
+        h('p', { className: 'login-view__subtitle' }, 'BlueSky client for KaiOS')
       ),
       
       h('form', {
