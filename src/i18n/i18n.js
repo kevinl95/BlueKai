@@ -33,7 +33,8 @@ function detectLanguage() {
 function loadTranslations(lang) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', '/i18n/' + lang + '.json', true);
+    // Use relative path for better compatibility
+    xhr.open('GET', './i18n/' + lang + '.json', true);
     
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
