@@ -19,15 +19,23 @@ function setI18nInstance(i18n) {
  */
 function useTranslation() {
   if (!globalI18n) {
-    throw new Error('i18n instance not initialized. Call setI18nInstance first.');
+    // Return a fallback that returns keys as-is
+    console.warn('i18n instance not initialized. Using fallback.');
+    return {
+      t: function(key) { return key; },
+      language: 'en',
+      changeLanguage: function() { return Promise.resolve(); }
+    };
   }
   
-  var _useState = useState(globalI18n.getCurrentLanguage());
+  var _useState = useState(globalI18n.getCurrentLanguage ? globalI18n.getCurrentLanguage() : 'en');
   var language = _useState[0];
   var setLanguage = _useState[1];
   
   // Listen for language changes
   useEffect(function() {
+    if (!globalI18n || !globalI18n.changeLanguage) return;
+    
     var originalChangeLanguage = globalI18n.changeLanguage;
     
     globalI18n.changeLanguage = function(lang) {
@@ -37,14 +45,37 @@ function useTranslation() {
     };
     
     return function() {
-      globalI18n.changeLanguage = originalChangeLanguage;
+      if (globalI18n) {
+        globalI18n.changeLanguage = originalChangeLanguage;
+      }
     };
   }, []);
   
+  // Bind the t function to preserve context
+  var t = function(key, params) {
+    if (!globalI18n || !globalI18n.t) {
+      console.warn('i18n.t not available, returning key:', key);
+      return key;
+    }
+    try {
+      return globalI18n.t.call(globalI18n, key, params);
+    } catch (error) {
+      console.error('Error calling i18n.t:', error);
+      return key;
+    }
+  };
+  
+  var changeLanguage = function(lang) {
+    if (!globalI18n || !globalI18n.changeLanguage) {
+      return Promise.resolve();
+    }
+    return globalI18n.changeLanguage.call(globalI18n, lang);
+  };
+  
   return {
-    t: globalI18n.t,
+    t: t,
     language: language,
-    changeLanguage: globalI18n.changeLanguage
+    changeLanguage: changeLanguage
   };
 }
 

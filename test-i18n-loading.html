@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test i18n Loading</title>
+</head>
+<body>
+    <h1>i18n Loading Test</h1>
+    <div id="status">Testing...</div>
+    <div id="results"></div>
+    
+    <script>
+        // Test loading the translation file
+        fetch('/i18n/en.json')
+            .then(response => {
+                document.getElementById('status').textContent = 'Response status: ' + response.status;
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('results').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                console.log('Translations loaded:', data);
+                
+                // Test accessing a translation
+                console.log('login.title:', data.login.title);
+            })
+            .catch(error => {
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+                console.error('Failed to load translations:', error);
+            });
+    </script>
+</body>
+</html>
