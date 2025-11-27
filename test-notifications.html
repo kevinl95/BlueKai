@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #0095ff;
+      padding-bottom: 10px;
+    }
+    
+    #test-output {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+    
+    .success {
+      color: #4ec9b0;
+    }
+    
+    .error {
+      color: #f48771;
+    }
+    
+    .info {
+      color: #569cd6;
+    }
+    
+    #visual-test {
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    #visual-test h2 {
+      color: #333;
+      margin-top: 0;
+    }
+    
+    .test-container {
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #000;
+      max-width: 320px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Notifications Component Tests</h1>
+  
+  <div id="test-output">Running tests...</div>
+  
+  <div id="visual-test">
+    <h2>Visual Test - NotificationItem</h2>
+    <div id="notification-item-test" class="test-container"></div>
+    
+    <h2>Visual Test - NotificationsView</h2>
+    <div id="notifications-view-test" class="test-container"></div>
+  </div>
+  
+  <script type="module">
+    import { h, render } from './node_modules/preact/dist/preact.module.js';
+    import NotificationItem from './src/views/NotificationItem.js';
+    import NotificationsView from './src/views/NotificationsView.js';
+    
+    // Import styles
+    const notificationItemStyles = document.createElement('link');
+    notificationItemStyles.rel = 'stylesheet';
+    notificationItemStyles.href = './src/views/NotificationItem.css';
+    document.head.appendChild(notificationItemStyles);
+    
+    const notificationsViewStyles = document.createElement('link');
+    notificationsViewStyles.rel = 'stylesheet';
+    notificationsViewStyles.href = './src/views/NotificationsView.css';
+    document.head.appendChild(notificationsViewStyles);
+    
+    const loadingStyles = document.createElement('link');
+    loadingStyles.rel = 'stylesheet';
+    loadingStyles.href = './src/components/LoadingIndicator.css';
+    document.head.appendChild(loadingStyles);
+    
+    const errorStyles = document.createElement('link');
+    errorStyles.rel = 'stylesheet';
+    errorStyles.href = './src/components/ErrorMessage.css';
+    document.head.appendChild(errorStyles);
+    
+    // Capture console output
+    const output = document.getElementById('test-output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    console.log = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      
+      if (message.startsWith('✓')) {
+        span.className = 'success';
+      } else if (message.startsWith('✗')) {
+        span.className = 'error';
+      } else if (message.startsWith('---')) {
+        span.className = 'info';
+      }
+      
+      span.textContent = message + '\n';
+      output.appendChild(span);
+      originalLog.apply(console, args);
+    };
+    
+    console.error = function(...args) {
+      const message = args.join(' ');
+      const span = document.createElement('span');
+      span.className = 'error';
+      span.textContent = message + '\n';
+      output.appendChild(span);
+      originalError.apply(console, args);
+    };
+    
+    // Visual test - NotificationItem
+    const sampleNotifications = [
+      {
+        uri: 'at://notif1',
+        reason: 'like',
+        author: {
+          handle: 'alice.bsky.social',
+          displayName: 'Alice'
+        },
+        indexedAt: '2025-11-23T12:00:00.000Z',
+        isRead: false
+      },
+      {
+        uri: 'at://notif2',
+        reason: 'follow',
+        author: {
+          handle: 'bob.bsky.social',
+          displayName: 'Bob Smith'
+        },
+        indexedAt: '2025-11-23T11:00:00.000Z',
+        isRead: true
+      },
+      {
+        uri: 'at://notif3',
+        reason: 'reply',
+        author: {
+          handle: 'charlie.bsky.social',
+          displayName: 'Charlie'
+        },
+        record: {
+          text: 'Great post! I totally agree with your perspective on this topic.'
+        },
+        indexedAt: '2025-11-23T10:00:00.000Z',
+        isRead: false
+      }
+    ];
+    
+    const notificationItemContainer = document.getElementById('notification-item-test');
+    sampleNotifications.forEach(notification => {
+      render(h(NotificationItem, { notification }), notificationItemContainer);
+    });
+    
+    // Visual test - NotificationsView
+    const mockClient = {
+      getNotifications: function() {
+        return Promise.resolve({
+          notifications: sampleNotifications,
+          cursor: 'next-cursor'
+        });
+      },
+      updateSeenNotifications: function() {
+        return Promise.resolve({});
+      }
+    };
+    
+    const notificationsViewContainer = document.getElementById('notifications-view-test');
+    render(h(NotificationsView, { atpClient: mockClient }), notificationsViewContainer);
+    
+    // Run tests
+    import('./run-notification-tests.js');
+  </script>
+</body>
+</html>

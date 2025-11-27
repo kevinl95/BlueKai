@@ -1,0 +1,78 @@
+/**
+ * NotificationsView Component Styles
+ * Optimized for KaiOS 240x320 display
+ */
+
+.notifications-view {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #000;
+  color: #fff;
+}
+
+.notifications-view__header {
+  padding: 10px;
+  border-bottom: 2px solid #333;
+  background-color: #0a0a0a;
+  flex-shrink: 0;
+}
+
+.notifications-view__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.notifications-view__list {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.notifications-view__empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #888;
+}
+
+.notifications-view__empty p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.notifications-view__loading-more {
+  padding: 10px;
+  border-top: 1px solid #333;
+  background-color: #0a0a0a;
+}
+
+/* Scrollbar styling for better visibility */
+.notifications-view__list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.notifications-view__list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.notifications-view__list::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 2px;
+}
+
+.notifications-view__list::-webkit-scrollbar-thumb:hover {
+  background: #666;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .notifications-view__header {
+    border-color: #666;
+  }
+  
+  .notifications-view__title {
+    color: #fff;
+  }
+}

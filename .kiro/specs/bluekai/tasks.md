@@ -310,7 +310,7 @@
     - _Requirements: 4.8, 4.9_
 
 - [ ] 15. Implement notifications
-  - [ ] 15.1 Create NotificationItem component
+  - [x] 15.1 Create NotificationItem component
     - Display notification type (like, repost, follow, reply, mention)
     - Show actor info and timestamp
     - Display relevant post content if applicable
@@ -318,7 +318,7 @@
     - Style for readability
     - _Requirements: 4.7_
   
-  - [ ] 15.2 Create NotificationsView component
+  - [x] 15.2 Create NotificationsView component
     - Fetch and display notifications list
     - Implement pagination
     - Add loading and error states
