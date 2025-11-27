@@ -5,18 +5,16 @@
  */
 
 import { h } from 'preact';
-import { useAppState } from '../state/app-state.js';
 
 /**
  * OfflineIndicator component
  * Shows a banner when offline
+ * @param {Object} props
+ * @param {boolean} props.isOnline - Current online status
  */
-function OfflineIndicator() {
-  var context = useAppState();
-  var state = context.state;
-  
+function OfflineIndicator(props) {
   // Don't show if online
-  if (state.network.isOnline) {
+  if (props.isOnline) {
     return null;
   }
   

@@ -184,7 +184,7 @@ function App() {
    */
   if (currentView === 'login') {
     return h('div', { style: { height: '100%' } },
-      h(OfflineIndicator),
+      h(OfflineIndicator, { isOnline: isOnline }),
       h(LoginView, {
         atpClient: atpClient,
         onLogin: handleLogin,
@@ -198,7 +198,7 @@ function App() {
    */
   if (currentView === 'signup') {
     return h('div', { style: { height: '100%' } },
-      h(OfflineIndicator),
+      h(OfflineIndicator, { isOnline: isOnline }),
       h(SignupView, {
         atpClient: atpClient,
         onSignup: handleSignup,
@@ -212,7 +212,7 @@ function App() {
    */
   if (currentView === 'timeline') {
     return h('div', { style: { height: '100%', display: 'flex', flexDirection: 'column' } },
-      h(OfflineIndicator),
+      h(OfflineIndicator, { isOnline: isOnline }),
       h(TimelineView, {
         atpClient: atpClient,
         onReply: handleReply
@@ -233,7 +233,7 @@ function App() {
    */
   if (currentView === 'compose') {
     return h('div', { style: { height: '100%' } },
-      h(OfflineIndicator),
+      h(OfflineIndicator, { isOnline: isOnline }),
       h(ComposeView, {
         atpClient: atpClient,
         replyTo: replyContext,

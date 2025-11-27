@@ -5,7 +5,6 @@
 var h = require('preact').h;
 var render = require('preact').render;
 var OfflineIndicator = require('./OfflineIndicator');
-var AppStateContext = require('../state/app-state').AppStateContext;
 
 function testOfflineIndicator() {
   console.log('Testing OfflineIndicator Component...');
@@ -30,20 +29,8 @@ function testOfflineIndicator() {
   document.body.appendChild(container);
 
   // Test 1: Should not render when online
-  var onlineState = {
-    state: {
-      network: {
-        isOnline: true,
-        lastOnlineAt: Date.now(),
-        retryQueue: []
-      }
-    }
-  };
-
   render(
-    h(AppStateContext.Provider, { value: onlineState },
-      h(OfflineIndicator)
-    ),
+    h(OfflineIndicator, { isOnline: true }),
     container
   );
 
@@ -53,20 +40,8 @@ function testOfflineIndicator() {
   );
 
   // Test 2: Should render when offline
-  var offlineState = {
-    state: {
-      network: {
-        isOnline: false,
-        lastOnlineAt: Date.now() - 60000,
-        retryQueue: []
-      }
-    }
-  };
-
   render(
-    h(AppStateContext.Provider, { value: offlineState },
-      h(OfflineIndicator)
-    ),
+    h(OfflineIndicator, { isOnline: false }),
     container
   );
 
