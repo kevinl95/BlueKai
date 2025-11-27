@@ -248,7 +248,11 @@ class AppContentClass extends Component {
     var self = this;
     setTimeout(function() {
       if (self.navigationManager) {
-        self.navigationManager.refresh();
+        // Update focusable elements for the new view
+        var focusableElements = document.querySelectorAll(
+          'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        self.navigationManager.updateFocusableElements(focusableElements);
       }
     }, 100);
   }
