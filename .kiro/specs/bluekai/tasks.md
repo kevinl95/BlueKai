@@ -410,8 +410,8 @@
   - Write tests for app initialization
   - _Requirements: 5.4, 5.5_
 
-- [ ] 20. Add internationalization support
-  - [ ] 20.1 Create i18n infrastructure
+- [x] 20. Add internationalization support
+  - [x] 20.1 Create i18n infrastructure
     - Implement simple key-based translation lookup
     - Create language file loader
     - Add language detection from device settings
@@ -419,7 +419,7 @@
     - Create useTranslation hook
     - _Requirements: 10.1, 10.4_
   
-  - [ ] 20.2 Create language files
+  - [x] 20.2 Create language files
     - Write English (en) translations for all UI text
     - Create Spanish (es) translations
     - Create French (fr) translations
@@ -427,7 +427,7 @@
     - Write tests for translation loading
     - _Requirements: 10.1, 10.4_
   
-  - [ ] 20.3 Apply translations throughout app
+  - [x] 20.3 Apply translations throughout app
     - Replace hardcoded strings with translation keys
     - Update all components to use useTranslation hook
     - Test language switching

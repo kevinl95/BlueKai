@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>i18n Translation Tests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 3px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #e7f3ff;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+    }
+    .translation-demo {
+      margin: 10px 0;
+      padding: 10px;
+      background-color: #f8f9fa;
+      border-left: 3px solid #007bff;
+    }
+  </style>
+</head>
+<body>
+  <h1>i18n Translation Tests</h1>
+  
+  <div class="test-section">
+    <h2>Language Detection</h2>
+    <div id="detection-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Translation Loading</h2>
+    <div id="loading-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Translation Lookup</h2>
+    <div id="lookup-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Parameter Interpolation</h2>
+    <div id="interpolation-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>Language Switching Demo</h2>
+    <button onclick="switchLanguage('en')">English</button>
+    <button onclick="switchLanguage('es')">Español</button>
+    <button onclick="switchLanguage('fr')">Français</button>
+    <button onclick="switchLanguage('pt')">Português</button>
+    <div id="demo-results"></div>
+  </div>
+  
+  <div class="summary" id="summary"></div>
+
+  <script src="src/i18n/i18n.js"></script>
+  <script>
+    var testResults = {
+      passed: 0,
+      failed: 0,
+      tests: []
+    };
+
+    function assert(condition, message) {
+      if (condition) {
+        testResults.passed++;
+        testResults.tests.push({ name: message, passed: true });
+        console.log('✓ ' + message);
+      } else {
+        testResults.failed++;
+        testResults.tests.push({ name: message, passed: false });
+        console.error('✗ ' + message);
+      }
+    }
+
+    function displayResult(containerId, message, passed) {
+      var container = document.getElementById(containerId);
+      var div = document.createElement('div');
+      div.className = 'test-result ' + (passed ? 'pass' : 'fail');
+      div.textContent = (passed ? '✓ ' : '✗ ') + message;
+      container.appendChild(div);
+    }
+
+    // Test 1: Language Detection
+    function testLanguageDetection() {
+      console.log('Testing language detection...');
+      
+      var detected = detectLanguage();
+      var isValid = detected && typeof detected === 'string' && detected.length === 2;
+      
+      assert(isValid, 'detectLanguage returns valid language code');
+      displayResult('detection-results', 'Detected language: ' + detected, isValid);
+      
+      // Test that it extracts primary language
+      var originalLang = navigator.language;
+      Object.defineProperty(navigator, 'language', {
+        value: 'es-MX',
+        configurable: true
+      });
+      
+      var extracted = detectLanguage();
+      assert(extracted === 'es', 'Extracts primary language code from locale');
+      displayResult('detection-results', 'Extracted "es" from "es-MX"', extracted === 'es');
+      
+      // Restore
+      Object.defineProperty(navigator, 'language', {
+        value: originalLang,
+        configurable: true
+      });
+    }
+
+    // Test 2: Translation Loading
+    function testTranslationLoading() {
+      console.log('Testing translation loading...');
+      
+      return initI18n('en').then(function() {
+        assert(true, 'English translations loaded successfully');
+        displayResult('loading-results', 'English translations loaded', true);
+        
+        // Test that translations are available
+        var loginTitle = t('login.title');
+        assert(loginTitle !== 'login.title', 'Translation key resolves to actual text');
+        displayResult('loading-results', 'Translation resolved: ' + loginTitle, loginTitle !== 'login.title');
+        
+        return true;
+      }).catch(function(error) {
+        assert(false, 'Failed to load translations: ' + error.message);
+        displayResult('loading-results', 'Failed to load translations', false);
+        throw error;
+      });
+    }
+
+    // Test 3: Translation Lookup
+    function testTranslationLookup() {
+      console.log('Testing translation lookup...');
+      
+      // Simple key
+      var ok = t('common.ok');
+      assert(ok === 'OK', 'Simple nested key lookup works');
+      displayResult('lookup-results', 'common.ok = "' + ok + '"', ok === 'OK');
+      
+      // Deep nested key
+      var loginTitle = t('login.title');
+      assert(loginTitle && loginTitle.length > 0, 'Deep nested key lookup works');
+      displayResult('lookup-results', 'login.title = "' + loginTitle + '"', true);
+      
+      // Missing key returns key itself
+      var missing = t('nonexistent.key');
+      assert(missing === 'nonexistent.key', 'Missing key returns key itself');
+      displayResult('lookup-results', 'Missing key returns key', missing === 'nonexistent.key');
+    }
+
+    // Test 4: Parameter Interpolation
+    function testInterpolation() {
+      console.log('Testing parameter interpolation...');
+      
+      // Single parameter
+      var greeting = t('notifications.types.follow', { actor: 'alice' });
+      var hasActor = greeting.indexOf('alice') !== -1;
+      assert(hasActor, 'Single parameter interpolation works');
+      displayResult('interpolation-results', 'Interpolated: ' + greeting, hasActor);
+      
+      // Multiple parameters
+      var count = t('post.likes', { count: 42 });
+      var hasCount = count.indexOf('42') !== -1;
+      assert(hasCount, 'Numeric parameter interpolation works');
+      displayResult('interpolation-results', 'Interpolated count: ' + count, hasCount);
+    }
+
+    // Test 5: Language Switching
+    function switchLanguage(lang) {
+      var demoContainer = document.getElementById('demo-results');
+      demoContainer.innerHTML = '<p>Loading ' + lang + '...</p>';
+      
+      changeLanguage(lang).then(function() {
+        var currentLang = getCurrentLanguage();
+        console.log('Switched to language: ' + currentLang);
+        
+        // Display sample translations
+        var html = '<div class="translation-demo">';
+        html += '<h3>Current Language: ' + currentLang + '</h3>';
+        html += '<p><strong>Login Title:</strong> ' + t('login.title') + '</p>';
+        html += '<p><strong>Timeline:</strong> ' + t('timeline.title') + '</p>';
+        html += '<p><strong>Compose:</strong> ' + t('compose.title') + '</p>';
+        html += '<p><strong>Profile:</strong> ' + t('profile.title') + '</p>';
+        html += '<p><strong>OK Button:</strong> ' + t('common.ok') + '</p>';
+        html += '<p><strong>Cancel Button:</strong> ' + t('common.cancel') + '</p>';
+        html += '<p><strong>Loading:</strong> ' + t('common.loading') + '</p>';
+        html += '</div>';
+        
+        demoContainer.innerHTML = html;
+      }).catch(function(error) {
+        demoContainer.innerHTML = '<p class="fail">Failed to load language: ' + error.message + '</p>';
+      });
+    }
+
+    // Run all tests
+    function runTests() {
+      console.log('Starting i18n tests...');
+      
+      testLanguageDetection();
+      
+      testTranslationLoading().then(function() {
+        testTranslationLookup();
+        testInterpolation();
+        
+        // Display summary
+        var summary = document.getElementById('summary');
+        summary.innerHTML = 'Tests Complete: ' + testResults.passed + ' passed, ' + 
+                           testResults.failed + ' failed';
+        summary.className = 'summary ' + (testResults.failed === 0 ? 'pass' : 'fail');
+        
+        // Initialize demo with English
+        switchLanguage('en');
+      }).catch(function(error) {
+        console.error('Test suite failed:', error);
+        var summary = document.getElementById('summary');
+        summary.innerHTML = 'Test suite failed: ' + error.message;
+        summary.className = 'summary fail';
+      });
+    }
+
+    // Run tests when page loads
+    window.addEventListener('load', runTests);
+  </script>
+</body>
+</html>

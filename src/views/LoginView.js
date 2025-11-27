@@ -3,6 +3,7 @@ import { useState } from 'preact/hooks';
 import TextInput from '../components/TextInput.js';
 import Button from '../components/Button.js';
 import ErrorMessage from '../components/ErrorMessage.js';
+import { useTranslation } from '../i18n/useTranslation.js';
 
 /**
  * LoginView - Authentication view for BlueSky login
@@ -15,6 +16,9 @@ import ErrorMessage from '../components/ErrorMessage.js';
 function LoginView(props) {
   var onLogin = props.onLogin;
   var atpClient = props.atpClient;
+  
+  var _useTranslation = useTranslation();
+  var t = _useTranslation.t;
   
   var _useState = useState('');
   var handle = _useState[0];
@@ -47,14 +51,14 @@ function LoginView(props) {
     
     // Validate handle
     if (!handle || handle.trim() === '') {
-      errors.handle = 'Handle is required';
+      errors.handle = t('signup.errors.handleRequired');
     } else if (handle.indexOf('@') === -1 && handle.indexOf('.') === -1) {
-      errors.handle = 'Enter a valid handle (e.g., user.bsky.social)';
+      errors.handle = t('signup.errors.handleInvalid');
     }
     
     // Validate password
     if (!password || password.trim() === '') {
-      errors.password = 'Password is required';
+      errors.password = t('signup.errors.passwordRequired');
     }
     
     setValidationErrors(errors);
@@ -117,7 +121,7 @@ function LoginView(props) {
    */
   var getLoginErrorMessage = function(err) {
     if (!err) {
-      return 'Login failed. Please try again.';
+      return t('login.error');
     }
     
     // Network errors
@@ -126,33 +130,33 @@ function LoginView(props) {
       err.message.indexOf('Failed to fetch') !== -1 ||
       err.message.indexOf('timeout') !== -1
     )) {
-      return 'Cannot connect. Check your connection.';
+      return t('login.networkError');
     }
     
     // Authentication errors (401)
     if (err.status === 401 || 
         (err.message && err.message.indexOf('Invalid credentials') !== -1)) {
-      return 'Invalid handle or password. Please try again.';
+      return t('login.error');
     }
     
     // Rate limiting (429)
     if (err.status === 429) {
-      return 'Too many login attempts. Please wait and try again.';
+      return t('errors.rateLimited');
     }
     
     // Server errors (500+)
     if (err.status && err.status >= 500) {
-      return 'BlueSky is having issues. Try again later.';
+      return t('errors.serverError');
     }
     
     // Generic error
-    return err.message || 'Login failed. Please try again.';
+    return err.message || t('login.error');
   };
   
   return h('div', { className: 'login-view' },
     h('div', { className: 'login-view__container' },
       h('div', { className: 'login-view__header' },
-        h('h1', { className: 'login-view__title' }, 'BlueKai'),
+        h('h1', { className: 'login-view__title' }, t('login.title')),
         h('p', { className: 'login-view__subtitle' }, 'BlueSky for KaiOS')
       ),
       
@@ -163,11 +167,11 @@ function LoginView(props) {
       },
         h(TextInput, {
           id: 'login-handle',
-          label: 'Handle or Email',
+          label: t('login.handle'),
           type: 'text',
           value: handle,
           onChange: setHandle,
-          placeholder: 'user.bsky.social or email',
+          placeholder: t('login.handlePlaceholder'),
           error: validationErrors.handle,
           required: true,
           showCounter: false,
@@ -177,11 +181,11 @@ function LoginView(props) {
         
         h(TextInput, {
           id: 'login-password',
-          label: 'App Password',
+          label: t('login.password'),
           type: 'password',
           value: password,
           onChange: setPassword,
-          placeholder: 'Enter your app password',
+          placeholder: t('login.passwordPlaceholder'),
           error: validationErrors.password,
           required: true,
           showCounter: false,
@@ -200,21 +204,12 @@ function LoginView(props) {
           disabled: loading,
           fullWidth: true,
           variant: 'primary'
-        }, 'Log In')
+        }, loading ? t('login.loggingIn') : t('login.submit'))
       ),
       
       h('div', { className: 'login-view__footer' },
-        h('p', { className: 'login-view__help' },
-          'Use your BlueSky handle and app password to log in.'
-        ),
         h('p', { className: 'login-view__signup-link' },
-          'Don\'t have an account? ',
-          h('a', {
-            href: 'https://bsky.app/',
-            target: '_blank',
-            rel: 'noopener noreferrer',
-            className: 'login-view__link'
-          }, 'Sign up on Bluesky')
+          t('login.signupLink')
         )
       )
     )

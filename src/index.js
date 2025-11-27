@@ -19,5 +19,15 @@ import './navigation/softkey-bar.css';
 import { h, render } from 'preact';
 import App from './components/App';
 
-// Mount the app
-render(h(App), document.getElementById('app'));
+// Import i18n
+var i18n = require('./i18n/i18n-init.js');
+
+// Initialize i18n and then mount the app
+i18n.init().then(function() {
+  console.log('App starting with language:', i18n.getCurrentLanguage());
+  render(h(App), document.getElementById('app'));
+}).catch(function(error) {
+  console.error('Failed to initialize i18n:', error);
+  // Render app anyway with fallback
+  render(h(App), document.getElementById('app'));
+});

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Switching Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .controls {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #f0f0f0;
+      border-radius: 5px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background-color: white;
+      border-radius: 3px;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    button.active {
+      background-color: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+    .demo-section {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .demo-section h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .translation-item {
+      margin: 10px 0;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border-left: 3px solid #007bff;
+    }
+    .translation-key {
+      font-family: monospace;
+      color: #666;
+      font-size: 0.9em;
+    }
+    .translation-value {
+      font-weight: bold;
+      color: #000;
+      margin-top: 5px;
+    }
+    .current-lang {
+      display: inline-block;
+      padding: 5px 10px;
+      background-color: #28a745;
+      color: white;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Language Switching Demo</h1>
+  
+  <div class="controls">
+    <h3>Select Language:</h3>
+    <button id="btn-en" onclick="switchLanguage('en')">English</button>
+    <button id="btn-es" onclick="switchLanguage('es')">Español</button>
+    <button id="btn-fr" onclick="switchLanguage('fr')">Français</button>
+    <button id="btn-pt" onclick="switchLanguage('pt')">Português</button>
+    <p>Current Language: <span class="current-lang" id="current-lang">Loading...</span></p>
+  </div>
+  
+  <div class="demo-section">
+    <h3>Common Translations</h3>
+    <div id="common-translations"></div>
+  </div>
+  
+  <div class="demo-section">
+    <h3>Login Screen</h3>
+    <div id="login-translations"></div>
+  </div>
+  
+  <div class="demo-section">
+    <h3>Timeline</h3>
+    <div id="timeline-translations"></div>
+  </div>
+  
+  <div class="demo-section">
+    <h3>Post Actions</h3>
+    <div id="post-translations"></div>
+  </div>
+  
+  <div class="demo-section">
+    <h3>Interpolation Examples</h3>
+    <div id="interpolation-examples"></div>
+  </div>
+
+  <script src="src/i18n/i18n.js"></script>
+  <script>
+    var currentLang = 'en';
+    
+    // Initialize i18n
+    initI18n().then(function() {
+      currentLang = getCurrentLanguage();
+      updateUI();
+      highlightActiveButton();
+    }).catch(function(error) {
+      console.error('Failed to initialize i18n:', error);
+      document.getElementById('current-lang').textContent = 'Error: ' + error.message;
+    });
+    
+    function switchLanguage(lang) {
+      changeLanguage(lang).then(function() {
+        currentLang = lang;
+        updateUI();
+        highlightActiveButton();
+      }).catch(function(error) {
+        console.error('Failed to switch language:', error);
+        alert('Failed to load language: ' + error.message);
+      });
+    }
+    
+    function highlightActiveButton() {
+      // Remove active class from all buttons
+      document.querySelectorAll('.controls button').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      // Add active class to current language button
+      var activeBtn = document.getElementById('btn-' + currentLang);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
+    
+    function createTranslationItem(key, value) {
+      return '<div class="translation-item">' +
+             '<div class="translation-key">' + key + '</div>' +
+             '<div class="translation-value">' + value + '</div>' +
+             '</div>';
+    }
+    
+    function updateUI() {
+      // Update current language display
+      document.getElementById('current-lang').textContent = currentLang.toUpperCase();
+      
+      // Common translations
+      var commonHTML = '';
+      commonHTML += createTranslationItem('common.ok', t('common.ok'));
+      commonHTML += createTranslationItem('common.cancel', t('common.cancel'));
+      commonHTML += createTranslationItem('common.save', t('common.save'));
+      commonHTML += createTranslationItem('common.loading', t('common.loading'));
+      document.getElementById('common-translations').innerHTML = commonHTML;
+      
+      // Login translations
+      var loginHTML = '';
+      loginHTML += createTranslationItem('login.title', t('login.title'));
+      loginHTML += createTranslationItem('login.handle', t('login.handle'));
+      loginHTML += createTranslationItem('login.password', t('login.password'));
+      loginHTML += createTranslationItem('login.submit', t('login.submit'));
+      loginHTML += createTranslationItem('login.error', t('login.error'));
+      document.getElementById('login-translations').innerHTML = loginHTML;
+      
+      // Timeline translations
+      var timelineHTML = '';
+      timelineHTML += createTranslationItem('timeline.title', t('timeline.title'));
+      timelineHTML += createTranslationItem('timeline.empty', t('timeline.empty'));
+      timelineHTML += createTranslationItem('timeline.refresh', t('timeline.refresh'));
+      timelineHTML += createTranslationItem('timeline.offline', t('timeline.offline'));
+      document.getElementById('timeline-translations').innerHTML = timelineHTML;
+      
+      // Post translations
+      var postHTML = '';
+      postHTML += createTranslationItem('post.like', t('post.like'));
+      postHTML += createTranslationItem('post.repost', t('post.repost'));
+      postHTML += createTranslationItem('post.reply', t('post.reply'));
+      postHTML += createTranslationItem('post.confirmRepost', t('post.confirmRepost'));
+      document.getElementById('post-translations').innerHTML = postHTML;
+      
+      // Interpolation examples
+      var interpHTML = '';
+      interpHTML += createTranslationItem(
+        'notifications.types.follow (actor: "alice")',
+        t('notifications.types.follow', { actor: 'alice' })
+      );
+      interpHTML += createTranslationItem(
+        'post.likes (count: 42)',
+        t('post.likes', { count: 42 })
+      );
+      interpHTML += createTranslationItem(
+        'compose.replyingTo (handle: "bob")',
+        t('compose.replyingTo', { handle: 'bob' })
+      );
+      document.getElementById('interpolation-examples').innerHTML = interpHTML;
+    }
+  </script>
+</body>
+</html>
