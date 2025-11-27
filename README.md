@@ -80,10 +80,11 @@ open test-error-handling-demo.html  # Interactive demo
 
 ## Documentation
 
+- **Build Guide**: See [BUILD.md](BUILD.md) - Comprehensive build instructions and optimization
+- **Deployment Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment to GitHub Pages, AWS Amplify, and more
 - **Component Docs**: See `src/*/README.md` files
-- **KaiOS Setup**: See `docs/KAIOS-SETUP.md`
-- **Security**: See `docs/SECURITY.md`
-- **Error Handling**: See `docs/ERROR-HANDLING-GUIDE.md`
+- **Offline Support**: See [docs/OFFLINE-SUPPORT-GUIDE.md](docs/OFFLINE-SUPPORT-GUIDE.md)
+- **Error Handling**: See error handling documentation in source files
 
 ## Features
 
@@ -116,24 +117,45 @@ open test-error-handling-demo.html  # Interactive demo
 - Firefox 48+
 - Modern browsers (for development)
 
-## Deployment
+## Build and Deployment
 
-### GitHub Pages
+For comprehensive build and deployment instructions, see **[BUILD.md](BUILD.md)**.
 
-This project is configured for automatic deployment to GitHub Pages:
-
-1. **Push to main branch** - Automatically triggers deployment
-2. **GitHub Actions** builds and deploys to GitHub Pages
-3. **Access your app** at `https://yourusername.github.io/bluekai/`
-
-The manifest.webapp file is served with the correct MIME type for KaiOS compatibility.
-
-#### Manual Deployment
+### Quick Build Commands
 
 ```bash
-npm run build
-# Upload dist/ folder to your hosting provider
+# Development build with hot reload
+npm run dev
+
+# Production build (optimized, ES5, gzipped)
+npm run build:prod
+
+# Analyze bundle size
+npm run build:analyze
+
+# Test production build locally
+npm run serve
 ```
+
+### Deployment
+
+**GitHub Pages (Automatic):**
+- Push to `main` branch
+- GitHub Actions automatically builds and deploys
+- App available at `https://yourusername.github.io/bluekai/`
+
+**AWS Amplify (If needed):**
+- Connect repository in Amplify Console
+- Automatic builds on push
+- See [BUILD.md](BUILD.md) for configuration
+
+**Manual Deployment:**
+```bash
+npm run build:prod
+# Upload dist/ contents to your hosting provider
+```
+
+For detailed deployment instructions, troubleshooting, and optimization tips, see **[BUILD.md](BUILD.md)**.
 
 ## Contributing
 

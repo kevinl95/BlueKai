@@ -6,8 +6,13 @@
   "scripts": {
     "dev": "webpack serve --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js",
+    "build:prod": "NODE_ENV=production webpack --config webpack.prod.config.js",
     "build:analyze": "webpack --mode production --config webpack.config.js --env analyze",
-    "analyze": "node analyze-bundle.js"
+    "analyze": "node analyze-bundle.js",
+    "check-size": "node check-bundle-size.js",
+    "verify-build": "node verify-production-build.js",
+    "serve": "npx serve dist -p 8080",
+    "test:build": "npm run build:prod && npm run verify-build"
   },
   "keywords": [
     "bluesky",
@@ -24,11 +29,14 @@
     "@babel/preset-env": "^7.23.5",
     "@babel/preset-react": "^7.23.3",
     "babel-loader": "^9.1.3",
+    "compression-webpack-plugin": "^11.1.0",
     "copy-webpack-plugin": "^13.0.1",
     "core-js": "^3.34.0",
     "css-loader": "^6.8.1",
+    "dotenv": "^16.6.1",
     "html-webpack-plugin": "^5.5.4",
     "style-loader": "^3.3.3",
+    "terser-webpack-plugin": "^5.3.14",
     "webpack": "^5.89.0",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.1.4",

@@ -18,6 +18,7 @@ import './navigation/softkey-bar.css';
 
 import { h, render } from 'preact';
 import App from './components/App';
+import { setI18nInstance } from './i18n/useTranslation';
 
 // Import i18n
 var i18n = require('./i18n/i18n-init.js');
@@ -25,9 +26,12 @@ var i18n = require('./i18n/i18n-init.js');
 // Initialize i18n and then mount the app
 i18n.init().then(function() {
   console.log('App starting with language:', i18n.getCurrentLanguage());
+  // Set the global i18n instance for useTranslation hook
+  setI18nInstance(i18n);
   render(h(App), document.getElementById('app'));
 }).catch(function(error) {
   console.error('Failed to initialize i18n:', error);
-  // Render app anyway with fallback
+  // Set i18n instance anyway and render app with fallback
+  setI18nInstance(i18n);
   render(h(App), document.getElementById('app'));
 });
