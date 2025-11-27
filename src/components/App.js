@@ -2,7 +2,6 @@ import { h } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import ATPClient from '../services/atp-client.js';
 import LoginView from '../views/LoginView.js';
-import SignupView from '../views/SignupView.js';
 import TimelineView from '../views/TimelineView.js';
 import ComposeView from '../views/ComposeView.js';
 import SoftkeyBar from '../navigation/SoftkeyBar.js';
@@ -79,28 +78,6 @@ function App() {
   var handleLogin = function(sessionData) {
     setSession(sessionData);
     setCurrentView('timeline');
-  };
-  
-  /**
-   * Handle successful signup
-   */
-  var handleSignup = function(sessionData) {
-    setSession(sessionData);
-    setCurrentView('timeline');
-  };
-  
-  /**
-   * Navigate to signup view
-   */
-  var handleNavigateToSignup = function() {
-    setCurrentView('signup');
-  };
-  
-  /**
-   * Navigate to login view
-   */
-  var handleNavigateToLogin = function() {
-    setCurrentView('login');
   };
   
   /**
@@ -187,22 +164,7 @@ function App() {
       h(OfflineIndicator, { isOnline: isOnline }),
       h(LoginView, {
         atpClient: atpClient,
-        onLogin: handleLogin,
-        onNavigateToSignup: handleNavigateToSignup
-      })
-    );
-  }
-  
-  /**
-   * Render signup view
-   */
-  if (currentView === 'signup') {
-    return h('div', { style: { height: '100%' } },
-      h(OfflineIndicator, { isOnline: isOnline }),
-      h(SignupView, {
-        atpClient: atpClient,
-        onSignup: handleSignup,
-        onNavigateToLogin: handleNavigateToLogin
+        onLogin: handleLogin
       })
     );
   }

@@ -10,12 +10,10 @@ import ErrorMessage from '../components/ErrorMessage.js';
  * 
  * @param {Object} props
  * @param {Function} props.onLogin - Callback when login succeeds (receives session data)
- * @param {Function} props.onNavigateToSignup - Callback to navigate to signup view
  * @param {Object} props.atpClient - ATP client instance
  */
 function LoginView(props) {
   var onLogin = props.onLogin;
-  var onNavigateToSignup = props.onNavigateToSignup;
   var atpClient = props.atpClient;
   
   var _useState = useState('');
@@ -116,16 +114,6 @@ function LoginView(props) {
   };
   
   /**
-   * Handle navigate to signup
-   */
-  var handleNavigateToSignup = function(e) {
-    e.preventDefault();
-    if (onNavigateToSignup) {
-      onNavigateToSignup();
-    }
-  };
-  
-  /**
    * Get user-friendly error message for login errors
    * Requirements: 9.2 - Indicate whether issue is credentials or connectivity
    */
@@ -221,10 +209,11 @@ function LoginView(props) {
         h('p', { className: 'login-view__signup-link' },
           'Don\'t have an account? ',
           h('a', {
-            href: '#',
-            onClick: handleNavigateToSignup,
+            href: 'https://bsky.app/',
+            target: '_blank',
+            rel: 'noopener noreferrer',
             className: 'login-view__link'
-          }, 'Sign up')
+          }, 'Sign up on Bluesky')
         )
       )
     )
