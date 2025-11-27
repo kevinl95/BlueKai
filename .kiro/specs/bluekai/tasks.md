@@ -182,6 +182,34 @@
   - Write tests for login flow
   - _Requirements: 5.1, 5.2, 9.2_
 
+- [ ] 9.5. Implement SignupView
+  - [ ] 9.5.1 Add signup API method to ATP client
+    - Implement createAccount method using com.atproto.server.createAccount endpoint
+    - Add email validation
+    - Add handle availability check
+    - Add invite code support (if required)
+    - Handle signup errors (handle taken, invalid email, etc.)
+    - Write tests for signup API calls
+    - _Requirements: 5.1_
+  
+  - [ ] 9.5.2 Create SignupView component
+    - Create form with email, handle, password, and invite code inputs
+    - Add real-time handle validation
+    - Implement password strength indicator
+    - Add terms of service acceptance checkbox
+    - Show loading state during account creation
+    - Display validation and API errors
+    - Navigate to timeline on successful signup
+    - Write tests for signup flow
+    - _Requirements: 5.1, 5.2, 9.2_
+  
+  - [ ] 9.5.3 Add signup link to LoginView
+    - Add "Sign up" button/link to LoginView
+    - Navigate to SignupView when clicked
+    - Add "Already have an account?" link in SignupView to return to login
+    - Update routing to include signup route
+    - _Requirements: 5.1_
+
 - [x] 10. Build timeline functionality
   - [x] 10.1 Create PostItem component
     - Implement component to display single post
