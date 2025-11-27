@@ -48,6 +48,140 @@ function ATPClient(config) {
 }
 
 /**
+ * Create a new account (signup)
+ * @param {Object} options - Account creation options
+ * @param {string} options.email - User email address
+ * @param {string} options.handle - Desired handle (without domain)
+ * @param {string} options.password - Account password
+ * @param {string} options.inviteCode - Invite code (optional)
+ * @returns {Promise} Promise that resolves with session data
+ */
+ATPClient.prototype.createAccount = function(options) {
+  var self = this;
+  
+  if (!options.email || !options.handle || !options.password) {
+    return Promise.reject(new Error('Email, handle, and password are required'));
+  }
+  
+  // Validate email format
+  if (!this.isValidEmail(options.email)) {
+    return Promise.reject(new Error('Invalid email address'));
+  }
+  
+  // Validate handle format
+  if (!this.isValidHandle(options.handle)) {
+    return Promise.reject(new Error('Invalid handle format'));
+  }
+  
+  var requestData = {
+    email: options.email,
+    handle: options.handle,
+    password: options.password
+  };
+  
+  // Add invite code if provided
+  if (options.inviteCode) {
+    requestData.inviteCode = options.inviteCode;
+  }
+  
+  return this.httpClient.post('/xrpc/com.atproto.server.createAccount', requestData)
+    .then(function(response) {
+      var sessionData = response.data;
+      
+      // Store session
+      self.session = {
+        accessJwt: sessionData.accessJwt,
+        refreshJwt: sessionData.refreshJwt,
+        handle: sessionData.handle,
+        did: sessionData.did,
+        email: options.email,
+        expiresAt: self.calculateTokenExpiry(sessionData.accessJwt)
+      };
+      
+      // Persist to storage
+      self.storage.set('session', self.session);
+      
+      return self.session;
+    })
+    .catch(function(error) {
+      // Map common signup errors to user-friendly messages
+      if (error.data && error.data.error) {
+        var errorType = error.data.error;
+        
+        if (errorType === 'InvalidHandle' || errorType.indexOf('handle') !== -1) {
+          throw new Error('Handle is already taken or invalid');
+        }
+        if (errorType === 'InvalidEmail' || errorType.indexOf('email') !== -1) {
+          throw new Error('Email is invalid or already in use');
+        }
+        if (errorType === 'InvalidInviteCode' || errorType.indexOf('invite') !== -1) {
+          throw new Error('Invalid invite code');
+        }
+      }
+      
+      throw error;
+    });
+};
+
+/**
+ * Check if handle is available
+ * @param {string} handle - Handle to check
+ * @returns {Promise} Promise that resolves with availability status
+ */
+ATPClient.prototype.checkHandleAvailability = function(handle) {
+  if (!handle || !this.isValidHandle(handle)) {
+    return Promise.reject(new Error('Invalid handle format'));
+  }
+  
+  // Try to get profile for this handle
+  // If it doesn't exist, handle is available
+  return this.httpClient.get('/xrpc/app.bsky.actor.getProfile?actor=' + encodeURIComponent(handle))
+    .then(function() {
+      // Profile exists, handle is taken
+      return { available: false };
+    })
+    .catch(function(error) {
+      // If 404, handle is available
+      if (error.status === 404) {
+        return { available: true };
+      }
+      // Other errors, can't determine availability
+      throw error;
+    });
+};
+
+/**
+ * Validate email format
+ * @param {string} email - Email to validate
+ * @returns {boolean} True if valid
+ */
+ATPClient.prototype.isValidEmail = function(email) {
+  if (!email || typeof email !== 'string') {
+    return false;
+  }
+  
+  // Simple email validation regex
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+/**
+ * Validate handle format
+ * @param {string} handle - Handle to validate
+ * @returns {boolean} True if valid
+ */
+ATPClient.prototype.isValidHandle = function(handle) {
+  if (!handle || typeof handle !== 'string') {
+    return false;
+  }
+  
+  // Handle should be alphanumeric with dots and hyphens
+  // Can include domain (user.bsky.social) or just username (user)
+  var handleRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?)*$/;
+  return handleRegex.test(handle) && handle.length >= 3 && handle.length <= 253;
+};
+
+/**
  * Login with identifier and password
  * @param {string} identifier - User handle or email
  * @param {string} password - App password

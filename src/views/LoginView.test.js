@@ -409,6 +409,43 @@ function runLoginViewTests() {
     }, 100);
   });
   
+  // Test 13: Signup link is present
+  test('displays signup link', function() {
+    var container = document.createElement('div');
+    var mockClient = createMockATPClient();
+    
+    render(h(LoginView, { atpClient: mockClient }), container);
+    
+    var signupLink = container.querySelector('.login-view__link');
+    assertTrue(signupLink !== null, 'Signup link should exist');
+    
+    var linkText = container.textContent;
+    assertTrue(linkText.indexOf('Sign up') !== -1, 'Should show "Sign up" text');
+  });
+  
+  // Test 14: Signup link calls onNavigateToSignup callback
+  test('calls onNavigateToSignup callback when signup link clicked', function() {
+    var container = document.createElement('div');
+    var mockClient = createMockATPClient();
+    var navigateCalled = false;
+    
+    var onNavigateToSignup = function() {
+      navigateCalled = true;
+    };
+    
+    render(h(LoginView, { 
+      atpClient: mockClient,
+      onNavigateToSignup: onNavigateToSignup
+    }), container);
+    
+    var signupLink = container.querySelector('.login-view__link');
+    assertTrue(signupLink !== null, 'Signup link should exist');
+    
+    signupLink.click();
+    
+    assertTrue(navigateCalled, 'onNavigateToSignup should be called');
+  });
+  
   console.log('\n=== Test Results ===');
   console.log('Total: ' + results.total);
   console.log('Passed: ' + results.passed);

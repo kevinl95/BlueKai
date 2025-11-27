@@ -51,7 +51,24 @@
   font-size: 12px;
   color: #8899a6;
   line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+.login-view__signup-link {
+  font-size: 13px;
+  color: #8899a6;
   margin: 0;
+}
+
+.login-view__link {
+  color: #1da1f2;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-view__link:hover,
+.login-view__link:focus {
+  text-decoration: underline;
 }
 
 /* Focus styles for KaiOS navigation */

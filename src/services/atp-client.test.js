@@ -222,6 +222,96 @@ function testExpiredSessionNotRestored() {
 }
 
 /**
+ * Test: Email validation
+ */
+function testEmailValidation() {
+  var client = new ATPClient();
+  
+  assert(client.isValidEmail('user@example.com'), 'Valid email accepted');
+  assert(client.isValidEmail('test.user@domain.co.uk'), 'Valid email with subdomain accepted');
+  assert(!client.isValidEmail('invalid'), 'Invalid email rejected');
+  assert(!client.isValidEmail('no@domain'), 'Email without TLD rejected');
+  assert(!client.isValidEmail('@domain.com'), 'Email without local part rejected');
+  assert(!client.isValidEmail('user@'), 'Email without domain rejected');
+  assert(!client.isValidEmail(''), 'Empty email rejected');
+  assert(!client.isValidEmail(null), 'Null email rejected');
+}
+
+/**
+ * Test: Handle validation
+ */
+function testHandleValidation() {
+  var client = new ATPClient();
+  
+  assert(client.isValidHandle('user.bsky.social'), 'Valid handle with domain accepted');
+  assert(client.isValidHandle('testuser'), 'Valid simple handle accepted');
+  assert(client.isValidHandle('test-user'), 'Handle with hyphen accepted');
+  assert(client.isValidHandle('user123'), 'Handle with numbers accepted');
+  assert(client.isValidHandle('a.b.c'), 'Handle with multiple dots accepted');
+  assert(!client.isValidHandle('ab'), 'Handle too short rejected');
+  assert(!client.isValidHandle('-user'), 'Handle starting with hyphen rejected');
+  assert(!client.isValidHandle('user-'), 'Handle ending with hyphen rejected');
+  assert(!client.isValidHandle('user..name'), 'Handle with consecutive dots rejected');
+  assert(!client.isValidHandle('user name'), 'Handle with space rejected');
+  assert(!client.isValidHandle('user@name'), 'Handle with @ rejected');
+  assert(!client.isValidHandle(''), 'Empty handle rejected');
+  assert(!client.isValidHandle(null), 'Null handle rejected');
+}
+
+/**
+ * Test: Create account validation
+ */
+function testCreateAccountValidation() {
+  var client = new ATPClient();
+  
+  // Missing required fields
+  return client.createAccount({})
+    .then(function() {
+      assert(false, 'Should reject when missing required fields');
+    })
+    .catch(function(error) {
+      assert(
+        error.message.indexOf('required') !== -1,
+        'Rejects with error when missing required fields'
+      );
+    })
+    .then(function() {
+      // Invalid email
+      return client.createAccount({
+        email: 'invalid-email',
+        handle: 'testuser',
+        password: 'password123'
+      });
+    })
+    .then(function() {
+      assert(false, 'Should reject invalid email');
+    })
+    .catch(function(error) {
+      assert(
+        error.message.indexOf('email') !== -1,
+        'Rejects with error for invalid email'
+      );
+    })
+    .then(function() {
+      // Invalid handle
+      return client.createAccount({
+        email: 'user@example.com',
+        handle: 'ab',
+        password: 'password123'
+      });
+    })
+    .then(function() {
+      assert(false, 'Should reject invalid handle');
+    })
+    .catch(function(error) {
+      assert(
+        error.message.indexOf('handle') !== -1,
+        'Rejects with error for invalid handle'
+      );
+    });
+}
+
+/**
  * Run all tests
  */
 function runTests() {
@@ -235,9 +325,14 @@ function runTests() {
   testAddAuthHeaderToConfig();
   testSessionStorage();
   testExpiredSessionNotRestored();
+  testEmailValidation();
+  testHandleValidation();
   
   // Async tests
   return testLogout()
+    .then(function() {
+      return testCreateAccountValidation();
+    })
     .then(function() {
       console.log('\n--- Test Results ---');
       console.log('Passed: ' + testResults.passed);
