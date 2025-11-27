@@ -27,13 +27,13 @@ import * as accessibility from '../utils/accessibility.js';
 
 // Import views
 import LoginView from '../views/LoginView.js';
-import { SignupView } from '../views/SignupView.js';
+import SignupView from '../views/SignupView.js';
 import TimelineView from '../views/TimelineView.js';
 import ComposeView from '../views/ComposeView.js';
-import { PostDetailView } from '../views/PostDetailView.js';
-import { ProfileView } from '../views/ProfileView.js';
-import { EditProfileView } from '../views/EditProfileView.js';
-import { NotificationsView } from '../views/NotificationsView.js';
+import PostDetailView from '../views/PostDetailView.js';
+import ProfileView from '../views/ProfileView.js';
+import EditProfileView from '../views/EditProfileView.js';
+import NotificationsView from '../views/NotificationsView.js';
 
 /**
  * AppContent Component

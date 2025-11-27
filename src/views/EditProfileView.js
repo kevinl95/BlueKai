@@ -4,9 +4,9 @@
  */
 
 import { h, Component } from 'preact';
-import { TextInput } from '../components/TextInput.js';
-import { LoadingIndicator } from '../components/LoadingIndicator.js';
-import { ErrorMessage } from '../components/ErrorMessage.js';
+import TextInput from '../components/TextInput.js';
+import LoadingIndicator from '../components/LoadingIndicator.js';
+import ErrorMessage from '../components/ErrorMessage.js';
 
 var DISPLAY_NAME_MAX_LENGTH = 64;
 var BIO_MAX_LENGTH = 256;

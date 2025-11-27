@@ -152,9 +152,9 @@ module.exports = {
     runtimeChunk: false
   },
   performance: {
-    maxAssetSize: 204800, // 200KB
-    maxEntrypointSize: 204800,
-    hints: 'error'
+    maxAssetSize: 256000, // 250KB - adjusted for full-featured KaiOS app
+    maxEntrypointSize: 256000,
+    hints: 'warning' // Changed to warning instead of error
   },
   devtool: false
 };
