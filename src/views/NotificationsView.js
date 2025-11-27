@@ -273,8 +273,13 @@ NotificationsViewClass.prototype.render = function() {
   
   // Loading state
   if (state.loading && state.notifications.length === 0) {
-    return h('div', { class: 'notifications-view' },
-      h('div', { class: 'notifications-view__header' },
+    return h('main', { 
+      class: 'notifications-view',
+      id: 'main-content',
+      role: 'main',
+      'aria-label': 'Notifications'
+    },
+      h('header', { class: 'notifications-view__header' },
         h('h1', { class: 'notifications-view__title' }, 'Notifications')
       ),
       h(LoadingIndicator, { message: 'Loading notifications...' })
@@ -283,8 +288,13 @@ NotificationsViewClass.prototype.render = function() {
   
   // Error state
   if (state.error && state.notifications.length === 0) {
-    return h('div', { class: 'notifications-view' },
-      h('div', { class: 'notifications-view__header' },
+    return h('main', { 
+      class: 'notifications-view',
+      id: 'main-content',
+      role: 'main',
+      'aria-label': 'Notifications'
+    },
+      h('header', { class: 'notifications-view__header' },
         h('h1', { class: 'notifications-view__title' }, 'Notifications')
       ),
       h(ErrorMessage, {
@@ -296,8 +306,13 @@ NotificationsViewClass.prototype.render = function() {
   
   // Empty state
   if (state.notifications.length === 0) {
-    return h('div', { class: 'notifications-view' },
-      h('div', { class: 'notifications-view__header' },
+    return h('main', { 
+      class: 'notifications-view',
+      id: 'main-content',
+      role: 'main',
+      'aria-label': 'Notifications'
+    },
+      h('header', { class: 'notifications-view__header' },
         h('h1', { class: 'notifications-view__title' }, 'Notifications')
       ),
       h('div', { class: 'notifications-view__empty' },
@@ -307,11 +322,20 @@ NotificationsViewClass.prototype.render = function() {
   }
   
   // Render notifications list
-  return h('div', { class: 'notifications-view' },
-    h('div', { class: 'notifications-view__header' },
+  return h('main', { 
+    class: 'notifications-view',
+    id: 'main-content',
+    role: 'main',
+    'aria-label': 'Notifications'
+  },
+    h('header', { class: 'notifications-view__header' },
       h('h1', { class: 'notifications-view__title' }, 'Notifications')
     ),
-    h('div', { class: 'notifications-view__list' },
+    h('div', { 
+      class: 'notifications-view__list',
+      role: 'list',
+      'aria-label': 'Notification list'
+    },
       state.notifications.map(function(notification, index) {
         return h(NotificationItem, {
           key: notification.uri || index,

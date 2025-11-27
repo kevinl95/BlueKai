@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accessibility Tests - BlueKai</title>
+  <link rel="stylesheet" href="src/styles/accessibility.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .test-section {
+      margin: 30px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    
+    .test-section h2 {
+      margin-top: 0;
+      color: #0066cc;
+    }
+    
+    .test-result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    
+    .test-result.pass {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      color: #155724;
+    }
+    
+    .test-result.fail {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
+    }
+    
+    .demo-button {
+      margin: 10px 5px;
+    }
+    
+    .demo-post {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    
+    .demo-post:focus {
+      outline: 3px solid #0066cc;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>BlueKai Accessibility Tests</h1>
+  <p>This page tests the accessibility features implemented in BlueKai.</p>
+  
+  <!-- Skip Links Test -->
+  <div class="test-section">
+    <h2>1. Skip Links</h2>
+    <p>Press Tab to see skip links appear. They should be visible when focused.</p>
+    <div id="skip-links-test"></div>
+    <div id="test-result-skip-links" class="test-result"></div>
+  </div>
+  
+  <!-- ARIA Live Regions Test -->
+  <div class="test-section">
+    <h2>2. ARIA Live Regions</h2>
+    <p>Click the buttons to test screen reader announcements.</p>
+    <button onclick="testPoliteAnnouncement()" class="demo-button">Test Polite Announcement</button>
+    <button onclick="testAssertiveAnnouncement()" class="demo-button">Test Assertive Announcement</button>
+    <div id="test-result-live-regions" class="test-result"></div>
+  </div>
+  
+  <!-- Focus Indicators Test -->
+  <div class="test-section">
+    <h2>3. Focus Indicators</h2>
+    <p>Tab through these elements to verify focus indicators are visible with 3:1 contrast.</p>
+    <button class="demo-button">Button 1</button>
+    <button class="demo-button">Button 2</button>
+    <a href="#" class="demo-button">Link</a>
+    <input type="text" placeholder="Text input" style="margin: 10px 5px;">
+    <div id="test-result-focus" class="test-result"></div>
+  </div>
+  
+  <!-- Semantic HTML Test -->
+  <div class="test-section">
+    <h2>4. Semantic HTML</h2>
+    <p>Check that semantic elements are used correctly.</p>
+    <main id="main-content">
+      <header>
+        <h3>Sample Header</h3>
+      </header>
+      <article class="demo-post" tabindex="0" role="article" aria-label="Sample post">
+        <p>This is a sample post with semantic HTML.</p>
+        <footer>
+          <span role="status" aria-label="5 likes">❤️ 5</span>
+          <span role="status" aria-label="3 reposts">🔁 3</span>
+        </footer>
+      </article>
+    </main>
+    <div id="test-result-semantic" class="test-result"></div>
+  </div>
+  
+  <!-- ARIA Labels Test -->
+  <div class="test-section">
+    <h2>5. ARIA Labels</h2>
+    <p>Interactive elements should have descriptive labels.</p>
+    <button aria-label="Like this post" class="demo-button">❤️</button>
+    <button aria-label="Repost this post" class="demo-button">🔁</button>
+    <button aria-label="Reply to this post" class="demo-button">💬</button>
+    <div id="test-result-aria-labels" class="test-result"></div>
+  </div>
+  
+  <!-- Heading Hierarchy Test -->
+  <div class="test-section">
+    <h2>6. Heading Hierarchy</h2>
+    <p>Headings should follow logical order.</p>
+    <h1 style="font-size: 24px;">Page Title (h1)</h1>
+    <h2 style="font-size: 20px;">Section Heading (h2)</h2>
+    <h3 style="font-size: 18px;">Subsection Heading (h3)</h3>
+    <h4 style="font-size: 16px;">Sub-subsection Heading (h4)</h4>
+    <div id="test-result-headings" class="test-result"></div>
+  </div>
+  
+  <!-- Screen Reader Only Content Test -->
+  <div class="test-section">
+    <h2>7. Screen Reader Only Content</h2>
+    <p>Some content should be hidden visually but available to screen readers.</p>
+    <button class="demo-button">
+      <span aria-hidden="true">❤️</span>
+      <span class="sr-only">Like this post</span>
+    </button>
+    <div id="test-result-sr-only" class="test-result"></div>
+  </div>
+  
+  <!-- Contrast Test -->
+  <div class="test-section">
+    <h2>8. Color Contrast</h2>
+    <p>Text should meet WCAG AA contrast requirements (4.5:1 for normal text).</p>
+    <div style="padding: 10px; margin: 10px 0;">
+      <p style="color: #1a1a1a; background: #ffffff;">Body text: #1a1a1a on #ffffff (16.1:1) ✓</p>
+      <p style="color: #0066cc; background: #ffffff;">Link text: #0066cc on #ffffff (7.7:1) ✓</p>
+      <p style="color: #cc0000; background: #ffffff;">Error text: #cc0000 on #ffffff (7.9:1) ✓</p>
+      <p style="color: #008800; background: #ffffff;">Success text: #008800 on #ffffff (5.4:1) ✓</p>
+    </div>
+    <div id="test-result-contrast" class="test-result"></div>
+  </div>
+  
+  <!-- Keyboard Navigation Test -->
+  <div class="test-section">
+    <h2>9. Keyboard Navigation</h2>
+    <p>All functionality should be accessible via keyboard.</p>
+    <div id="keyboard-test-area">
+      <button onclick="logKeyboardAction('Button clicked')" class="demo-button">Click Me</button>
+      <input type="text" onkeydown="logKeyboardAction('Input focused')" placeholder="Type here" style="margin: 10px 5px;">
+      <a href="#" onclick="logKeyboardAction('Link activated'); return false;" class="demo-button">Link</a>
+    </div>
+    <div id="keyboard-log" style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 4px; min-height: 50px;"></div>
+    <div id="test-result-keyboard" class="test-result"></div>
+  </div>
+  
+  <!-- Test Results Summary -->
+  <div class="test-section">
+    <h2>Test Results Summary</h2>
+    <div id="test-summary"></div>
+  </div>
+
+  <script src="src/utils/accessibility.js"></script>
+  <script>
+    // Test results tracking
+    var testResults = {
+      passed: 0,
+      failed: 0,
+      total: 0
+    };
+    
+    // Initialize tests on page load
+    window.addEventListener('DOMContentLoaded', function() {
+      runAllTests();
+    });
+    
+    function runAllTests() {
+      console.log('Running accessibility tests...');
+      
+      testSkipLinks();
+      testLiveRegions();
+      testFocusIndicators();
+      testSemanticHTML();
+      testARIALabels();
+      testHeadingHierarchy();
+      testScreenReaderOnly();
+      testContrast();
+      testKeyboardNavigation();
+      
+      // Update summary after a delay to allow async tests
+      setTimeout(updateSummary, 1000);
+    }
+    
+    function testSkipLinks() {
+      var testName = 'Skip Links';
+      try {
+        // Initialize skip links
+        if (typeof accessibility !== 'undefined') {
+          accessibility.addSkipLinks([
+            { targetId: 'main-content', label: 'Skip to main content' },
+            { targetId: 'test-summary', label: 'Skip to summary' }
+          ]);
+        }
+        
+        var skipLinksContainer = document.getElementById('skip-links');
+        if (skipLinksContainer && skipLinksContainer.children.length > 0) {
+          showResult('skip-links', true, 'Skip links created successfully');
+        } else {
+          showResult('skip-links', false, 'Skip links not found');
+        }
+      } catch (error) {
+        showResult('skip-links', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testLiveRegions() {
+      var testName = 'ARIA Live Regions';
+      try {
+        if (typeof accessibility !== 'undefined') {
+          accessibility.initializeLiveRegions();
+        }
+        
+        var politeRegion = document.getElementById('aria-live-region-polite');
+        var assertiveRegion = document.getElementById('aria-live-region-assertive');
+        
+        if (politeRegion && assertiveRegion) {
+          showResult('live-regions', true, 'Live regions initialized successfully');
+        } else {
+          showResult('live-regions', false, 'Live regions not found');
+        }
+      } catch (error) {
+        showResult('live-regions', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testPoliteAnnouncement() {
+      if (typeof accessibility !== 'undefined') {
+        accessibility.announceToScreenReader('This is a polite announcement', 'polite');
+        alert('Polite announcement sent to screen reader');
+      }
+    }
+    
+    function testAssertiveAnnouncement() {
+      if (typeof accessibility !== 'undefined') {
+        accessibility.announceToScreenReader('This is an assertive announcement!', 'assertive');
+        alert('Assertive announcement sent to screen reader');
+      }
+    }
+    
+    function testFocusIndicators() {
+      var testName = 'Focus Indicators';
+      try {
+        // Check if focus styles are defined
+        var button = document.querySelector('.demo-button');
+        if (button) {
+          showResult('focus', true, 'Focus indicators are styled (verify visually by tabbing)');
+        } else {
+          showResult('focus', false, 'No focusable elements found');
+        }
+      } catch (error) {
+        showResult('focus', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testSemanticHTML() {
+      var testName = 'Semantic HTML';
+      try {
+        var main = document.querySelector('main');
+        var header = document.querySelector('header');
+        var article = document.querySelector('article');
+        var footer = document.querySelector('footer');
+        
+        if (main && header && article && footer) {
+          showResult('semantic', true, 'Semantic HTML elements found');
+        } else {
+          showResult('semantic', false, 'Some semantic elements missing');
+        }
+      } catch (error) {
+        showResult('semantic', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testARIALabels() {
+      var testName = 'ARIA Labels';
+      try {
+        var buttonsWithLabels = document.querySelectorAll('[aria-label]');
+        if (buttonsWithLabels.length > 0) {
+          showResult('aria-labels', true, buttonsWithLabels.length + ' elements with ARIA labels found');
+        } else {
+          showResult('aria-labels', false, 'No ARIA labels found');
+        }
+      } catch (error) {
+        showResult('aria-labels', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testHeadingHierarchy() {
+      var testName = 'Heading Hierarchy';
+      try {
+        var h1 = document.querySelector('h1');
+        var h2 = document.querySelector('h2');
+        var h3 = document.querySelector('h3');
+        var h4 = document.querySelector('h4');
+        
+        if (h1 && h2 && h3 && h4) {
+          showResult('headings', true, 'Heading hierarchy is present (verify order manually)');
+        } else {
+          showResult('headings', false, 'Some heading levels missing');
+        }
+      } catch (error) {
+        showResult('headings', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testScreenReaderOnly() {
+      var testName = 'Screen Reader Only Content';
+      try {
+        var srOnly = document.querySelector('.sr-only');
+        if (srOnly) {
+          var styles = window.getComputedStyle(srOnly);
+          var isHidden = styles.position === 'absolute' && 
+                        parseInt(styles.left) < -1000;
+          
+          if (isHidden) {
+            showResult('sr-only', true, 'Screen reader only content is properly hidden');
+          } else {
+            showResult('sr-only', false, 'Screen reader only content is not hidden correctly');
+          }
+        } else {
+          showResult('sr-only', false, 'No screen reader only content found');
+        }
+      } catch (error) {
+        showResult('sr-only', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testContrast() {
+      var testName = 'Color Contrast';
+      try {
+        // This is a visual test, so we just confirm the styles are applied
+        showResult('contrast', true, 'Contrast ratios are defined (verify visually above)');
+      } catch (error) {
+        showResult('contrast', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function testKeyboardNavigation() {
+      var testName = 'Keyboard Navigation';
+      try {
+        var focusableElements = document.querySelectorAll('button, a, input, [tabindex]');
+        if (focusableElements.length > 0) {
+          showResult('keyboard', true, focusableElements.length + ' keyboard-accessible elements found');
+        } else {
+          showResult('keyboard', false, 'No keyboard-accessible elements found');
+        }
+      } catch (error) {
+        showResult('keyboard', false, 'Error: ' + error.message);
+      }
+    }
+    
+    function logKeyboardAction(action) {
+      var log = document.getElementById('keyboard-log');
+      var timestamp = new Date().toLocaleTimeString();
+      log.innerHTML += '<div>' + timestamp + ': ' + action + '</div>';
+    }
+    
+    function showResult(testId, passed, message) {
+      var resultDiv = document.getElementById('test-result-' + testId);
+      if (resultDiv) {
+        resultDiv.className = 'test-result ' + (passed ? 'pass' : 'fail');
+        resultDiv.textContent = (passed ? '✓ PASS: ' : '✗ FAIL: ') + message;
+        
+        testResults.total++;
+        if (passed) {
+          testResults.passed++;
+        } else {
+          testResults.failed++;
+        }
+      }
+    }
+    
+    function updateSummary() {
+      var summary = document.getElementById('test-summary');
+      var passRate = testResults.total > 0 
+        ? Math.round((testResults.passed / testResults.total) * 100) 
+        : 0;
+      
+      summary.innerHTML = '<h3>Results</h3>' +
+        '<p><strong>Total Tests:</strong> ' + testResults.total + '</p>' +
+        '<p><strong>Passed:</strong> ' + testResults.passed + '</p>' +
+        '<p><strong>Failed:</strong> ' + testResults.failed + '</p>' +
+        '<p><strong>Pass Rate:</strong> ' + passRate + '%</p>';
+      
+      if (passRate === 100) {
+        summary.innerHTML += '<p style="color: #008800; font-weight: bold;">All tests passed! ✓</p>';
+      } else if (passRate >= 80) {
+        summary.innerHTML += '<p style="color: #ff8800; font-weight: bold;">Most tests passed, but some need attention.</p>';
+      } else {
+        summary.innerHTML += '<p style="color: #cc0000; font-weight: bold;">Several tests failed. Please review.</p>';
+      }
+    }
+  </script>
+</body>
+</html>

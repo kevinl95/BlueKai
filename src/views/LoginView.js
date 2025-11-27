@@ -153,9 +153,14 @@ function LoginView(props) {
     return err.message || t('login.error');
   };
   
-  return h('div', { className: 'login-view' },
+  return h('main', { 
+    className: 'login-view',
+    id: 'main-content',
+    role: 'main',
+    'aria-label': 'Login'
+  },
     h('div', { className: 'login-view__container' },
-      h('div', { className: 'login-view__header' },
+      h('header', { className: 'login-view__header' },
         h('h1', { className: 'login-view__title' }, t('login.title')),
         h('p', { className: 'login-view__subtitle' }, 'BlueSky for KaiOS')
       ),
@@ -163,7 +168,8 @@ function LoginView(props) {
       h('form', {
         className: 'login-view__form',
         onSubmit: handleSubmit,
-        noValidate: true
+        noValidate: true,
+        'aria-label': 'Login form'
       },
         h(TextInput, {
           id: 'login-handle',
@@ -207,7 +213,7 @@ function LoginView(props) {
         }, loading ? t('login.loggingIn') : t('login.submit'))
       ),
       
-      h('div', { className: 'login-view__footer' },
+      h('footer', { className: 'login-view__footer' },
         h('p', { className: 'login-view__signup-link' },
           t('login.signupLink')
         )

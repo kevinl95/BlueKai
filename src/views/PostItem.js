@@ -321,27 +321,29 @@ PostItem.prototype.render = function() {
     className += ' post-item--processing';
   }
   
-  return h('div', {
+  return h('article', {
     className: className,
     onClick: handleClick,
     onKeyDown: handleKeyDown,
     tabIndex: focused ? 0 : -1,
-    role: 'article',
-    'aria-label': 'Post by ' + (author.displayName || author.handle)
+    'aria-label': 'Post by ' + (author.displayName || author.handle) + ': ' + (text.length > 100 ? text.substring(0, 100) + '...' : text),
+    'data-focusable': 'true'
   },
     // Author info
-    h('div', { className: 'post-item__header' },
+    h('header', { className: 'post-item__header' },
       // Avatar (conditional based on data saver mode and manual load)
       shouldShowImages && author.avatar && h('img', {
         className: 'post-item__avatar',
         src: author.avatar,
-        alt: author.displayName || author.handle,
+        alt: 'Avatar of ' + (author.displayName || author.handle),
         width: 32,
-        height: 32
+        height: 32,
+        role: 'img'
       }),
       !shouldShowImages && h('div', {
         className: 'post-item__avatar post-item__avatar--placeholder',
-        'aria-label': 'Avatar placeholder'
+        'aria-label': 'Avatar placeholder',
+        role: 'img'
       }),
       
       // Author details
@@ -367,34 +369,52 @@ PostItem.prototype.render = function() {
     }),
     
     // Engagement metrics
-    h('div', { className: 'post-item__engagement' },
+    h('footer', { 
+      className: 'post-item__engagement',
+      'aria-label': 'Post engagement metrics'
+    },
       // Reply count
       h('span', {
         className: 'post-item__metric',
-        'aria-label': replyCount + ' replies'
+        'aria-label': replyCount === 0 ? 'No replies' : replyCount === 1 ? '1 reply' : replyCount + ' replies',
+        role: 'status'
       },
-        h('span', { className: 'post-item__metric-icon' }, '💬'),
+        h('span', { 
+          className: 'post-item__metric-icon',
+          'aria-hidden': 'true'
+        }, '💬'),
         ' ',
+        h('span', { className: 'sr-only' }, replyCount === 0 ? 'No replies' : replyCount === 1 ? '1 reply' : replyCount + ' replies'),
         replyCount > 0 ? replyCount : ''
       ),
       
       // Repost count
       h('span', {
         className: 'post-item__metric' + (isReposted ? ' post-item__metric--active' : ''),
-        'aria-label': repostCount + ' reposts' + (isReposted ? ', you reposted' : '')
+        'aria-label': (repostCount === 0 ? 'No reposts' : repostCount === 1 ? '1 repost' : repostCount + ' reposts') + (isReposted ? ', you reposted this' : ''),
+        role: 'status'
       },
-        h('span', { className: 'post-item__metric-icon' }, '🔁'),
+        h('span', { 
+          className: 'post-item__metric-icon',
+          'aria-hidden': 'true'
+        }, '🔁'),
         ' ',
+        h('span', { className: 'sr-only' }, (repostCount === 0 ? 'No reposts' : repostCount === 1 ? '1 repost' : repostCount + ' reposts') + (isReposted ? ', you reposted this' : '')),
         repostCount > 0 ? repostCount : ''
       ),
       
       // Like count
       h('span', {
         className: 'post-item__metric' + (isLiked ? ' post-item__metric--active' : ''),
-        'aria-label': likeCount + ' likes' + (isLiked ? ', you liked' : '')
+        'aria-label': (likeCount === 0 ? 'No likes' : likeCount === 1 ? '1 like' : likeCount + ' likes') + (isLiked ? ', you liked this' : ''),
+        role: 'status'
       },
-        h('span', { className: 'post-item__metric-icon' }, '❤️'),
+        h('span', { 
+          className: 'post-item__metric-icon',
+          'aria-hidden': 'true'
+        }, '❤️'),
         ' ',
+        h('span', { className: 'sr-only' }, (likeCount === 0 ? 'No likes' : likeCount === 1 ? '1 like' : likeCount + ' likes') + (isLiked ? ', you liked this' : '')),
         likeCount > 0 ? likeCount : ''
       )
     ),

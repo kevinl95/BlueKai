@@ -241,14 +241,24 @@ TimelineViewClass.prototype.render = function() {
   
   // Show loading indicator on initial load
   if (loading && posts.length === 0) {
-    return h('div', { className: 'timeline-view timeline-view--loading' },
+    return h('main', { 
+      className: 'timeline-view timeline-view--loading',
+      id: 'main-content',
+      role: 'main',
+      'aria-label': 'Timeline'
+    },
       h(LoadingIndicator, { message: 'Loading timeline...' })
     );
   }
   
   // Show error message if load failed and no cached posts
   if (error && posts.length === 0) {
-    return h('div', { className: 'timeline-view timeline-view--error' },
+    return h('main', { 
+      className: 'timeline-view timeline-view--error',
+      id: 'main-content',
+      role: 'main',
+      'aria-label': 'Timeline'
+    },
       h(ErrorMessage, {
         message: error,
         onRetry: this.handleRetry
@@ -256,7 +266,12 @@ TimelineViewClass.prototype.render = function() {
     );
   }
   
-  return h('div', { className: 'timeline-view' },
+  return h('main', { 
+    className: 'timeline-view',
+    id: 'main-content',
+    role: 'main',
+    'aria-label': 'Timeline'
+  },
     // Error banner if there's an error but we have cached posts
     error && posts.length > 0 && h('div', { className: 'timeline-view__error-banner' },
       h(ErrorMessage, {

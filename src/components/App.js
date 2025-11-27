@@ -22,6 +22,9 @@ var i18n = require('../i18n/i18n-init.js');
 // Import actions (CommonJS module)
 var actions = require('../state/actions.js');
 
+// Import accessibility utilities
+import * as accessibility from '../utils/accessibility.js';
+
 // Import views
 import LoginView from '../views/LoginView.js';
 import { SignupView } from '../views/SignupView.js';
@@ -77,6 +80,14 @@ class AppContentClass extends Component {
     var context = this.context;
     var state = context.state;
     var dispatch = context.dispatch;
+    
+    // Initialize accessibility features
+    // Requirements: 10.2, 10.3
+    accessibility.initializeLiveRegions();
+    accessibility.addSkipLinks([
+      { targetId: 'main-content', label: 'Skip to main content' },
+      { targetId: 'softkey-navigation', label: 'Skip to navigation' }
+    ]);
     
     // Monitor network status
     this.networkUnsubscribe = networkStatus.subscribe(this.handleNetworkChange);
@@ -625,16 +636,21 @@ class AppContentClass extends Component {
         height: '100vh',
         display: 'flex',
         flexDirection: 'column'
-      }
+      },
+      role: 'application',
+      'aria-label': 'BlueKai - BlueSky for KaiOS'
     },
       h(OfflineIndicator, { isOnline: this.state.isOnline }),
       h('div', {
         style: {
           flex: 1,
           overflow: 'auto'
-        }
+        },
+        id: 'app-content'
       }, this.renderView()),
-      h(SoftkeyBar, softkeyConfig)
+      h('div', { id: 'softkey-navigation' },
+        h(SoftkeyBar, softkeyConfig)
+      )
     );
   }
 }

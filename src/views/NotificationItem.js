@@ -122,15 +122,21 @@ NotificationItem.prototype.render = function(props) {
     className += ' notification-item--unread';
   }
   
-  return h('div', {
+  return h('article', {
     class: className,
     onClick: handleClick,
     onKeyDown: handleKeyDown,
     tabIndex: isFocused ? 0 : -1,
-    'data-notification-uri': notification.uri
+    'data-notification-uri': notification.uri,
+    'data-focusable': 'true',
+    role: 'article',
+    'aria-label': notificationText + (isRead ? '' : ', unread') + ', ' + formattedTime
   },
-    h('div', { class: 'notification-item__header' },
-      h('span', { class: 'notification-item__icon' }, icon),
+    h('header', { class: 'notification-item__header' },
+      h('span', { 
+        class: 'notification-item__icon',
+        'aria-hidden': 'true'
+      }, icon),
       h('div', { class: 'notification-item__info' },
         h('div', { class: 'notification-item__actor' },
           h('span', { class: 'notification-item__actor-name' }, actorName),

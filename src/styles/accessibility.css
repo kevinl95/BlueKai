@@ -1,0 +1,420 @@
+/**
+ * Accessibility Styles
+ * Requirements: 10.2, 10.3
+ */
+
+/* Skip Links */
+.skip-links {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10000;
+  background: #000;
+}
+
+.skip-link {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  border: 2px solid #fff;
+  border-radius: 4px;
+}
+
+.skip-link:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  left: 8px;
+  top: 8px;
+  z-index: 10001;
+}
+
+/* Screen Reader Only Content */
+.sr-only {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Focus Indicators - WCAG AA 3:1 contrast requirement */
+*:focus {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* High contrast focus for dark backgrounds */
+.dark-bg *:focus,
+[data-theme="dark"] *:focus {
+  outline-color: #66b3ff;
+}
+
+/* Focus visible (for keyboard navigation only) */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Button focus states */
+button:focus,
+a:focus,
+input:focus,
+textarea:focus,
+select:focus,
+[role="button"]:focus,
+[tabindex]:focus {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+/* Ensure focus indicators are visible on all interactive elements */
+[data-focusable="true"]:focus {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.2);
+}
+
+/* ARIA Live Regions */
+[aria-live] {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Semantic HTML Enhancements */
+main {
+  display: block;
+}
+
+article {
+  display: block;
+}
+
+nav {
+  display: block;
+}
+
+header {
+  display: block;
+}
+
+footer {
+  display: block;
+}
+
+section {
+  display: block;
+}
+
+aside {
+  display: block;
+}
+
+/* Heading Hierarchy */
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 12px 0;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+h4 {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+/* Ensure readable text contrast - WCAG AA */
+body {
+  color: #1a1a1a;
+  background: #ffffff;
+}
+
+/* Link contrast */
+a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+a:hover,
+a:focus {
+  color: #004499;
+}
+
+a:visited {
+  color: #551a8b;
+}
+
+/* Error text contrast */
+.error,
+[role="alert"],
+.text-input__error {
+  color: #cc0000;
+}
+
+/* Success text contrast */
+.success {
+  color: #008800;
+}
+
+/* Disabled state */
+[disabled],
+[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading state */
+[aria-busy="true"] {
+  cursor: wait;
+}
+
+/* Hidden content */
+[hidden],
+[aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Ensure images have alt text */
+img:not([alt]) {
+  border: 3px solid #cc0000;
+}
+
+/* Form labels */
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+/* Required field indicator */
+[required],
+[aria-required="true"] {
+  /* Visual indicator handled by component */
+}
+
+/* Invalid field indicator */
+[aria-invalid="true"] {
+  border-color: #cc0000;
+}
+
+/* Landmark regions */
+[role="main"],
+[role="navigation"],
+[role="complementary"],
+[role="contentinfo"],
+[role="banner"] {
+  display: block;
+}
+
+/* Dialog/Modal accessibility */
+[role="dialog"],
+[role="alertdialog"] {
+  position: fixed;
+  z-index: 1000;
+}
+
+/* Ensure modal backdrop is visible */
+.modal__backdrop {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* List semantics */
+[role="list"] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+[role="listitem"] {
+  display: block;
+}
+
+/* Article/Post semantics */
+[role="article"] {
+  display: block;
+}
+
+/* Button semantics */
+[role="button"] {
+  cursor: pointer;
+  user-select: none;
+}
+
+[role="button"][aria-pressed="true"] {
+  background: #e6f2ff;
+}
+
+/* Tab semantics */
+[role="tablist"] {
+  display: flex;
+}
+
+[role="tab"] {
+  cursor: pointer;
+}
+
+[role="tab"][aria-selected="true"] {
+  font-weight: bold;
+  border-bottom: 3px solid #0066cc;
+}
+
+[role="tabpanel"] {
+  display: block;
+}
+
+[role="tabpanel"][hidden] {
+  display: none;
+}
+
+/* Menu semantics */
+[role="menu"],
+[role="menubar"] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+[role="menuitem"] {
+  cursor: pointer;
+}
+
+/* Status and alert */
+[role="status"],
+[role="alert"] {
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 8px 0;
+}
+
+[role="alert"] {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+/* Progress indicator */
+[role="progressbar"] {
+  display: block;
+}
+
+/* Tooltip */
+[role="tooltip"] {
+  position: absolute;
+  z-index: 1000;
+  background: #333;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Ensure sufficient line height for readability */
+p,
+li,
+td,
+th {
+  line-height: 1.5;
+}
+
+/* Ensure sufficient spacing between interactive elements */
+button + button,
+a + a,
+input + input {
+  margin-left: 8px;
+}
+
+/* KaiOS specific - ensure D-pad navigation is visible */
+.post-item--focused,
+.notification-item--focused,
+[data-focused="true"] {
+  background: #e6f2ff;
+  outline: 3px solid #0066cc;
+  outline-offset: -3px;
+}
+
+/* Ensure text is readable on small screens */
+@media (max-width: 320px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 20px;
+  }
+  
+  h2 {
+    font-size: 18px;
+  }
+  
+  h3 {
+    font-size: 16px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  * {
+    border-color: currentColor !important;
+  }
+  
+  *:focus {
+    outline-width: 4px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
