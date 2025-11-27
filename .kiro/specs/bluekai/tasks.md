@@ -355,14 +355,14 @@
     - Write tests for notification loading
     - _Requirements: 4.7_
 
-- [ ] 16. Implement data saver mode
-  - [ ] 16.1 Create settings management
+- [x] 16. Implement data saver mode
+  - [x] 16.1 Create settings management
     - Add settings to app state
     - Implement settings persistence to LocalStorage
     - Create settings toggle utilities
     - _Requirements: 2.6, 6.1_
   
-  - [ ] 16.2 Implement conditional image loading
+  - [x] 16.2 Implement conditional image loading
     - Modify PostItem to check data saver setting
     - Show placeholder instead of avatar when enabled
     - Add "Load images" option in post action menu
@@ -370,7 +370,7 @@
     - Write tests for image loading behavior
     - _Requirements: 2.3, 2.5, 2.6_
   
-  - [ ] 16.3 Add data usage optimizations
+  - [x] 16.3 Add data usage optimizations
     - Implement request deduplication
     - Add conditional requests with ETags if supported
     - Optimize timeline refresh to fetch only new posts

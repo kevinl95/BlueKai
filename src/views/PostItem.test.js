@@ -612,6 +612,82 @@ function runPostItemTests() {
     }, 50);
   });
   
+  // Test: Data saver mode hides images
+  test('Data saver mode hides avatar images', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostItem, {
+      post: mockPost,
+      dataSaverMode: true
+    });
+    
+    render(component, container);
+    
+    var avatar = container.querySelector('.post-item__avatar');
+    var placeholder = container.querySelector('.post-item__avatar--placeholder');
+    
+    assert(placeholder !== null, 'Should show placeholder in data saver mode');
+    assert(!avatar || !avatar.src, 'Should not show avatar image in data saver mode');
+    
+    document.body.removeChild(container);
+  });
+  
+  // Test: Images show when data saver mode is off
+  test('Images show when data saver mode is off', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostItem, {
+      post: mockPost,
+      dataSaverMode: false
+    });
+    
+    render(component, container);
+    
+    var avatar = container.querySelector('.post-item__avatar');
+    
+    assert(avatar !== null, 'Should show avatar when data saver is off');
+    assert(avatar.src === mockPost.author.avatar, 'Avatar should have correct src');
+    
+    document.body.removeChild(container);
+  });
+  
+  // Test: loadImages method toggles image display
+  test('loadImages method enables image display in data saver mode', function(done) {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostItem, {
+      post: mockPost,
+      dataSaverMode: true
+    });
+    
+    var instance = render(component, container);
+    
+    // Initially should show placeholder
+    var placeholder = container.querySelector('.post-item__avatar--placeholder');
+    assert(placeholder !== null, 'Should initially show placeholder');
+    
+    // Call loadImages
+    if (instance && instance.loadImages) {
+      instance.loadImages();
+      
+      // Wait for re-render
+      setTimeout(function() {
+        var avatar = container.querySelector('.post-item__avatar');
+        assert(avatar !== null, 'Should show avatar after loadImages');
+        assert(avatar.src === mockPost.author.avatar, 'Avatar should have correct src');
+        
+        document.body.removeChild(container);
+        done();
+      }, 50);
+    } else {
+      document.body.removeChild(container);
+      done();
+    }
+  });
+  
   console.log('\n--- PostItem Test Results ---');
   console.log('Total:', results.total);
   console.log('Passed:', results.passed);

@@ -92,12 +92,24 @@ PostActionMenu.prototype.moveFocus = function(direction) {
 
 /**
  * Get available actions based on post state
+ * Requirements: 2.3, 2.5, 2.6
  */
 PostActionMenu.prototype.getActions = function() {
   var post = this.props.post;
   var viewer = post.viewer || {};
+  var dataSaverMode = this.props.dataSaverMode || false;
+  var imagesLoaded = this.props.imagesLoaded || false;
   
   var actions = [];
+  
+  // Load images (only show in data saver mode if not already loaded)
+  if (dataSaverMode && !imagesLoaded) {
+    actions.push({
+      id: 'load-images',
+      label: 'Load Images',
+      icon: '🖼️'
+    });
+  }
   
   // Like/Unlike
   if (viewer.like) {

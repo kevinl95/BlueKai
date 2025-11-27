@@ -23,7 +23,8 @@ function PostItem() {
     optimisticRepost: null, // null, 'reposted', or 'unreposted'
     optimisticRepostCount: 0,
     isProcessing: false,
-    showRepostConfirm: false
+    showRepostConfirm: false,
+    imagesLoaded: false // Track if user manually loaded images
   };
   
   this.handleLike = this.handleLike.bind(this);
@@ -32,6 +33,7 @@ function PostItem() {
   this.handleUnrepost = this.handleUnrepost.bind(this);
   this.confirmRepost = this.confirmRepost.bind(this);
   this.cancelRepost = this.cancelRepost.bind(this);
+  this.loadImages = this.loadImages.bind(this);
 }
 
 // Inherit from Component
@@ -195,6 +197,14 @@ PostItem.prototype.cancelRepost = function() {
 };
 
 /**
+ * Load images manually (for data saver mode)
+ * Requirements: 2.3, 2.5, 2.6
+ */
+PostItem.prototype.loadImages = function() {
+  this.setState({ imagesLoaded: true });
+};
+
+/**
  * Handle unrepost action
  */
 PostItem.prototype.handleUnrepost = function() {
@@ -247,6 +257,10 @@ PostItem.prototype.render = function() {
   var onSelect = this.props.onSelect;
   var focused = this.props.focused;
   var dataSaverMode = this.props.dataSaverMode || false;
+  
+  // Determine if images should be shown
+  // Show images if: not in data saver mode OR user manually loaded them
+  var shouldShowImages = !dataSaverMode || this.state.imagesLoaded;
   
   if (!post) {
     return null;
@@ -317,15 +331,15 @@ PostItem.prototype.render = function() {
   },
     // Author info
     h('div', { className: 'post-item__header' },
-      // Avatar (conditional based on data saver mode)
-      !dataSaverMode && author.avatar && h('img', {
+      // Avatar (conditional based on data saver mode and manual load)
+      shouldShowImages && author.avatar && h('img', {
         className: 'post-item__avatar',
         src: author.avatar,
         alt: author.displayName || author.handle,
         width: 32,
         height: 32
       }),
-      dataSaverMode && h('div', {
+      !shouldShowImages && h('div', {
         className: 'post-item__avatar post-item__avatar--placeholder',
         'aria-label': 'Avatar placeholder'
       }),

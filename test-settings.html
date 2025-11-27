@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings Utilities Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 0 20px;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      color: #333;
+      border-bottom: 2px solid #0066cc;
+      padding-bottom: 10px;
+    }
+    
+    #results {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 20px;
+    }
+    
+    .test-passed {
+      color: #28a745;
+      margin: 5px 0;
+    }
+    
+    .test-failed {
+      color: #dc3545;
+      margin: 5px 0;
+      font-weight: bold;
+    }
+    
+    .summary {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 0;
+      padding: 15px;
+      background: #e9ecef;
+      border-radius: 4px;
+    }
+    
+    button {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 10px 5px 10px 0;
+    }
+    
+    button:hover {
+      background: #0052a3;
+    }
+    
+    pre {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Settings Utilities Tests</h1>
+  
+  <div>
+    <button onclick="runTests()">Run Tests</button>
+  </div>
+  
+  <div id="results"></div>
+  
+  <script src="dist/test-bundle.js"></script>
+  <script>
+    function runTests() {
+      var resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<p>Running tests...</p>';
+      
+      try {
+        // Clear localStorage before tests
+        localStorage.clear();
+        
+        var results = window.runSettingsTests();
+        
+        var html = '<div class="summary">';
+        html += 'Total Tests: ' + (results.passed + results.failed) + '<br>';
+        html += '<span style="color: #28a745;">Passed: ' + results.passed + '</span><br>';
+        html += '<span style="color: #dc3545;">Failed: ' + results.failed + '</span>';
+        html += '</div>';
+        
+        html += '<h2>Test Details</h2>';
+        
+        results.tests.forEach(function(test) {
+          var className = test.passed ? 'test-passed' : 'test-failed';
+          var icon = test.passed ? '✓' : '✗';
+          html += '<div class="' + className + '">' + icon + ' ' + test.name + '</div>';
+        });
+        
+        resultsDiv.innerHTML = html;
+        
+      } catch (error) {
+        resultsDiv.innerHTML = '<div class="test-failed">Error running tests: ' + error.message + '</div>';
+        console.error('Test error:', error);
+      }
+    }
+    
+    // Auto-run tests on load
+    window.addEventListener('load', function() {
+      setTimeout(runTests, 100);
+    });
+  </script>
+</body>
+</html>

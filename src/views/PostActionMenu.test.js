@@ -318,6 +318,70 @@ function runPostActionMenuTests() {
     }, 50);
   });
   
+  // Test: Load images action appears in data saver mode
+  test('Load images action appears in data saver mode', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostActionMenu, {
+      post: mockPost,
+      dataSaverMode: true,
+      imagesLoaded: false
+    });
+    
+    var instance = render(component, container);
+    
+    var actions = instance.getActions();
+    var loadImagesAction = actions.find(function(a) { return a.id === 'load-images'; });
+    
+    assert(loadImagesAction !== undefined, 'Load images action should be present');
+    assert(loadImagesAction.label === 'Load Images', 'Should have correct label');
+    
+    document.body.removeChild(container);
+  });
+  
+  // Test: Load images action does not appear when images already loaded
+  test('Load images action hidden when images already loaded', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostActionMenu, {
+      post: mockPost,
+      dataSaverMode: true,
+      imagesLoaded: true
+    });
+    
+    var instance = render(component, container);
+    
+    var actions = instance.getActions();
+    var loadImagesAction = actions.find(function(a) { return a.id === 'load-images'; });
+    
+    assert(loadImagesAction === undefined, 'Load images action should not be present when already loaded');
+    
+    document.body.removeChild(container);
+  });
+  
+  // Test: Load images action does not appear when data saver is off
+  test('Load images action hidden when data saver is off', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = h(PostActionMenu, {
+      post: mockPost,
+      dataSaverMode: false,
+      imagesLoaded: false
+    });
+    
+    var instance = render(component, container);
+    
+    var actions = instance.getActions();
+    var loadImagesAction = actions.find(function(a) { return a.id === 'load-images'; });
+    
+    assert(loadImagesAction === undefined, 'Load images action should not be present when data saver is off');
+    
+    document.body.removeChild(container);
+  });
+  
   // Print results
   console.log('\n--- PostActionMenu Test Results ---');
   console.log('Total: ' + results.total);
