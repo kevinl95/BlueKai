@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Initialization Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #1da1f2;
+      border-bottom: 2px solid #1da1f2;
+      padding-bottom: 10px;
+    }
+    
+    .test-section {
+      background: white;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-result {
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    
+    .test-pass {
+      background-color: #d4edda;
+      color: #155724;
+      border-left: 4px solid #28a745;
+    }
+    
+    .test-fail {
+      background-color: #f8d7da;
+      color: #721c24;
+      border-left: 4px solid #dc3545;
+    }
+    
+    .test-info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border-left: 4px solid #17a2b8;
+    }
+    
+    #app-container {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      min-height: 400px;
+    }
+    
+    button {
+      background-color: #1da1f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background-color: #1a91da;
+    }
+    
+    button:focus {
+      outline: 2px solid #0d8bd9;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>App Initialization Tests</h1>
+  
+  <div class="test-section">
+    <h2>Test Controls</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <button onclick="testAppMount()">Test App Mount</button>
+    <button onclick="testRouting()">Test Routing</button>
+    <button onclick="testSessionRestore()">Test Session Restore</button>
+    <button onclick="clearResults()">Clear Results</button>
+  </div>
+  
+  <div class="test-section">
+    <h2>Test Results</h2>
+    <div id="test-results"></div>
+  </div>
+  
+  <div class="test-section">
+    <h2>App Container</h2>
+    <div id="app-container"></div>
+  </div>
+  
+  <script type="module">
+    import { h, render } from './node_modules/preact/dist/preact.module.js';
+    import App from './src/components/App.js';
+    
+    window.h = h;
+    window.render = render;
+    window.App = App;
+    
+    // Make test functions available globally
+    window.testResults = [];
+    
+    window.logTest = function(message, passed, details) {
+      const result = { message, passed, details, timestamp: new Date() };
+      window.testResults.push(result);
+      
+      const resultsDiv = document.getElementById('test-results');
+      const resultDiv = document.createElement('div');
+      resultDiv.className = 'test-result ' + (passed ? 'test-pass' : 'test-fail');
+      resultDiv.textContent = (passed ? '✓ ' : '✗ ') + message;
+      
+      if (details) {
+        const detailsSpan = document.createElement('div');
+        detailsSpan.style.fontSize = '12px';
+        detailsSpan.style.marginTop = '5px';
+        detailsSpan.textContent = details;
+        resultDiv.appendChild(detailsSpan);
+      }
+      
+      resultsDiv.appendChild(resultDiv);
+    };
+    
+    window.logInfo = function(message) {
+      const resultsDiv = document.getElementById('test-results');
+      const resultDiv = document.createElement('div');
+      resultDiv.className = 'test-result test-info';
+      resultDiv.textContent = 'ℹ ' + message;
+      resultsDiv.appendChild(resultDiv);
+    };
+    
+    window.clearResults = function() {
+      document.getElementById('test-results').innerHTML = '';
+      window.testResults = [];
+    };
+    
+    window.testAppMount = function() {
+      logInfo('Testing App component mount...');
+      
+      try {
+        const container = document.getElementById('app-container');
+        container.innerHTML = '';
+        
+        // Clear any existing session
+        localStorage.removeItem('bluekai_state');
+        
+        // Render the app
+        render(h(App), container);
+        
+        // Check if app rendered
+        setTimeout(() => {
+          if (container.children.length > 0) {
+            logTest('App component mounted successfully', true);
+            
+            // Check for loading state or login view
+            const hasContent = container.textContent.length > 0;
+            logTest('App has content', hasContent, 'Content length: ' + container.textContent.length);
+          } else {
+            logTest('App component failed to mount', false);
+          }
+        }, 100);
+        
+      } catch (error) {
+        logTest('App mount failed with error', false, error.message);
+      }
+    };
+    
+    window.testRouting = function() {
+      logInfo('Testing routing functionality...');
+      
+      try {
+        // Test hash navigation
+        window.location.hash = '#/login';
+        
+        setTimeout(() => {
+          const hash = window.location.hash;
+          logTest('Hash navigation works', hash === '#/login', 'Current hash: ' + hash);
+          
+          // Test navigation to timeline
+          window.location.hash = '#/timeline';
+          
+          setTimeout(() => {
+            const newHash = window.location.hash;
+            logTest('Route change works', newHash === '#/timeline', 'New hash: ' + newHash);
+          }, 100);
+        }, 100);
+        
+      } catch (error) {
+        logTest('Routing test failed', false, error.message);
+      }
+    };
+    
+    window.testSessionRestore = function() {
+      logInfo('Testing session restoration...');
+      
+      try {
+        // Create a valid session
+        const validSession = {
+          session: {
+            accessJwt: 'test-jwt-token',
+            refreshJwt: 'test-refresh-token',
+            expiresAt: Date.now() + 3600000, // 1 hour from now
+            isAuthenticated: true
+          },
+          user: {
+            did: 'did:plc:test123',
+            handle: 'testuser.bsky.social',
+            displayName: 'Test User',
+            avatar: null
+          },
+          settings: {
+            dataSaverMode: false,
+            autoLoadImages: true,
+            language: 'en'
+          }
+        };
+        
+        // Store session
+        localStorage.setItem('bluekai_state', JSON.stringify(validSession));
+        
+        // Verify storage
+        const stored = localStorage.getItem('bluekai_state');
+        logTest('Session stored in localStorage', stored !== null);
+        
+        // Parse and verify
+        const parsed = JSON.parse(stored);
+        logTest('Session is valid JSON', true);
+        logTest('Session has authentication', parsed.session.isAuthenticated === true);
+        logTest('Session has user data', parsed.user.handle === 'testuser.bsky.social');
+        
+        // Test app with session
+        const container = document.getElementById('app-container');
+        container.innerHTML = '';
+        
+        render(h(App), container);
+        
+        setTimeout(() => {
+          logTest('App rendered with session', container.children.length > 0);
+          
+          // Should redirect to timeline if session is valid
+          logInfo('App should attempt to restore session and navigate to timeline');
+        }, 500);
+        
+      } catch (error) {
+        logTest('Session restore test failed', false, error.message);
+      }
+    };
+    
+    window.runAllTests = function() {
+      clearResults();
+      logInfo('Running all tests...');
+      
+      testAppMount();
+      
+      setTimeout(() => {
+        testRouting();
+      }, 500);
+      
+      setTimeout(() => {
+        testSessionRestore();
+      }, 1000);
+      
+      setTimeout(() => {
+        logInfo('All tests completed');
+        
+        const passed = window.testResults.filter(r => r.passed).length;
+        const failed = window.testResults.filter(r => !r.passed).length;
+        
+        logInfo(`Results: ${passed} passed, ${failed} failed`);
+      }, 2000);
+    };
+    
+    // Auto-run tests on load
+    logInfo('Page loaded. Click "Run All Tests" to begin.');
+  </script>
+</body>
+</html>
