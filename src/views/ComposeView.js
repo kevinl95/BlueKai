@@ -1,9 +1,10 @@
 import { h } from 'preact';
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useMemo } from 'preact/hooks';
 import TextInput from '../components/TextInput.js';
 import Button from '../components/Button.js';
 import ErrorMessage from '../components/ErrorMessage.js';
 import Modal from '../components/Modal.js';
+var performance = require('../utils/performance.js');
 
 /**
  * ComposeView - Post composition interface

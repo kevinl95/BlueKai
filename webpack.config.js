@@ -73,7 +73,24 @@ module.exports = (env = {}) => {
     ],
     optimization: {
       usedExports: true,
-      minimize: isProduction
+      minimize: isProduction,
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            priority: 10,
+            reuseExistingChunk: true
+          },
+          common: {
+            minChunks: 2,
+            priority: 5,
+            reuseExistingChunk: true,
+            enforce: true
+          }
+        }
+      }
     },
     devServer: {
       static: [

@@ -2,8 +2,8 @@
  * Preact hook for using translations in components
  */
 
-import { h } from 'preact';
-import { useState, useEffect, useContext, createContext } from 'preact/hooks';
+import { h, createContext } from 'preact';
+import { useState, useEffect, useContext } from 'preact/hooks';
 
 // Create context for i18n
 const I18nContext = createContext({

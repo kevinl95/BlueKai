@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "webpack serve --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js",
-    "build:analyze": "webpack --mode production --config webpack.config.js --env analyze"
+    "build:analyze": "webpack --mode production --config webpack.config.js --env analyze",
+    "analyze": "node analyze-bundle.js"
   },
   "keywords": [
     "bluesky",

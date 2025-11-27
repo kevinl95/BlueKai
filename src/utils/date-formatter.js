@@ -1,7 +1,10 @@
 /**
  * Date Formatting Utilities
  * Compatible with Gecko 48 (ES5)
+ * Requirements: 7.3 - Optimize with memoization
  */
+
+var performance = require('./performance.js');
 
 /**
  * @class DateFormatter
@@ -10,6 +13,16 @@
 function DateFormatter() {
   // Locale can be set, defaults to 'en'
   this.locale = 'en';
+  
+  // Memoize relative time formatting (cache for 1 minute intervals)
+  this.formatRelativeTime = performance.memoize(
+    this.formatRelativeTime.bind(this),
+    function(timestamp) {
+      // Cache key based on minute precision to avoid too many cache entries
+      var date = new Date(timestamp);
+      return Math.floor(date.getTime() / 60000).toString();
+    }
+  );
 }
 
 /**

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Management Test - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    .result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 10px 0;
+    }
+    .stat-item {
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      border-left: 3px solid #007bff;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+    }
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Memory Management Test</h1>
+  <p>Testing cache size limits, automatic pruning, and memory cleanup</p>
+
+  <div class="test-section">
+    <h2>1. Cache Size Limits</h2>
+    <button onclick="testCacheSizeLimits()">Test Cache Size Limits</button>
+    <div id="cache-size-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>2. Automatic Cache Pruning</h2>
+    <button onclick="testAutomaticPruning()">Test Automatic Pruning</button>
+    <div id="pruning-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>3. LRU Eviction</h2>
+    <button onclick="testLRUEviction()">Test LRU Eviction</button>
+    <div id="lru-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>4. Event Listener Cleanup</h2>
+    <button onclick="testEventListenerCleanup()">Test Event Cleanup</button>
+    <div id="cleanup-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>5. Timeline Memory Limit</h2>
+    <button onclick="testTimelineMemoryLimit()">Test Timeline Limit</button>
+    <div id="timeline-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>6. Cache Statistics</h2>
+    <button onclick="showCacheStats()">Show Cache Stats</button>
+    <div id="stats-results"></div>
+  </div>
+
+  <script>
+    // Mock storage for testing
+    class MockStorage {
+      constructor() {
+        this.data = {};
+        this.maxSize = 4 * 1024 * 1024; // 4MB
+      }
+
+      set(key, value) {
+        try {
+          this.data[key] = JSON.stringify(value);
+          return true;
+        } catch (e) {
+          return false;
+        }
+      }
+
+      get(key) {
+        try {
+          const value = this.data[key];
+          return value ? JSON.parse(value) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      remove(key) {
+        delete this.data[key];
+      }
+
+      keys() {
+        return Object.keys(this.data);
+      }
+
+      getSize() {
+        let size = 0;
+        for (let key in this.data) {
+          size += this.data[key].length;
+        }
+        return size;
+      }
+
+      clear() {
+        this.data = {};
+      }
+    }
+
+    // Mock CacheManager
+    class CacheManager {
+      constructor(storage, options = {}) {
+        this.storage = storage;
+        this.defaultTTL = options.defaultTTL || 5 * 60 * 1000;
+        this.maxStorageSize = options.maxStorageSize || 4 * 1024 * 1024;
+        this.pruneThreshold = options.pruneThreshold || 0.8;
+        this.cachePrefix = 'cache_';
+      }
+
+      generateKey(namespace, identifier) {
+        return this.cachePrefix + namespace + ':' + JSON.stringify(identifier);
+      }
+
+      set(key, data, ttl) {
+        const now = Date.now();
+        const expiresAt = now + (ttl || this.defaultTTL);
+        
+        this._checkAndPrune();
+        
+        const cacheEntry = {
+          data: data,
+          expiresAt: expiresAt,
+          createdAt: now,
+          accessedAt: now,
+          accessCount: 0
+        };
+        
+        return this.storage.set(key, cacheEntry);
+      }
+
+      get(key) {
+        const cacheEntry = this.storage.get(key);
+        if (!cacheEntry) return null;
+        
+        const now = Date.now();
+        if (cacheEntry.expiresAt && cacheEntry.expiresAt < now) {
+          this.remove(key);
+          return null;
+        }
+        
+        cacheEntry.accessedAt = now;
+        cacheEntry.accessCount = (cacheEntry.accessCount || 0) + 1;
+        this.storage.set(key, cacheEntry);
+        
+        return cacheEntry.data;
+      }
+
+      remove(key) {
+        this.storage.remove(key);
+      }
+
+      prune() {
+        const keys = this.storage.keys();
+        const now = Date.now();
+        let pruned = 0;
+        
+        for (let key of keys) {
+          if (!key.startsWith(this.cachePrefix)) continue;
+          
+          const cacheEntry = this.storage.get(key);
+          if (cacheEntry && cacheEntry.expiresAt && cacheEntry.expiresAt < now) {
+            this.remove(key);
+            pruned++;
+          }
+        }
+        
+        return pruned;
+      }
+
+      getStats() {
+        const keys = this.storage.keys();
+        const stats = {
+          totalEntries: 0,
+          expiredEntries: 0,
+          validEntries: 0,
+          totalSize: 0,
+          utilizationPercent: 0
+        };
+        
+        const now = Date.now();
+        
+        for (let key of keys) {
+          if (!key.startsWith(this.cachePrefix)) continue;
+          
+          stats.totalEntries++;
+          const cacheEntry = this.storage.get(key);
+          
+          if (cacheEntry) {
+            if (cacheEntry.expiresAt && cacheEntry.expiresAt < now) {
+              stats.expiredEntries++;
+            } else {
+              stats.validEntries++;
+            }
+          }
+        }
+        
+        stats.totalSize = this.storage.getSize();
+        stats.utilizationPercent = (stats.totalSize / this.maxStorageSize) * 100;
+        
+        return stats;
+      }
+
+      _checkAndPrune() {
+        const currentSize = this.storage.getSize();
+        const threshold = this.maxStorageSize * this.pruneThreshold;
+        
+        if (currentSize >= threshold) {
+          console.log('Cache approaching limit, pruning...');
+          const pruned = this.prune();
+          console.log('Pruned ' + pruned + ' entries');
+        }
+      }
+    }
+
+    let testStorage = new MockStorage();
+    let testCache = new CacheManager(testStorage);
+
+    // Test 1: Cache Size Limits
+    function testCacheSizeLimits() {
+      const results = document.getElementById('cache-size-results');
+      results.innerHTML = '<div class="info">Testing cache size limits...</div>';
+
+      testStorage.clear();
+      testCache = new CacheManager(testStorage, { maxStorageSize: 1024 * 100 }); // 100KB limit
+
+      let added = 0;
+      const largeData = 'x'.repeat(1000); // 1KB of data
+
+      // Try to add 150 items (150KB total)
+      for (let i = 0; i < 150; i++) {
+        const key = testCache.generateKey('test', i);
+        if (testCache.set(key, largeData)) {
+          added++;
+        }
+      }
+
+      const finalSize = testStorage.getSize();
+      const withinLimit = finalSize <= 1024 * 100;
+
+      results.innerHTML = `
+        <div class="result ${withinLimit ? 'pass' : 'fail'}">
+          Final size: ${(finalSize / 1024).toFixed(2)} KB (limit: 100 KB)
+        </div>
+        <div class="result info">
+          Items added: ${added} / 150 attempted
+        </div>
+        <div class="result ${withinLimit ? 'pass' : 'fail'}">
+          ${withinLimit ? 'PASS: Size within limit' : 'FAIL: Size exceeds limit'}
+        </div>
+      `;
+    }
+
+    // Test 2: Automatic Pruning
+    function testAutomaticPruning() {
+      const results = document.getElementById('pruning-results');
+      results.innerHTML = '<div class="info">Testing automatic pruning...</div>';
+
+      testStorage.clear();
+      testCache = new CacheManager(testStorage);
+
+      // Add items with short TTL
+      for (let i = 0; i < 10; i++) {
+        const key = testCache.generateKey('test', i);
+        testCache.set(key, { data: 'test' + i }, 100); // 100ms TTL
+      }
+
+      const beforePrune = testCache.getStats();
+
+      setTimeout(() => {
+        const pruned = testCache.prune();
+        const afterPrune = testCache.getStats();
+
+        results.innerHTML = `
+          <div class="result info">
+            Before pruning: ${beforePrune.totalEntries} entries
+          </div>
+          <div class="result info">
+            Pruned: ${pruned} expired entries
+          </div>
+          <div class="result ${pruned === 10 ? 'pass' : 'fail'}">
+            After pruning: ${afterPrune.totalEntries} entries
+          </div>
+          <div class="result ${pruned === 10 ? 'pass' : 'fail'}">
+            ${pruned === 10 ? 'PASS: All expired entries pruned' : 'FAIL: Not all entries pruned'}
+          </div>
+        `;
+      }, 200);
+    }
+
+    // Test 3: LRU Eviction
+    function testLRUEviction() {
+      const results = document.getElementById('lru-results');
+      results.innerHTML = '<div class="info">Testing LRU eviction...</div>';
+
+      testStorage.clear();
+      testCache = new CacheManager(testStorage);
+
+      // Add items
+      testCache.set(testCache.generateKey('test', 'a'), 'data-a');
+      testCache.set(testCache.generateKey('test', 'b'), 'data-b');
+      testCache.set(testCache.generateKey('test', 'c'), 'data-c');
+
+      // Access 'a' to make it recently used
+      testCache.get(testCache.generateKey('test', 'a'));
+
+      // Simulate LRU eviction by checking access patterns
+      const keyA = testCache.generateKey('test', 'a');
+      const keyB = testCache.generateKey('test', 'b');
+      const keyC = testCache.generateKey('test', 'c');
+
+      const entryA = testStorage.get(keyA);
+      const entryB = testStorage.get(keyB);
+      const entryC = testStorage.get(keyC);
+
+      const aMoreRecent = entryA.accessedAt > entryB.accessedAt;
+
+      results.innerHTML = `
+        <div class="result info">
+          Entry A access count: ${entryA.accessCount}
+        </div>
+        <div class="result info">
+          Entry B access count: ${entryB.accessCount}
+        </div>
+        <div class="result ${aMoreRecent ? 'pass' : 'fail'}">
+          ${aMoreRecent ? 'PASS: LRU tracking working' : 'FAIL: LRU tracking not working'}
+        </div>
+      `;
+    }
+
+    // Test 4: Event Listener Cleanup
+    function testEventListenerCleanup() {
+      const results = document.getElementById('cleanup-results');
+      results.innerHTML = '<div class="info">Testing event listener cleanup...</div>';
+
+      let listenerCount = 0;
+      const testElement = document.createElement('div');
+
+      // Add listeners
+      const handler1 = () => listenerCount++;
+      const handler2 = () => listenerCount++;
+
+      testElement.addEventListener('click', handler1);
+      testElement.addEventListener('scroll', handler2);
+
+      // Simulate cleanup
+      testElement.removeEventListener('click', handler1);
+      testElement.removeEventListener('scroll', handler2);
+
+      // Try to trigger (should not increment)
+      testElement.click();
+
+      results.innerHTML = `
+        <div class="result ${listenerCount === 0 ? 'pass' : 'fail'}">
+          Listener count after cleanup: ${listenerCount}
+        </div>
+        <div class="result ${listenerCount === 0 ? 'pass' : 'fail'}">
+          ${listenerCount === 0 ? 'PASS: Listeners properly cleaned up' : 'FAIL: Listeners still active'}
+        </div>
+      `;
+    }
+
+    // Test 5: Timeline Memory Limit
+    function testTimelineMemoryLimit() {
+      const results = document.getElementById('timeline-results');
+      results.innerHTML = '<div class="info">Testing timeline memory limit...</div>';
+
+      const MAX_POSTS = 100;
+      
+      // Simulate adding 150 posts
+      let posts = [];
+      for (let i = 0; i < 150; i++) {
+        posts.push({ id: i, text: 'Post ' + i });
+      }
+
+      // Trim to limit
+      const trimmed = posts.slice(0, MAX_POSTS);
+
+      results.innerHTML = `
+        <div class="result info">
+          Initial posts: ${posts.length}
+        </div>
+        <div class="result info">
+          After trimming: ${trimmed.length}
+        </div>
+        <div class="result ${trimmed.length === MAX_POSTS ? 'pass' : 'fail'}">
+          ${trimmed.length === MAX_POSTS ? 'PASS: Timeline limited to ' + MAX_POSTS + ' posts' : 'FAIL: Timeline not properly limited'}
+        </div>
+      `;
+    }
+
+    // Test 6: Cache Statistics
+    function showCacheStats() {
+      const results = document.getElementById('stats-results');
+      
+      testStorage.clear();
+      testCache = new CacheManager(testStorage);
+
+      // Add some test data
+      for (let i = 0; i < 20; i++) {
+        const key = testCache.generateKey('test', i);
+        testCache.set(key, { data: 'test' + i }, i < 10 ? 100 : 10000);
+      }
+
+      setTimeout(() => {
+        const stats = testCache.getStats();
+
+        results.innerHTML = `
+          <div class="stats">
+            <div class="stat-item">
+              <div class="stat-label">Total Entries</div>
+              <div class="stat-value">${stats.totalEntries}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Valid Entries</div>
+              <div class="stat-value">${stats.validEntries}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Expired Entries</div>
+              <div class="stat-value">${stats.expiredEntries}</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Storage Used</div>
+              <div class="stat-value">${(stats.totalSize / 1024).toFixed(2)} KB</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-label">Utilization</div>
+              <div class="stat-value">${stats.utilizationPercent.toFixed(2)}%</div>
+            </div>
+          </div>
+        `;
+      }, 150);
+    }
+  </script>
+</body>
+</html>

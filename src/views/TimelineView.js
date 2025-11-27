@@ -33,6 +33,10 @@ function TimelineViewClass(props) {
     hasMore: true
   };
   
+  // Memory management: Limit in-memory timeline size
+  // Requirements: 7.5 - Limit in-memory timeline size
+  this.MAX_POSTS_IN_MEMORY = 100;
+  
   // Initialize services
   this.atpClient = props.atpClient || new ATPClient();
   this.storage = new StorageManager();
@@ -46,6 +50,7 @@ function TimelineViewClass(props) {
   this.refresh = this.refresh.bind(this);
   this.handleSelectPost = this.handleSelectPost.bind(this);
   this.handleRetry = this.handleRetry.bind(this);
+  this.trimPostsIfNeeded = this.trimPostsIfNeeded.bind(this);
 }
 
 // Inherit from Component
@@ -114,8 +119,11 @@ TimelineViewClass.prototype.loadTimeline = function() {
       return item.post;
     });
     
+    // Trim posts if needed to manage memory
+    var trimmedPosts = self.trimPostsIfNeeded(posts);
+    
     self.setState({
-      posts: posts,
+      posts: trimmedPosts,
       cursor: cursor,
       loading: false,
       hasMore: !!cursor
@@ -123,7 +131,7 @@ TimelineViewClass.prototype.loadTimeline = function() {
     
     // Cache the results
     // Requirements: 6.4 - Integrate cache for offline viewing
-    self.cacheTimeline(posts, cursor);
+    self.cacheTimeline(trimmedPosts, cursor);
   })
   .catch(function(error) {
     console.error('Failed to load timeline:', error);
@@ -161,15 +169,19 @@ TimelineViewClass.prototype.loadMore = function() {
       return item.post;
     });
     
+    // Combine and trim posts if needed to manage memory
+    var allPosts = self.state.posts.concat(newPosts);
+    var trimmedPosts = self.trimPostsIfNeeded(allPosts);
+    
     self.setState({
-      posts: self.state.posts.concat(newPosts),
+      posts: trimmedPosts,
       cursor: cursor,
       loadingMore: false,
       hasMore: !!cursor
     });
     
     // Update cache
-    self.cacheTimeline(self.state.posts, cursor);
+    self.cacheTimeline(trimmedPosts, cursor);
   })
   .catch(function(error) {
     console.error('Failed to load more posts:', error);
@@ -313,6 +325,23 @@ TimelineViewClass.prototype.render = function() {
       }.bind(this)
     })
   );
+};
+
+/**
+ * Trim posts array if it exceeds memory limit
+ * Requirements: 7.5 - Limit in-memory timeline size
+ * @param {Array} posts - Array of posts
+ * @returns {Array} Trimmed array
+ */
+TimelineViewClass.prototype.trimPostsIfNeeded = function(posts) {
+  if (posts.length <= this.MAX_POSTS_IN_MEMORY) {
+    return posts;
+  }
+  
+  console.log('Trimming timeline from ' + posts.length + ' to ' + this.MAX_POSTS_IN_MEMORY + ' posts');
+  
+  // Keep the most recent posts
+  return posts.slice(0, this.MAX_POSTS_IN_MEMORY);
 };
 
 export default TimelineView;

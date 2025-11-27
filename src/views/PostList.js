@@ -2,11 +2,12 @@
  * PostList Component with Virtual Scrolling
  * Renders a list of posts efficiently using virtual scrolling
  * Compatible with Gecko 48 (ES5 transpiled)
- * Requirements: 3.1, 3.4, 7.2
+ * Requirements: 3.1, 3.4, 7.2, 7.3
  */
 
 import { h, Component } from 'preact';
 import PostItem from './PostItem.js';
+var performance = require('../utils/performance.js');
 
 /**
  * @class PostList
@@ -34,6 +35,9 @@ function PostListClass(props) {
   this.handleKeyDown = this.handleKeyDown.bind(this);
   this.setContainerRef = this.setContainerRef.bind(this);
   this.updateDimensions = this.updateDimensions.bind(this);
+  
+  // Performance optimization: RAF throttle scroll handler
+  this.handleScrollThrottled = performance.rafThrottle(this.handleScroll);
 }
 
 // Inherit from Component
@@ -47,7 +51,8 @@ PostListClass.prototype.componentDidMount = function() {
   this.updateDimensions();
   
   if (this.containerRef) {
-    this.containerRef.addEventListener('scroll', this.handleScroll);
+    // Use throttled scroll handler for better performance
+    this.containerRef.addEventListener('scroll', this.handleScrollThrottled);
   }
   
   // Listen for window resize
@@ -64,7 +69,7 @@ PostListClass.prototype.componentDidMount = function() {
  */
 PostListClass.prototype.componentWillUnmount = function() {
   if (this.containerRef) {
-    this.containerRef.removeEventListener('scroll', this.handleScroll);
+    this.containerRef.removeEventListener('scroll', this.handleScrollThrottled);
   }
   
   window.removeEventListener('resize', this.updateDimensions);

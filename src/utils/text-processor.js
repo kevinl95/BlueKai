@@ -1,7 +1,10 @@
 /**
  * Text Processing Utilities
  * Compatible with Gecko 48 (ES5)
+ * Requirements: 7.3 - Optimize with memoization
  */
+
+var performance = require('./performance.js');
 
 /**
  * @class TextProcessor
@@ -16,6 +19,11 @@ function TextProcessor() {
   
   // Hashtag pattern
   this.hashtagPattern = /#([a-zA-Z0-9_]+)/g;
+  
+  // Memoize expensive operations
+  this.detectUrls = performance.memoize(this.detectUrls.bind(this));
+  this.linkify = performance.memoize(this.linkify.bind(this));
+  this.detectMentions = performance.memoize(this.detectMentions.bind(this));
 }
 
 /**

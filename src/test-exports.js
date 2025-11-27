@@ -27,6 +27,7 @@ import ComposeView from './views/ComposeView';
 // Import utilities
 import DateFormatter from './utils/date-formatter';
 import TextProcessor from './utils/text-processor';
+var performance = require('./utils/performance.js');
 
 // Import services
 import ATPClient from './services/atp-client';
@@ -75,6 +76,10 @@ window.ComposeView = ComposeView;
 window.DateFormatter = DateFormatter;
 window.TextProcessor = TextProcessor;
 window.ATPClient = ATPClient;
+
+window.BlueKaiTestExports = {
+  performance: performance
+};
 
 window.AppStateContext = AppStateContext;
 window.useAppState = useAppState;

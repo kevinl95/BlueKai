@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Performance Optimizations Test - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    .test-section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    .result {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+    .pass {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    .fail {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    .info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #scroll-test {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 10px 0;
+    }
+    .scroll-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <h1>Performance Optimizations Test</h1>
+  <p>Testing memoization, debouncing, throttling, and request deduplication</p>
+
+  <div class="test-section">
+    <h2>1. Memoization Test</h2>
+    <button onclick="testMemoization()">Run Memoization Test</button>
+    <div id="memoization-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>2. Debounce Test</h2>
+    <input type="text" id="debounce-input" placeholder="Type here..." style="width: 100%; padding: 8px;">
+    <div id="debounce-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>3. Throttle Test</h2>
+    <button onclick="testThrottle()">Click Rapidly (Throttled)</button>
+    <div id="throttle-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>4. RAF Throttle Test (Scroll)</h2>
+    <div id="scroll-test">
+      <div id="scroll-content"></div>
+    </div>
+    <div id="scroll-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>5. Request Deduplication Test</h2>
+    <button onclick="testRequestDedup()">Make Concurrent Requests</button>
+    <div id="dedup-results"></div>
+  </div>
+
+  <div class="test-section">
+    <h2>6. LRU Cache Test</h2>
+    <button onclick="testLRUCache()">Run LRU Cache Test</button>
+    <div id="cache-results"></div>
+  </div>
+
+  <script src="dist/bundle.js"></script>
+  <script>
+    // Get performance utilities from the bundle
+    const performance = window.BlueKaiTestExports?.performance;
+
+    if (!performance) {
+      document.body.innerHTML = '<div class="result fail">Error: Performance utilities not found in bundle</div>';
+    }
+
+    // Test 1: Memoization
+    function testMemoization() {
+      const results = document.getElementById('memoization-results');
+      results.innerHTML = '<div class="info">Running memoization test...</div>';
+
+      let callCount = 0;
+      const expensiveFunction = (a, b) => {
+        callCount++;
+        // Simulate expensive computation
+        let sum = 0;
+        for (let i = 0; i < 1000000; i++) {
+          sum += i;
+        }
+        return a + b;
+      };
+
+      const memoized = performance.memoize(expensiveFunction);
+
+      const start1 = Date.now();
+      const result1 = memoized(5, 10);
+      const time1 = Date.now() - start1;
+
+      const start2 = Date.now();
+      const result2 = memoized(5, 10);
+      const time2 = Date.now() - start2;
+
+      const speedup = time1 / time2;
+
+      results.innerHTML = `
+        <div class="result ${callCount === 1 ? 'pass' : 'fail'}">
+          Function called: ${callCount} time(s) (expected: 1)
+        </div>
+        <div class="result ${result1 === result2 ? 'pass' : 'fail'}">
+          Results match: ${result1} === ${result2}
+        </div>
+        <div class="result info">
+          First call: ${time1}ms<br>
+          Second call (cached): ${time2}ms<br>
+          Speedup: ${speedup.toFixed(2)}x faster
+        </div>
+      `;
+    }
+
+    // Test 2: Debounce
+    let debounceCallCount = 0;
+    const debouncedFunction = performance.debounce(() => {
+      debounceCallCount++;
+      document.getElementById('debounce-results').innerHTML = `
+        <div class="result pass">
+          Function called ${debounceCallCount} time(s) after typing stopped
+        </div>
+      `;
+    }, 500);
+
+    document.getElementById('debounce-input')?.addEventListener('input', (e) => {
+      debouncedFunction();
+      document.getElementById('debounce-results').innerHTML = `
+        <div class="result info">Waiting for typing to stop...</div>
+      `;
+    });
+
+    // Test 3: Throttle
+    let throttleCallCount = 0;
+    const throttledFunction = performance.throttle(() => {
+      throttleCallCount++;
+      document.getElementById('throttle-results').innerHTML = `
+        <div class="result pass">
+          Function executed ${throttleCallCount} time(s)
+        </div>
+      `;
+    }, 1000);
+
+    function testThrottle() {
+      throttleCallCount = 0;
+      document.getElementById('throttle-results').innerHTML = `
+        <div class="info">Clicking rapidly...</div>
+      `;
+      
+      // Simulate rapid clicks
+      for (let i = 0; i < 10; i++) {
+        setTimeout(() => throttledFunction(), i * 50);
+      }
+
+      setTimeout(() => {
+        const results = document.getElementById('throttle-results');
+        results.innerHTML += `
+          <div class="result ${throttleCallCount <= 2 ? 'pass' : 'fail'}">
+            10 rapid calls resulted in ${throttleCallCount} execution(s) (expected: 1-2)
+          </div>
+        `;
+      }, 1500);
+    }
+
+    // Test 4: RAF Throttle
+    const scrollContent = document.getElementById('scroll-content');
+    for (let i = 0; i < 100; i++) {
+      const div = document.createElement('div');
+      div.className = 'scroll-item';
+      div.textContent = `Item ${i + 1}`;
+      scrollContent.appendChild(div);
+    }
+
+    let scrollCallCount = 0;
+    const rafThrottledScroll = performance.rafThrottle(() => {
+      scrollCallCount++;
+      document.getElementById('scroll-results').innerHTML = `
+        <div class="result info">
+          Scroll handler called ${scrollCallCount} time(s) (RAF throttled)
+        </div>
+      `;
+    });
+
+    document.getElementById('scroll-test')?.addEventListener('scroll', rafThrottledScroll);
+
+    // Test 5: Request Deduplication
+    function testRequestDedup() {
+      const results = document.getElementById('dedup-results');
+      results.innerHTML = '<div class="info">Making concurrent requests...</div>';
+
+      const deduplicator = performance.createRequestDeduplicator();
+      let requestCount = 0;
+
+      const mockRequest = () => {
+        requestCount++;
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`Result ${requestCount}`), 500);
+        });
+      };
+
+      const start = Date.now();
+      
+      // Make 5 concurrent requests with same key
+      Promise.all([
+        deduplicator.dedupe('test', mockRequest),
+        deduplicator.dedupe('test', mockRequest),
+        deduplicator.dedupe('test', mockRequest),
+        deduplicator.dedupe('test', mockRequest),
+        deduplicator.dedupe('test', mockRequest)
+      ]).then(responses => {
+        const time = Date.now() - start;
+        results.innerHTML = `
+          <div class="result ${requestCount === 1 ? 'pass' : 'fail'}">
+            Actual requests made: ${requestCount} (expected: 1)
+          </div>
+          <div class="result ${responses.every(r => r === responses[0]) ? 'pass' : 'fail'}">
+            All responses identical: ${responses.every(r => r === responses[0])}
+          </div>
+          <div class="result info">
+            Time: ${time}ms (should be ~500ms, not ~2500ms)
+          </div>
+        `;
+      });
+    }
+
+    // Test 6: LRU Cache
+    function testLRUCache() {
+      const results = document.getElementById('cache-results');
+      results.innerHTML = '<div class="info">Running LRU cache test...</div>';
+
+      const cache = performance.createLRUCache(3);
+
+      cache.set('a', 1);
+      cache.set('b', 2);
+      cache.set('c', 3);
+
+      const test1 = cache.size() === 3;
+      const test2 = cache.get('a') === 1;
+
+      cache.set('d', 4); // Should evict 'b' (least recently used)
+
+      const test3 = cache.size() === 3;
+      const test4 = cache.get('b') === null;
+      const test5 = cache.get('a') === 1;
+      const test6 = cache.get('d') === 4;
+
+      results.innerHTML = `
+        <div class="result ${test1 ? 'pass' : 'fail'}">
+          Initial size: ${test1 ? 'PASS' : 'FAIL'}
+        </div>
+        <div class="result ${test2 ? 'pass' : 'fail'}">
+          Get existing item: ${test2 ? 'PASS' : 'FAIL'}
+        </div>
+        <div class="result ${test3 ? 'pass' : 'fail'}">
+          Size after eviction: ${test3 ? 'PASS' : 'FAIL'}
+        </div>
+        <div class="result ${test4 ? 'pass' : 'fail'}">
+          LRU item evicted: ${test4 ? 'PASS' : 'FAIL'}
+        </div>
+        <div class="result ${test5 && test6 ? 'pass' : 'fail'}">
+          Remaining items accessible: ${test5 && test6 ? 'PASS' : 'FAIL'}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
