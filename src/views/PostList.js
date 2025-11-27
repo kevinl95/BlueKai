@@ -7,7 +7,7 @@
 
 import { h, Component } from 'preact';
 import PostItem from './PostItem.js';
-var performance = require('../utils/performance.js');
+import * as performance from '../utils/performance.js';
 
 /**
  * @class PostList

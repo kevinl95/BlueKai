@@ -249,12 +249,26 @@ function rafThrottle(fn) {
   };
 }
 
-module.exports = {
-  memoize: memoize,
-  debounce: debounce,
-  throttle: throttle,
-  createRequestDeduplicator: createRequestDeduplicator,
-  batch: batch,
-  createLRUCache: createLRUCache,
-  rafThrottle: rafThrottle
+// Export for CommonJS (test environments)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    memoize: memoize,
+    debounce: debounce,
+    throttle: throttle,
+    createRequestDeduplicator: createRequestDeduplicator,
+    batch: batch,
+    createLRUCache: createLRUCache,
+    rafThrottle: rafThrottle
+  };
+}
+
+// Export for ES modules
+export {
+  memoize,
+  debounce,
+  throttle,
+  createRequestDeduplicator,
+  batch,
+  createLRUCache,
+  rafThrottle
 };

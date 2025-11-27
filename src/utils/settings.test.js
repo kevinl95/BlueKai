@@ -140,9 +140,11 @@ function runSettingsTests() {
 }
 
 // Export test runner
-module.exports = {
-  runSettingsTests: runSettingsTests
-};
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    runSettingsTests: runSettingsTests
+  };
+}
 
 // Run tests if executed directly
 if (typeof window !== 'undefined') {

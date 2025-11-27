@@ -4,7 +4,7 @@ import TextInput from '../components/TextInput.js';
 import Button from '../components/Button.js';
 import ErrorMessage from '../components/ErrorMessage.js';
 import Modal from '../components/Modal.js';
-var performance = require('../utils/performance.js');
+import * as performance from '../utils/performance.js';
 
 /**
  * ComposeView - Post composition interface

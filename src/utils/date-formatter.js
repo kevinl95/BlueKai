@@ -4,7 +4,7 @@
  * Requirements: 7.3 - Optimize with memoization
  */
 
-var performance = require('./performance.js');
+import * as performance from './performance.js';
 
 /**
  * @class DateFormatter

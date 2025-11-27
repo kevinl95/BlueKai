@@ -207,9 +207,11 @@ function runHttpClientOptimizationTests() {
 }
 
 // Export test runner
-module.exports = {
-  runHttpClientOptimizationTests: runHttpClientOptimizationTests
-};
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    runHttpClientOptimizationTests: runHttpClientOptimizationTests
+  };
+}
 
 // Run tests if executed directly
 if (typeof window !== 'undefined') {
