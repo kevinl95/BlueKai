@@ -105,4 +105,4 @@ class NetworkStatus {
 // Create singleton instance
 var networkStatus = new NetworkStatus();
 
-module.exports = networkStatus;
+export default networkStatus;

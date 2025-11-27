@@ -4,8 +4,8 @@
  * Requirements: 6.1 - Display offline indicator in UI
  */
 
-var h = require('preact').h;
-var useAppState = require('../state/app-state').useAppState;
+import { h } from 'preact';
+import { useAppState } from '../state/app-state.js';
 
 /**
  * OfflineIndicator component
@@ -26,4 +26,4 @@ function OfflineIndicator() {
   );
 }
 
-module.exports = OfflineIndicator;
+export default OfflineIndicator;

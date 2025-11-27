@@ -7,6 +7,7 @@ import './components/Button.css';
 import './components/TextInput.css';
 import './components/ErrorMessage.css';
 import './components/Modal.css';
+import './components/OfflineIndicator.css';
 import './views/LoginView.css';
 import './views/PostItem.css';
 import './views/PostList.css';
