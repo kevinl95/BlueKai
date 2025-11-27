@@ -194,7 +194,7 @@ function changeLanguage(lang) {
     });
 }
 
-// Export functions
+// Export functions for CommonJS (test environments)
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     initI18n: initI18n,
@@ -204,3 +204,12 @@ if (typeof module !== 'undefined' && module.exports) {
     detectLanguage: detectLanguage
   };
 }
+
+// Export for ES modules
+export {
+  initI18n,
+  t,
+  getCurrentLanguage,
+  changeLanguage,
+  detectLanguage
+};

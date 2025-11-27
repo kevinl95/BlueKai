@@ -17,7 +17,7 @@ import ATPClient from '../services/atp-client.js';
 import CacheManager from '../utils/cache-manager.js';
 import networkStatus from '../utils/network-status.js';
 import { I18nProvider } from '../i18n/useTranslation.js';
-var i18n = require('../i18n/i18n-init.js');
+import i18n from '../i18n/i18n-init.js';
 
 // Import actions (CommonJS module)
 var actions = require('../state/actions.js');

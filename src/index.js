@@ -21,7 +21,7 @@ import App from './components/App';
 import { setI18nInstance } from './i18n/useTranslation';
 
 // Import i18n
-var i18n = require('./i18n/i18n-init.js');
+import i18n from './i18n/i18n-init.js';
 
 // Initialize i18n and then mount the app
 i18n.init().then(function() {

@@ -3,7 +3,7 @@
  * Initializes the i18n system and provides it to the app
  */
 
-var i18nCore = require('./i18n.js');
+import * as i18nCore from './i18n.js';
 
 // Create a singleton instance
 var i18nInstance = {
@@ -61,7 +61,10 @@ var i18nInstance = {
   }
 };
 
-// Export singleton
+// Export singleton for CommonJS
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = i18nInstance;
 }
+
+// Export for ES modules
+export default i18nInstance;
