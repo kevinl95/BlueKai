@@ -1,6 +1,8 @@
 /**
  * SoftkeyBar Component Styles
+ * Requirements: 3.5, 10.3
  * Bottom navigation bar for KaiOS softkeys
+ * WCAG AA compliant with high contrast
  */
 
 .softkey-bar {
@@ -8,16 +10,17 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 30px;
+  height: var(--softkey-height);
   background-color: #1a1a1a;
-  border-top: 1px solid #333;
+  border-top: 2px solid #333;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 10px;
-  font-size: 12px;
-  color: #fff;
-  z-index: 1000;
+  padding: 0 var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-inverse);
+  z-index: var(--z-sticky);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .softkey-left,
@@ -25,12 +28,20 @@
 .softkey-right {
   flex: 1;
   text-align: center;
-  padding: 5px;
+  padding: var(--space-xs);
   user-select: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .softkey-left {
   text-align: left;
+}
+
+.softkey-center {
+  font-weight: var(--font-weight-bold);
 }
 
 .softkey-right {
@@ -39,27 +50,67 @@
 
 .softkey-clickable {
   cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
+  border-radius: var(--radius-sm);
+  padding: var(--space-xs) var(--space-sm);
+  margin: 0 calc(var(--space-xs) * -1);
 }
 
 .softkey-clickable:hover {
   background-color: #2a2a2a;
-  color: #0095ff;
+  color: var(--color-primary-light);
 }
 
 .softkey-clickable:active {
-  background-color: #0095ff;
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.softkey-clickable:focus {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Empty state */
+.softkey-left:empty,
+.softkey-center:empty,
+.softkey-right:empty {
+  visibility: hidden;
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .softkey-bar {
+    height: 28px;
+    font-size: var(--font-size-xs);
+    padding: 0 var(--space-sm);
+  }
+  
+  .softkey-left,
+  .softkey-center,
+  .softkey-right {
+    padding: var(--space-xs) 2px;
+  }
 }
 
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .softkey-bar {
     border-color: #666;
+    border-top-width: 3px;
   }
   
   .softkey-clickable:hover {
     background-color: #333;
     color: #00bfff;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .softkey-bar {
+    background-color: #0a0a0a;
+    border-top-color: #2a2a2a;
   }
 }

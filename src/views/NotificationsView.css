@@ -1,28 +1,30 @@
 /**
  * NotificationsView Component Styles
+ * Requirements: 4.7, 10.3
  * Optimized for KaiOS 240x320 display
+ * WCAG AA compliant
  */
 
 .notifications-view {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
 }
 
 .notifications-view__header {
-  padding: 10px;
-  border-bottom: 2px solid #333;
-  background-color: #0a0a0a;
+  padding: var(--space-md);
+  border-bottom: 2px solid var(--color-border-light);
+  background-color: var(--color-bg-secondary);
   flex-shrink: 0;
 }
 
 .notifications-view__title {
   margin: 0;
-  font-size: 18px;
-  font-weight: bold;
-  color: #fff;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
 }
 
 .notifications-view__list {
@@ -32,20 +34,22 @@
 }
 
 .notifications-view__empty {
-  padding: 40px 20px;
+  padding: var(--space-xxl) var(--space-xl);
   text-align: center;
-  color: #888;
+  color: var(--color-text-secondary);
 }
 
 .notifications-view__empty p {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
 }
 
 .notifications-view__loading-more {
-  padding: 10px;
-  border-top: 1px solid #333;
-  background-color: #0a0a0a;
+  padding: var(--space-md);
+  border-top: 1px solid var(--color-border-light);
+  background-color: var(--color-bg-secondary);
+  text-align: center;
 }
 
 /* Scrollbar styling for better visibility */
@@ -54,25 +58,33 @@
 }
 
 .notifications-view__list::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: var(--color-bg-secondary);
 }
 
 .notifications-view__list::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 2px;
+  background: var(--color-border-medium);
+  border-radius: var(--radius-sm);
 }
 
 .notifications-view__list::-webkit-scrollbar-thumb:hover {
-  background: #666;
+  background: var(--color-border-dark);
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .notifications-view__header {
+    padding: var(--space-sm);
+  }
+  
+  .notifications-view__title {
+    font-size: var(--font-size-md);
+  }
 }
 
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .notifications-view__header {
-    border-color: #666;
-  }
-  
-  .notifications-view__title {
-    color: #fff;
+    border-color: currentColor;
+    border-width: 3px;
   }
 }

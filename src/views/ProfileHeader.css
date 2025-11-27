@@ -1,81 +1,84 @@
 /**
  * ProfileHeader Component Styles
+ * Requirements: 4.7, 10.3
  * Optimized for KaiOS small screens (240x320)
+ * WCAG AA compliant with 3:1 contrast for focus
  */
 
 .profile-header {
-  padding: 12px;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
+  padding: var(--space-md);
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .profile-header__avatar-container {
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-md);
 }
 
 .profile-header__avatar {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   object-fit: cover;
-  border: 2px solid #ddd;
+  border: 2px solid var(--color-border-light);
 }
 
 .profile-header__avatar-placeholder {
   width: 64px;
   height: 64px;
-  border-radius: 50%;
-  background: #6b46c1;
-  color: #fff;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  font-weight: bold;
-  border: 2px solid #ddd;
+  font-size: var(--font-size-xxl);
+  font-weight: var(--font-weight-bold);
+  border: 2px solid var(--color-border-light);
 }
 
 .profile-header__info {
   text-align: center;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-sm);
 }
 
 .profile-header__display-name {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 0 0 4px 0;
-  color: #000;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-xs) 0;
+  color: var(--color-text-primary);
+  line-height: var(--line-height-tight);
 }
 
 .profile-header__handle {
-  font-size: 14px;
-  color: #666;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .profile-header__bio {
-  margin: 12px 0;
-  padding: 8px;
-  background: #f5f5f5;
-  border-radius: 4px;
+  margin: var(--space-md) 0;
+  padding: var(--space-sm);
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
 }
 
 .profile-header__bio p {
   margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  color: #333;
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-primary);
   word-wrap: break-word;
 }
 
 .profile-header__stats {
   display: flex;
   justify-content: space-around;
-  margin: 12px 0;
-  padding: 8px 0;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) 0;
+  border-top: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .profile-header__stat {
@@ -84,45 +87,63 @@
 }
 
 .profile-header__stat-value {
-  font-size: 16px;
-  font-weight: bold;
-  color: #000;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  display: block;
+  margin-bottom: var(--space-xs);
 }
 
 .profile-header__stat-label {
-  font-size: 12px;
-  color: #666;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  display: block;
 }
 
 .profile-header__actions {
-  margin-top: 12px;
+  margin-top: var(--space-md);
   text-align: center;
 }
 
 .profile-header__button {
-  padding: 8px 16px;
-  font-size: 14px;
-  border: 1px solid #6b46c1;
-  border-radius: 4px;
-  background: #fff;
-  color: #6b46c1;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
   cursor: pointer;
   min-width: 120px;
+  transition: background-color var(--transition-fast),
+              color var(--transition-fast);
 }
 
 .profile-header__button--edit {
-  background: #6b46c1;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
 }
 
 .profile-header__button--follow {
-  background: #6b46c1;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.profile-header__button--following {
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+}
+
+.profile-header__button:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary-dark);
 }
 
 .profile-header__button:focus {
-  outline: 2px solid #6b46c1;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
 }
 
 .profile-header__button:disabled {
@@ -130,9 +151,31 @@
   cursor: not-allowed;
 }
 
-/* High contrast focus indicator for accessibility */
+/* High contrast focus indicator for accessibility - WCAG AA 3:1 */
 .profile-header__button[data-focused="true"] {
-  background: #5a3aa0;
-  border-color: #5a3aa0;
-  box-shadow: 0 0 0 3px rgba(107, 70, 193, 0.3);
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-text-inverse);
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .profile-header {
+    padding: var(--space-sm);
+  }
+  
+  .profile-header__avatar,
+  .profile-header__avatar-placeholder {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .profile-header__display-name {
+    font-size: var(--font-size-md);
+  }
+  
+  .profile-header__stat-value {
+    font-size: var(--font-size-base);
+  }
 }

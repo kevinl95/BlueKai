@@ -1,0 +1,317 @@
+/**
+ * Responsive Adjustments for KaiOS Devices
+ * Requirements: 10.3
+ * Optimized for various KaiOS screen sizes
+ */
+
+/* ============================================
+   KaiOS Device Breakpoints
+   ============================================ */
+
+/* Nokia 8110 4G - 240x320 */
+@media (max-width: 240px) {
+  :root {
+    --font-size-xs: 10px;
+    --font-size-sm: 11px;
+    --font-size-base: 12px;
+    --font-size-md: 14px;
+    --font-size-lg: 16px;
+    --font-size-xl: 18px;
+    --font-size-xxl: 20px;
+    
+    --space-xs: 3px;
+    --space-sm: 6px;
+    --space-md: 10px;
+    --space-lg: 14px;
+    --space-xl: 20px;
+    --space-xxl: 28px;
+    
+    --softkey-height: 28px;
+  }
+  
+  body {
+    font-size: 12px;
+  }
+}
+
+/* Nokia 2720 Flip, Nokia 800 Tough - 240x320 */
+@media (min-width: 241px) and (max-width: 320px) {
+  :root {
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-base: 13px;
+    --font-size-md: 15px;
+    --font-size-lg: 17px;
+    --font-size-xl: 19px;
+    --font-size-xxl: 22px;
+  }
+}
+
+/* Larger KaiOS devices - 320x480 and above */
+@media (min-width: 321px) {
+  :root {
+    --font-size-xs: 11px;
+    --font-size-sm: 12px;
+    --font-size-base: 14px;
+    --font-size-md: 16px;
+    --font-size-lg: 18px;
+    --font-size-xl: 20px;
+    --font-size-xxl: 24px;
+  }
+}
+
+/* ============================================
+   Height-based Adjustments
+   ============================================ */
+
+/* Very short screens */
+@media (max-height: 280px) {
+  :root {
+    --space-xs: 2px;
+    --space-sm: 4px;
+    --space-md: 8px;
+    --space-lg: 12px;
+    --space-xl: 16px;
+    --space-xxl: 24px;
+  }
+}
+
+/* Short screens */
+@media (min-height: 281px) and (max-height: 320px) {
+  :root {
+    --space-xs: 3px;
+    --space-sm: 6px;
+    --space-md: 10px;
+    --space-lg: 14px;
+    --space-xl: 20px;
+    --space-xxl: 28px;
+  }
+}
+
+/* ============================================
+   Orientation Support
+   ============================================ */
+
+/* Landscape mode (if supported) */
+@media (orientation: landscape) {
+  .post-item,
+  .notification-item {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+  
+  .modal {
+    max-width: 60%;
+  }
+}
+
+/* ============================================
+   Touch Target Sizes
+   ============================================ */
+
+/* Ensure minimum touch target size of 44x44px for accessibility */
+@media (max-width: 240px) {
+  button,
+  .button,
+  a[role="button"],
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 36px;
+    min-width: 36px;
+  }
+  
+  .softkey-bar {
+    min-height: 28px;
+  }
+}
+
+/* ============================================
+   Text Readability
+   ============================================ */
+
+/* Ensure text remains readable on smallest screens */
+@media (max-width: 240px) {
+  p,
+  li,
+  span,
+  div {
+    line-height: 1.4;
+  }
+  
+  /* Slightly larger line height for better readability */
+  .post-item__content,
+  .notification-item__text,
+  .compose-view__reply-text {
+    line-height: 1.5;
+  }
+}
+
+/* ============================================
+   Scrollable Areas
+   ============================================ */
+
+/* Ensure scrollable areas work well on small screens */
+@media (max-width: 320px) {
+  .timeline-view,
+  .notifications-view,
+  .profile-view,
+  .post-detail {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ============================================
+   Modal and Overlay Adjustments
+   ============================================ */
+
+/* Full-screen modals on smallest devices */
+@media (max-width: 240px) {
+  .modal {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+  
+  .modal-overlay {
+    padding: 0;
+  }
+  
+  .post-action-menu {
+    max-height: 70vh;
+  }
+}
+
+/* ============================================
+   Form Elements
+   ============================================ */
+
+/* Adjust form elements for small screens */
+@media (max-width: 240px) {
+  .text-input__field,
+  .edit-profile-view__textarea {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  textarea.text-input__field {
+    min-height: 60px;
+  }
+}
+
+/* ============================================
+   Navigation Elements
+   ============================================ */
+
+/* Adjust softkey bar for different screen sizes */
+@media (max-width: 240px) {
+  .softkey-bar {
+    font-size: 10px;
+    padding: 0 var(--space-xs);
+  }
+  
+  .softkey-left,
+  .softkey-center,
+  .softkey-right {
+    padding: var(--space-xs) 2px;
+  }
+}
+
+/* ============================================
+   List Items
+   ============================================ */
+
+/* Compact list items on small screens */
+@media (max-width: 240px) {
+  .post-item,
+  .notification-item {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .post-item__avatar,
+  .notification-item__icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ============================================
+   Images and Media
+   ============================================ */
+
+/* Ensure images don't break layout on small screens */
+@media (max-width: 320px) {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .profile-header__avatar,
+  .profile-header__avatar-placeholder {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+/* ============================================
+   Utility Classes for Responsive Design
+   ============================================ */
+
+/* Hide on small screens */
+.hide-on-small {
+  display: block;
+}
+
+@media (max-width: 240px) {
+  .hide-on-small {
+    display: none !important;
+  }
+}
+
+/* Show only on small screens */
+.show-on-small {
+  display: none;
+}
+
+@media (max-width: 240px) {
+  .show-on-small {
+    display: block !important;
+  }
+}
+
+/* Compact mode for small screens */
+@media (max-width: 240px) {
+  .compact-on-small {
+    padding: var(--space-xs) !important;
+    margin: var(--space-xs) !important;
+  }
+}
+
+/* ============================================
+   Performance Optimizations
+   ============================================ */
+
+/* Reduce animations on small/slow devices */
+@media (max-width: 240px) {
+  * {
+    animation-duration: 0.2s !important;
+    transition-duration: 0.15s !important;
+  }
+}
+
+/* ============================================
+   Print Styles (if needed)
+   ============================================ */
+
+@media print {
+  .softkey-bar,
+  .offline-indicator,
+  .toast,
+  .modal-overlay {
+    display: none !important;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+}

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlueKai Styling Test</title>
+  <link rel="stylesheet" href="src/styles/app.css">
+  <style>
+    .test-section {
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+    }
+    
+    .test-section h2 {
+      margin-bottom: 12px;
+      color: var(--color-primary);
+    }
+    
+    .color-swatch {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      margin: 4px;
+      border: 1px solid var(--color-border-medium);
+    }
+    
+    .spacing-demo {
+      display: inline-block;
+      background: var(--color-bg-tertiary);
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h1>BlueKai Styling System Test</h1>
+    <p class="text-secondary">Testing CSS variables, typography, and components</p>
+    
+    <!-- Color Palette -->
+    <div class="test-section">
+      <h2>Color Palette</h2>
+      <div>
+        <div class="color-swatch" style="background: var(--color-primary);" title="Primary"></div>
+        <div class="color-swatch" style="background: var(--color-success);" title="Success"></div>
+        <div class="color-swatch" style="background: var(--color-error);" title="Error"></div>
+        <div class="color-swatch" style="background: var(--color-warning);" title="Warning"></div>
+        <div class="color-swatch" style="background: var(--color-info);" title="Info"></div>
+      </div>
+    </div>
+    
+    <!-- Typography -->
+    <div class="test-section">
+      <h2>Typography</h2>
+      <h1>Heading 1</h1>
+      <h2>Heading 2</h2>
+      <h3>Heading 3</h3>
+      <h4>Heading 4</h4>
+      <p>Regular paragraph text with <strong>bold</strong> and <em>italic</em> styles.</p>
+      <p class="text-sm">Small text</p>
+      <p class="text-lg">Large text</p>
+    </div>
+    
+    <!-- Spacing -->
+    <div class="test-section">
+      <h2>Spacing Scale</h2>
+      <div>
+        <div class="spacing-demo p-xs">XS</div>
+        <div class="spacing-demo p-sm">SM</div>
+        <div class="spacing-demo p-md">MD</div>
+        <div class="spacing-demo p-lg">LG</div>
+        <div class="spacing-demo p-xl">XL</div>
+      </div>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="test-section">
+      <h2>Buttons</h2>
+      <button class="button button--primary">Primary Button</button>
+      <button class="button button--secondary">Secondary Button</button>
+      <button class="button button--danger">Danger Button</button>
+      <button class="button button--ghost">Ghost Button</button>
+      <br><br>
+      <button class="button button--primary button--small">Small</button>
+      <button class="button button--primary button--medium">Medium</button>
+      <button class="button button--primary button--large">Large</button>
+      <br><br>
+      <button class="button button--primary button--disabled">Disabled</button>
+      <button class="button button--primary button--loading">
+        <span class="button__spinner">
+          <span class="button__spinner-dot"></span>
+          <span class="button__spinner-dot"></span>
+          <span class="button__spinner-dot"></span>
+        </span>
+        <span class="button__text">Loading</span>
+      </button>
+    </div>
+    
+    <!-- Utility Classes -->
+    <div class="test-section">
+      <h2>Utility Classes</h2>
+      <div class="d-flex justify-between align-center p-md bg-secondary rounded-md">
+        <span>Flexbox utilities</span>
+        <span class="text-bold text-primary">Work!</span>
+      </div>
+      <br>
+      <div class="text-center p-lg bg-hover rounded-lg">
+        <p class="text-xl text-bold mb-sm">Centered Content</p>
+        <p class="text-sm text-secondary">With spacing and colors</p>
+      </div>
+    </div>
+    
+    <!-- Focus Indicators -->
+    <div class="test-section">
+      <h2>Focus Indicators (WCAG AA 3:1 Contrast)</h2>
+      <p class="text-sm text-secondary mb-md">Tab through these elements to see focus indicators</p>
+      <button class="button button--primary mr-sm">Button 1</button>
+      <button class="button button--secondary mr-sm">Button 2</button>
+      <input type="text" placeholder="Text input" class="text-input__field" style="padding: 8px; border: 2px solid var(--color-border-medium); border-radius: 4px;">
+    </div>
+    
+    <!-- Responsive Test -->
+    <div class="test-section">
+      <h2>Responsive Design</h2>
+      <p class="text-sm">Resize your browser to see responsive adjustments.</p>
+      <p class="text-xs text-secondary">Current breakpoint indicators:</p>
+      <div class="hide-on-small p-sm bg-success text-inverse rounded-md mb-sm">
+        Visible on larger screens (>240px)
+      </div>
+      <div class="show-on-small p-sm bg-warning rounded-md">
+        Visible only on small screens (≤240px)
+      </div>
+    </div>
+    
+    <!-- Loading Indicator -->
+    <div class="test-section">
+      <h2>Loading Indicator</h2>
+      <div class="loading-indicator">
+        <div class="loading-indicator__spinner">
+          <div class="loading-indicator__dot"></div>
+          <div class="loading-indicator__dot"></div>
+          <div class="loading-indicator__dot"></div>
+        </div>
+        <div class="loading-indicator__message">Loading content...</div>
+      </div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="test-section">
+      <h2>Toast Notifications</h2>
+      <div class="toast toast--info" style="position: relative; transform: none; left: 0; margin-bottom: 8px;">
+        <span class="toast__icon">ℹ️</span>
+        <span class="toast__message">Info message</span>
+      </div>
+      <div class="toast toast--success" style="position: relative; transform: none; left: 0; margin-bottom: 8px;">
+        <span class="toast__icon">✓</span>
+        <span class="toast__message">Success message</span>
+      </div>
+      <div class="toast toast--warning" style="position: relative; transform: none; left: 0; margin-bottom: 8px;">
+        <span class="toast__icon">⚠️</span>
+        <span class="toast__message">Warning message</span>
+      </div>
+      <div class="toast toast--error" style="position: relative; transform: none; left: 0;">
+        <span class="toast__icon">✕</span>
+        <span class="toast__message">Error message</span>
+      </div>
+    </div>
+    
+    <!-- Accessibility Features -->
+    <div class="test-section">
+      <h2>Accessibility Features</h2>
+      <ul style="list-style: disc; padding-left: 20px;">
+        <li>WCAG AA compliant color contrast (4.5:1 for text)</li>
+        <li>Focus indicators with 3:1 contrast ratio</li>
+        <li>Semantic HTML elements</li>
+        <li>Readable font sizes (minimum 14px on base, 12px on 240px screens)</li>
+        <li>Touch targets minimum 36x36px on small screens</li>
+        <li>Reduced motion support</li>
+        <li>High contrast mode support</li>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- Softkey Bar -->
+  <div class="softkey-bar">
+    <div class="softkey-left">Back</div>
+    <div class="softkey-center">Select</div>
+    <div class="softkey-right">Menu</div>
+  </div>
+</body>
+</html>

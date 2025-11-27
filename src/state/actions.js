@@ -290,24 +290,24 @@ function clearRetryQueue() {
 /**
  * Export action types and creators
  */
-module.exports = {
-  ActionTypes: ActionTypes,
-  loginSuccess: loginSuccess,
-  loginFailure: loginFailure,
-  logout: logout,
-  refreshSession: refreshSession,
-  timelineLoadStart: timelineLoadStart,
-  timelineLoadSuccess: timelineLoadSuccess,
-  timelineLoadFailure: timelineLoadFailure,
-  timelineAppend: timelineAppend,
-  timelineClear: timelineClear,
-  timelineUpdatePost: timelineUpdatePost,
-  navigate: navigate,
-  navigateBack: navigateBack,
-  updateSettings: updateSettings,
-  toggleDataSaver: toggleDataSaver,
-  updateUser: updateUser,
-  networkStatusChange: networkStatusChange,
-  addRetryRequest: addRetryRequest,
-  clearRetryQueue: clearRetryQueue
+export {
+  ActionTypes,
+  loginSuccess,
+  loginFailure,
+  logout,
+  refreshSession,
+  timelineLoadStart,
+  timelineLoadSuccess,
+  timelineLoadFailure,
+  timelineAppend,
+  timelineClear,
+  timelineUpdatePost,
+  navigate,
+  navigateBack,
+  updateSettings,
+  toggleDataSaver,
+  updateUser,
+  networkStatusChange,
+  addRetryRequest,
+  clearRetryQueue
 };

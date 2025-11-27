@@ -6,8 +6,8 @@
  * Requirements: 5.3, 5.4, 5.6
  */
 
-var ActionTypes = require('./actions').ActionTypes;
-var initialState = require('./app-state').initialState;
+import { ActionTypes } from './actions';
+import { initialState } from './app-state';
 
 /**
  * Main reducer function
@@ -185,6 +185,4 @@ function reducer(state, action) {
 /**
  * Export reducer
  */
-module.exports = {
-  reducer: reducer
-};
+export { reducer };

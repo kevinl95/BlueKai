@@ -1,7 +1,8 @@
 /**
  * TimelineView Component Styles
+ * Requirements: 4.2, 4.3, 6.1, 6.2, 6.4, 9.4, 10.3
  * Optimized for KaiOS small screens
- * Requirements: 4.2, 4.3, 9.4
+ * WCAG AA compliant
  */
 
 .timeline-view {
@@ -9,8 +10,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
   overflow: hidden;
 }
 
@@ -19,7 +20,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--space-xl);
 }
 
 /* Error state */
@@ -27,22 +28,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--space-xl);
 }
 
 /* Error banner (when showing cached content) */
 .timeline-view__error-banner {
-  padding: 8px;
-  background-color: #331a00;
-  border-bottom: 1px solid #664400;
+  padding: var(--space-sm);
+  background-color: #fff3cd;
+  border-bottom: 2px solid var(--color-warning);
+  color: #856404;
+  font-size: var(--font-size-sm);
+  text-align: center;
+  flex-shrink: 0;
 }
 
 /* Loading more indicator */
 .timeline-view__loading-more {
-  padding: 12px;
+  padding: var(--space-md);
   text-align: center;
-  background-color: #1a1a1a;
-  border-top: 1px solid #333;
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-light);
+  flex-shrink: 0;
 }
 
 /* Load more trigger (invisible) */
@@ -55,4 +61,26 @@
 .timeline-view > .post-list {
   flex: 1;
   overflow-y: auto;
+}
+
+/* Empty state */
+.timeline-view__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.timeline-view__empty-icon {
+  font-size: 48px;
+  margin-bottom: var(--space-md);
+  opacity: 0.5;
+}
+
+.timeline-view__empty-text {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-relaxed);
 }

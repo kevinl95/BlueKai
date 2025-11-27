@@ -1,34 +1,39 @@
+/**
+ * Loading Indicator Component Styles
+ * Requirements: 9.4, 10.3
+ */
+
 .loading-indicator {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--space-xl);
   text-align: center;
 }
 
 .loading-indicator--inline {
   display: inline-flex;
   flex-direction: row;
-  padding: 5px 10px;
+  padding: var(--space-xs) var(--space-md);
 }
 
 .loading-indicator__spinner {
   display: flex;
-  gap: 8px;
-  margin-bottom: 10px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
 }
 
 .loading-indicator--inline .loading-indicator__spinner {
   margin-bottom: 0;
-  margin-right: 8px;
+  margin-right: var(--space-sm);
 }
 
 .loading-indicator__dot {
   width: 8px;
   height: 8px;
-  background-color: #333;
-  border-radius: 50%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
   animation: loading-pulse 1.4s infinite ease-in-out both;
 }
 
@@ -62,14 +67,22 @@
 }
 
 .loading-indicator__message {
-  font-size: 14px;
-  color: #333;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
 }
 
 .loading-indicator--small .loading-indicator__message {
-  font-size: 12px;
+  font-size: var(--font-size-sm);
 }
 
 .loading-indicator--large .loading-indicator__message {
-  font-size: 16px;
+  font-size: var(--font-size-md);
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .loading-indicator__dot {
+    animation: none;
+    opacity: 0.6;
+  }
 }

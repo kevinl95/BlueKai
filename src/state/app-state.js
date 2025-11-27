@@ -110,9 +110,9 @@ function useAppState() {
 /**
  * Export the context, initial state, and hooks
  */
-module.exports = {
-  AppStateContext: AppStateContext,
-  initialState: initialState,
-  getInitialState: getInitialState,
-  useAppState: useAppState
+export {
+  AppStateContext,
+  initialState,
+  getInitialState,
+  useAppState
 };

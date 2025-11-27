@@ -1,30 +1,52 @@
+/**
+ * Error Message Component Styles
+ * Requirements: 9.1, 9.2, 9.3, 10.3
+ * WCAG AA compliant colors
+ */
+
 .error-message {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 15px;
+  padding: var(--space-lg);
   background-color: #fff3cd;
-  border: 1px solid #ffc107;
-  border-radius: 4px;
-  margin: 10px 0;
+  border: 2px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  margin: var(--space-md) 0;
+  box-shadow: var(--shadow-sm);
 }
 
 .error-message--inline {
   flex-direction: row;
-  padding: 10px;
-  margin: 5px 0;
+  padding: var(--space-md);
+  margin: var(--space-sm) 0;
+}
+
+.error-message--error {
+  background-color: #ffe5e5;
+  border-color: var(--color-error);
+}
+
+.error-message--warning {
+  background-color: #fff3cd;
+  border-color: var(--color-warning);
 }
 
 .error-message__icon {
   font-size: 32px;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-md);
   color: #856404;
+  flex-shrink: 0;
+}
+
+.error-message--error .error-message__icon {
+  color: var(--color-error);
 }
 
 .error-message--inline .error-message__icon {
   font-size: 20px;
   margin-bottom: 0;
-  margin-right: 10px;
+  margin-right: var(--space-md);
 }
 
 .error-message__content {
@@ -37,35 +59,45 @@
 }
 
 .error-message__title {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   color: #856404;
-  margin-bottom: 5px;
+  margin-bottom: var(--space-xs);
+}
+
+.error-message--error .error-message__title {
+  color: var(--color-error);
 }
 
 .error-message__text {
-  font-size: 14px;
+  font-size: var(--font-size-base);
   color: #856404;
-  line-height: 1.4;
+  line-height: var(--line-height-relaxed);
+}
+
+.error-message--error .error-message__text {
+  color: #721c24;
 }
 
 .error-message__retry {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #ffc107;
+  margin-top: var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
+  background-color: var(--color-warning);
   color: #000;
-  border: 1px solid #856404;
-  border-radius: 4px;
-  font-size: 14px;
+  border: 2px solid #856404;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
   cursor: pointer;
   min-width: 80px;
+  transition: background-color var(--transition-fast);
 }
 
 .error-message--inline .error-message__retry {
   margin-top: 0;
-  margin-left: 10px;
-  padding: 6px 12px;
-  font-size: 12px;
+  margin-left: var(--space-md);
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-sm);
   min-width: 60px;
 }
 
@@ -74,10 +106,31 @@
 }
 
 .error-message__retry:focus {
-  outline: 2px solid #000;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
 }
 
 .error-message__retry:active {
   background-color: #d39e00;
+  transform: scale(0.98);
+}
+
+/* KaiOS specific - smaller screens */
+@media (max-width: 240px) {
+  .error-message {
+    padding: var(--space-md);
+  }
+  
+  .error-message__icon {
+    font-size: 24px;
+  }
+  
+  .error-message__title {
+    font-size: var(--font-size-base);
+  }
+  
+  .error-message__text {
+    font-size: var(--font-size-sm);
+  }
 }

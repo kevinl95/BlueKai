@@ -1,42 +1,65 @@
 /**
  * NotificationItem Component Styles
+ * Requirements: 4.7, 10.3
  * Optimized for KaiOS 240x320 display
+ * WCAG AA compliant with 3:1 contrast for focus
  */
 
 .notification-item {
-  padding: 8px 10px;
-  border-bottom: 1px solid #333;
-  background-color: #000;
-  color: #fff;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border-light);
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color var(--transition-fast);
+}
+
+.notification-item:hover {
+  background-color: var(--color-bg-hover);
 }
 
 .notification-item--focused {
-  background-color: #1a1a1a;
-  outline: 2px solid #0095ff;
-  outline-offset: -2px;
+  background-color: #e6f2ff;
+  outline: 3px solid var(--color-focus);
+  outline-offset: -3px;
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
 }
 
 .notification-item--unread {
-  background-color: #0a0a0a;
-  border-left: 3px solid #0095ff;
-  padding-left: 7px;
+  background-color: var(--color-bg-secondary);
+  border-left: 3px solid var(--color-primary);
+  padding-left: calc(var(--space-md) - 3px);
 }
 
 .notification-item__header {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 
 .notification-item__icon {
-  font-size: 16px;
-  color: #0095ff;
+  font-size: var(--font-size-md);
+  color: var(--color-primary);
   flex-shrink: 0;
   width: 20px;
   text-align: center;
+}
+
+.notification-item__icon--like {
+  color: var(--color-error);
+}
+
+.notification-item__icon--repost {
+  color: var(--color-success);
+}
+
+.notification-item__icon--follow {
+  color: var(--color-primary);
+}
+
+.notification-item__icon--reply {
+  color: var(--color-info);
 }
 
 .notification-item__info {
@@ -47,61 +70,68 @@
 .notification-item__actor {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 2px;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-xs);
 }
 
 .notification-item__actor-name {
-  font-weight: bold;
-  font-size: 13px;
-  color: #fff;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
 }
 
 .notification-item__actor-handle {
-  font-size: 12px;
-  color: #888;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
 }
 
 .notification-item__message {
-  font-size: 13px;
-  color: #ccc;
-  line-height: 1.3;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-base);
 }
 
 .notification-item__time {
-  font-size: 11px;
-  color: #666;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
   white-space: nowrap;
   flex-shrink: 0;
   margin-left: auto;
 }
 
 .notification-item__content {
-  margin-top: 6px;
+  margin-top: var(--space-xs);
   padding-left: 28px;
 }
 
 .notification-item__text {
-  font-size: 12px;
-  color: #aaa;
-  line-height: 1.4;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
   margin: 0;
   word-wrap: break-word;
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .notification-item {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .notification-item__actor-name,
+  .notification-item__message,
+  .notification-item__text {
+    font-size: var(--font-size-xs);
+  }
 }
 
 /* High contrast for readability (WCAG AA) */
 @media (prefers-contrast: high) {
   .notification-item {
-    border-color: #666;
+    border-color: currentColor;
   }
   
   .notification-item--focused {
-    outline-color: #00bfff;
-    outline-width: 3px;
-  }
-  
-  .notification-item__actor-name,
-  .notification-item__message {
-    color: #fff;
+    outline-width: 4px;
   }
 }

@@ -4,12 +4,10 @@
  * Compatible with Gecko 48 (ES5 transpiled)
  */
 
-var h = require('preact').h;
-var useReducer = require('preact').useReducer;
-var useEffect = require('preact').useEffect;
-var AppStateContext = require('./app-state').AppStateContext;
-var getInitialState = require('./app-state').getInitialState;
-var reducer = require('./reducer').reducer;
+import { h } from 'preact';
+import { useReducer, useEffect } from 'preact/hooks';
+import { AppStateContext, getInitialState } from './app-state';
+import { reducer } from './reducer';
 
 /**
  * AppStateProvider Component
@@ -53,6 +51,4 @@ function AppStateProvider(props) {
   return h(AppStateContext.Provider, { value: contextValue }, props.children);
 }
 
-module.exports = {
-  AppStateProvider: AppStateProvider
-};
+export { AppStateProvider };

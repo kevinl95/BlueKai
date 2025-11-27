@@ -1,4 +1,8 @@
-/* Modal Component Styles */
+/**
+ * Modal Component Styles
+ * Requirements: 9.1, 10.3
+ * WCAG AA compliant with proper focus management
+ */
 
 .modal-overlay {
   position: fixed;
@@ -6,37 +10,60 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  padding: 16px;
+  z-index: var(--z-modal);
+  padding: var(--space-lg);
+  animation: modal-fade-in var(--transition-base);
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
   max-width: 400px;
   width: 100%;
   max-height: 80%;
   display: flex;
   flex-direction: column;
+  animation: modal-slide-up var(--transition-base);
+}
+
+@keyframes modal-slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modal__header {
-  padding: 16px;
-  border-bottom: 1px solid #e1e8ed;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--color-border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-shrink: 0;
 }
 
 .modal__title {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -44,7 +71,7 @@
   background: none;
   border: none;
   font-size: 24px;
-  color: #657786;
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -52,43 +79,82 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast);
+  flex-shrink: 0;
 }
 
 .modal__close:hover {
-  background-color: #f7f9fa;
+  background-color: var(--color-bg-hover);
 }
 
 .modal__close:focus {
-  outline: 2px solid #1da1f2;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
 }
 
 .modal__content {
-  padding: 16px;
+  padding: var(--space-lg);
   overflow-y: auto;
   flex: 1;
+  color: var(--color-text-primary);
 }
 
 .modal__footer {
-  padding: 16px;
-  border-top: 1px solid #e1e8ed;
+  padding: var(--space-lg);
+  border-top: 1px solid var(--color-border-light);
   display: flex;
-  gap: 8px;
+  gap: var(--space-sm);
   justify-content: flex-end;
+  flex-shrink: 0;
 }
 
-/* Small screen adjustments */
-@media (max-width: 320px) {
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .modal-overlay {
+    padding: 0;
+  }
+  
   .modal {
     max-width: 100%;
+    max-height: 100%;
     border-radius: 0;
   }
   
   .modal__header,
   .modal__content,
   .modal__footer {
-    padding: 12px;
+    padding: var(--space-md);
+  }
+}
+
+/* Small screen adjustments */
+@media (max-width: 320px) {
+  .modal {
+    max-width: 100%;
+    border-radius: var(--radius-md);
+  }
+  
+  .modal__header,
+  .modal__content,
+  .modal__footer {
+    padding: var(--space-md);
+  }
+  
+  .modal__footer {
+    flex-direction: column;
+  }
+  
+  .modal__footer > * {
+    width: 100%;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal {
+    animation: none;
   }
 }

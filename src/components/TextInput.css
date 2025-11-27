@@ -1,73 +1,112 @@
-/* TextInput Component Styles */
+/**
+ * TextInput Component Styles
+ * Requirements: 8.1, 8.2, 8.3, 10.3
+ * WCAG AA compliant with proper focus indicators
+ */
 
 .text-input {
-  margin-bottom: 16px;
+  margin-bottom: var(--space-lg);
 }
 
 .text-input__label {
   display: block;
-  margin-bottom: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #e1e8ed;
+  margin-bottom: var(--space-xs);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
 }
 
 .text-input__required {
-  color: #e0245e;
+  color: var(--color-error);
+  margin-left: var(--space-xs);
 }
 
 .text-input__field {
   width: 100%;
-  padding: 8px 12px;
-  border: 1px solid #38444d;
-  border-radius: 4px;
-  font-size: 14px;
-  font-family: Arial, sans-serif;
-  color: #e1e8ed;
-  background-color: #15202b;
-  transition: border-color 0.2s;
+  padding: var(--space-sm) var(--space-md);
+  border: 2px solid var(--color-border-medium);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: var(--font-family-base);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast);
+  line-height: var(--line-height-base);
 }
 
 .text-input__field:focus {
   outline: none;
-  border-color: #1da1f2;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-shadow);
 }
 
 .text-input__field::placeholder {
-  color: #657786;
+  color: var(--color-text-tertiary);
 }
 
 textarea.text-input__field {
   resize: vertical;
   min-height: 80px;
+  font-family: var(--font-family-base);
 }
 
 .text-input--error .text-input__field {
-  border-color: #e0245e;
+  border-color: var(--color-error);
+}
+
+.text-input--error .text-input__field:focus {
+  box-shadow: 0 0 0 3px rgba(224, 36, 94, 0.2);
 }
 
 .text-input__footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 4px;
+  align-items: flex-start;
+  margin-top: var(--space-xs);
   min-height: 18px;
+  gap: var(--space-sm);
 }
 
 .text-input__error {
-  font-size: 12px;
-  color: #e0245e;
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
   flex: 1;
+  line-height: var(--line-height-base);
 }
 
 .text-input__counter {
-  font-size: 12px;
-  color: #8899a6;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
   white-space: nowrap;
-  margin-left: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-input__counter--warning {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-medium);
 }
 
 .text-input__counter--over {
-  color: #e0245e;
-  font-weight: 600;
+  color: var(--color-error);
+  font-weight: var(--font-weight-bold);
+}
+
+/* Disabled state */
+.text-input__field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: var(--color-bg-secondary);
+}
+
+/* KaiOS specific - smaller screens */
+@media (max-width: 240px) {
+  .text-input__field {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  textarea.text-input__field {
+    min-height: 60px;
+  }
 }

@@ -6,7 +6,7 @@
  * Requirements: 5.4, 5.5, 5.6
  */
 
-var actions = require('./actions');
+import * as actions from './actions';
 
 /**
  * Session Manager
@@ -202,6 +202,4 @@ var SessionManager = {
 /**
  * Export session manager
  */
-module.exports = {
-  SessionManager: SessionManager
-};
+export { SessionManager };

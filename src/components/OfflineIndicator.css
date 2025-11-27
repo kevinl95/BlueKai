@@ -1,5 +1,7 @@
 /**
  * Offline Indicator Styles
+ * Requirements: 6.1, 10.3
+ * WCAG AA compliant colors
  */
 
 .offline-indicator {
@@ -7,24 +9,43 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: #ff6b6b;
-  color: #ffffff;
-  padding: 4px 8px;
+  background-color: var(--color-error);
+  color: var(--color-text-inverse);
+  padding: var(--space-xs) var(--space-sm);
   text-align: center;
-  font-size: 12px;
-  font-weight: bold;
-  z-index: 1000;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  z-index: var(--z-toast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: var(--space-xs);
+  box-shadow: var(--shadow-md);
+  animation: offline-slide-down var(--transition-base);
+}
+
+@keyframes offline-slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
 .offline-indicator__icon {
-  font-size: 14px;
+  font-size: var(--font-size-base);
+  flex-shrink: 0;
 }
 
 .offline-indicator__text {
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .offline-indicator {
+    animation: none;
+  }
 }

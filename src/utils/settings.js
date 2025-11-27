@@ -104,12 +104,12 @@ function toggleDataSaverMode(currentSettings) {
 /**
  * Export utilities
  */
-module.exports = {
-  DEFAULT_SETTINGS: DEFAULT_SETTINGS,
-  getSettings: getSettings,
-  isDataSaverEnabled: isDataSaverEnabled,
-  shouldAutoLoadImages: shouldAutoLoadImages,
-  getLanguage: getLanguage,
-  createSettingsUpdate: createSettingsUpdate,
-  toggleDataSaverMode: toggleDataSaverMode
+export {
+  DEFAULT_SETTINGS,
+  getSettings,
+  isDataSaverEnabled,
+  shouldAutoLoadImages,
+  getLanguage,
+  createSettingsUpdate,
+  toggleDataSaverMode
 };
