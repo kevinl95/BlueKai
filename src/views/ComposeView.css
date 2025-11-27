@@ -5,7 +5,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #ffffff;
+  background-color: #000000;
 }
 
 .compose-view__container {
@@ -19,28 +19,28 @@
 .compose-view__header {
   margin-bottom: 12px;
   padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #333333;
 }
 
 .compose-view__title {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
 }
 
 /* Reply context */
 .compose-view__reply-context {
   margin-bottom: 12px;
   padding: 8px;
-  background-color: #f5f5f5;
+  background-color: #1a1a1a;
   border-left: 3px solid #1da1f2;
   border-radius: 4px;
 }
 
 .compose-view__reply-label {
   font-size: 12px;
-  color: #666666;
+  color: #888888;
   margin-bottom: 6px;
   font-weight: 500;
 }
@@ -55,17 +55,17 @@
 
 .compose-view__reply-author-name {
   font-weight: 600;
-  color: #1a1a1a;
+  color: #ffffff;
   margin-right: 4px;
 }
 
 .compose-view__reply-author-handle {
-  color: #666666;
+  color: #888888;
   font-size: 12px;
 }
 
 .compose-view__reply-text {
-  color: #333333;
+  color: #cccccc;
   line-height: 1.4;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -87,7 +87,7 @@
   gap: 8px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #333333;
 }
 
 .compose-view__actions .button {
@@ -103,7 +103,7 @@
   margin: 0 0 16px 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #333333;
+  color: #cccccc;
 }
 
 .compose-view__confirm-actions {
