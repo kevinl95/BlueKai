@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Handling Tests - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    #test-results {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .test-section {
+      margin-bottom: 20px;
+      padding: 10px;
+      border-left: 3px solid #1da1f2;
+      background: #f9f9f9;
+    }
+    .pass {
+      color: #17bf63;
+    }
+    .fail {
+      color: #dc3545;
+    }
+    pre {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Error Handling Tests</h1>
+  <div id="test-results">
+    <p>Running tests...</p>
+  </div>
+
+  <script type="module">
+    // Polyfills for testing
+    if (!window.Promise) {
+      console.error('Promise polyfill required');
+    }
+
+    // Simple test framework
+    window.describe = function(name, fn) {
+      console.log('\n=== ' + name + ' ===');
+      fn();
+    };
+
+    window.beforeEach = function(fn) {
+      // Simple beforeEach - would need proper implementation for real use
+      fn();
+    };
+
+    // Mock process.env for tests
+    window.process = { env: { NODE_ENV: 'test' } };
+
+    const results = document.getElementById('test-results');
+    results.innerHTML = '<h2>Test Results</h2>';
+
+    // Capture console output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalAssert = console.assert;
+    
+    let testOutput = [];
+    let assertionsFailed = 0;
+    let assertionsPassed = 0;
+
+    console.log = function(...args) {
+      testOutput.push({ type: 'log', message: args.join(' ') });
+      originalLog.apply(console, args);
+    };
+
+    console.error = function(...args) {
+      testOutput.push({ type: 'error', message: args.join(' ') });
+      originalError.apply(console, args);
+    };
+
+    console.assert = function(condition, message) {
+      if (!condition) {
+        assertionsFailed++;
+        testOutput.push({ type: 'fail', message: 'FAIL: ' + message });
+        originalError('FAIL:', message);
+      } else {
+        assertionsPassed++;
+        testOutput.push({ type: 'pass', message: 'PASS: ' + message });
+      }
+    };
+
+    // Run tests
+    async function runTests() {
+      try {
+        // Import and run error logger tests
+        await import('./src/utils/error-logger.test.js');
+        
+        // Import and run error messages tests
+        await import('./src/utils/error-messages.test.js');
+        
+        // Import and run toast manager tests
+        await import('./src/utils/toast-manager.test.js');
+        
+        // Import and run retry handler tests
+        await import('./src/utils/retry-handler.test.js');
+        
+        // Import and run error boundary tests
+        await import('./src/components/ErrorBoundary.test.js');
+        
+        // Wait a bit for async tests to complete
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Display results
+        displayResults();
+      } catch (error) {
+        results.innerHTML += '<div class="test-section fail"><strong>Error loading tests:</strong><br>' + error.message + '</div>';
+        console.error('Test loading error:', error);
+      }
+    }
+
+    function displayResults() {
+      let html = '<div class="test-section">';
+      html += '<h3>Summary</h3>';
+      html += '<p class="pass">✓ Passed: ' + assertionsPassed + '</p>';
+      html += '<p class="fail">✗ Failed: ' + assertionsFailed + '</p>';
+      html += '</div>';
+
+      html += '<div class="test-section">';
+      html += '<h3>Test Output</h3>';
+      html += '<pre>';
+      
+      testOutput.forEach(function(output) {
+        const className = output.type === 'fail' ? 'fail' : (output.type === 'pass' ? 'pass' : '');
+        html += '<div class="' + className + '">' + output.message + '</div>';
+      });
+      
+      html += '</pre>';
+      html += '</div>';
+
+      results.innerHTML += html;
+    }
+
+    runTests();
+  </script>
+</body>
+</html>

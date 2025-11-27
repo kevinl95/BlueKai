@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { getErrorMessage as getErrorMsg, isRetryableError } from '../utils/error-messages.js';
 
 /**
  * ErrorMessage - User-friendly error display component
@@ -14,8 +15,11 @@ function ErrorMessage(props) {
   var title = props.title || 'Error';
   var inline = props.inline || false;
   
-  // Get user-friendly error message
-  var message = getErrorMessage(error);
+  // Get user-friendly error message using centralized utility
+  var message = getErrorMsg(error);
+  
+  // Determine if error is retryable
+  var showRetry = onRetry && (props.showRetry !== false) && isRetryableError(error);
   
   var className = 'error-message';
   if (inline) {
@@ -28,86 +32,29 @@ function ErrorMessage(props) {
       h('div', { className: 'error-message__title' }, title),
       h('div', { className: 'error-message__text' }, message)
     ),
-    onRetry && h('button', {
+    showRetry && h('button', {
       className: 'error-message__retry',
       onClick: onRetry,
-      type: 'button'
+      type: 'button',
+      'data-focusable': 'true'
     }, 'Retry')
   );
 }
 
 /**
- * Get user-friendly error message from error object or string
+ * Legacy function for backward compatibility
+ * @deprecated Use getErrorMessage from error-messages.js instead
  */
 function getErrorMessage(error) {
-  if (!error) {
-    return 'An unknown error occurred';
-  }
-  
-  // If it's a string, return it
-  if (typeof error === 'string') {
-    return error;
-  }
-  
-  // If it's an Error object with a message
-  if (error.message) {
-    return mapErrorMessage(error.message, error);
-  }
-  
-  return 'An unexpected error occurred';
+  return getErrorMsg(error);
 }
 
 /**
- * Map technical error messages to user-friendly ones
- * Requirements: 6.3 - Display appropriate error messages for offline actions
+ * Legacy function for backward compatibility
+ * @deprecated Use getErrorMessage from error-messages.js instead
  */
 function mapErrorMessage(message, error) {
-  var errorMap = {
-    'NetworkError': 'Cannot connect. Check your connection.',
-    'Network request failed': 'Cannot connect. Check your connection.',
-    'Failed to fetch': 'Cannot connect. Check your connection.',
-    'No network connection': 'You are offline. Connect to continue.',
-    'AuthError': 'Login expired. Please sign in again.',
-    'Invalid credentials': 'Invalid username or password.',
-    'Unauthorized': 'Login expired. Please sign in again.',
-    'RateLimitError': 'Too many requests. Please wait.',
-    'Too Many Requests': 'Too many requests. Please wait.',
-    'ServerError': 'BlueSky is having issues. Try again later.',
-    'Internal Server Error': 'BlueSky is having issues. Try again later.',
-    'StorageError': 'Storage full. Clearing cache...',
-    'QuotaExceededError': 'Storage full. Clearing cache...'
-  };
-  
-  // Check for exact matches
-  if (errorMap[message]) {
-    return errorMap[message];
-  }
-  
-  // Check for partial matches
-  for (var key in errorMap) {
-    if (message.indexOf(key) !== -1) {
-      return errorMap[key];
-    }
-  }
-  
-  // Check HTTP status codes
-  if (error && error.status) {
-    if (error.status === 401) {
-      return 'Login expired. Please sign in again.';
-    }
-    if (error.status === 429) {
-      return 'Too many requests. Please wait.';
-    }
-    if (error.status >= 500) {
-      return 'BlueSky is having issues. Try again later.';
-    }
-    if (error.status >= 400) {
-      return 'Invalid request. Please try again.';
-    }
-  }
-  
-  // Return original message if no mapping found
-  return message;
+  return getErrorMsg(error || message);
 }
 
 export default ErrorMessage;

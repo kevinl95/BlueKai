@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error Handling Demo - BlueKai</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    .demo-section {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .demo-section h2 {
+      margin-top: 0;
+      color: #1da1f2;
+    }
+    .button-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #1da1f2;
+      color: white;
+    }
+    button:hover {
+      background-color: #1a8cd8;
+    }
+    button.success {
+      background-color: #17bf63;
+    }
+    button.warning {
+      background-color: #ffad1f;
+      color: #000;
+    }
+    button.error {
+      background-color: #dc3545;
+    }
+    .demo-output {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      min-height: 50px;
+    }
+    .code {
+      background: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      margin-top: 10px;
+      overflow-x: auto;
+    }
+  </style>
+  <link rel="stylesheet" href="src/components/Toast.css">
+  <link rel="stylesheet" href="src/components/ErrorMessage.css">
+</head>
+<body>
+  <h1>🛡️ Error Handling Demo</h1>
+  <p>Interactive demonstration of BlueKai's error handling system</p>
+
+  <div class="demo-section">
+    <h2>Toast Notifications</h2>
+    <p>Non-critical notifications that auto-dismiss</p>
+    <div class="button-group">
+      <button onclick="demoToastInfo()">Show Info</button>
+      <button class="success" onclick="demoToastSuccess()">Show Success</button>
+      <button class="warning" onclick="demoToastWarning()">Show Warning</button>
+      <button class="error" onclick="demoToastError()">Show Error</button>
+    </div>
+    <div class="code">
+showInfo('Timeline refreshed');<br>
+showSuccess('Post created!');<br>
+showWarning('Low storage space');<br>
+showError('Failed to connect');
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Error Messages</h2>
+    <p>User-friendly error display with retry option</p>
+    <div class="button-group">
+      <button onclick="demoErrorNetwork()">Network Error</button>
+      <button onclick="demoErrorAuth()">Auth Error</button>
+      <button onclick="demoErrorServer()">Server Error</button>
+      <button onclick="demoErrorClear()">Clear</button>
+    </div>
+    <div id="error-demo-output" class="demo-output"></div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Error Message Mapping</h2>
+    <p>Technical errors mapped to user-friendly messages</p>
+    <div class="button-group">
+      <button onclick="demoMapping('NetworkError')">Network Error</button>
+      <button onclick="demoMapping('timeout')">Timeout</button>
+      <button onclick="demoMapping('401')">401 Unauthorized</button>
+      <button onclick="demoMapping('429')">429 Rate Limit</button>
+      <button onclick="demoMapping('500')">500 Server Error</button>
+    </div>
+    <div id="mapping-output" class="demo-output"></div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Retry Handler</h2>
+    <p>Automatic retry with exponential backoff</p>
+    <div class="button-group">
+      <button onclick="demoRetrySuccess()">Retry Success</button>
+      <button onclick="demoRetryFail()">Retry Fail</button>
+    </div>
+    <div id="retry-output" class="demo-output"></div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Error Logging</h2>
+    <p>Centralized error logging with context</p>
+    <div class="button-group">
+      <button onclick="demoLogErrors()">Log Sample Errors</button>
+      <button onclick="demoShowLog()">Show Error Log</button>
+      <button onclick="demoClearLog()">Clear Log</button>
+    </div>
+    <div id="log-output" class="demo-output"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script type="module">
+    import { h, render } from './node_modules/preact/dist/preact.module.js';
+    import { showInfo, showSuccess, showWarning, showError } from './src/utils/toast-manager.js';
+    import { getErrorMessage, isRetryableError } from './src/utils/error-messages.js';
+    import { logError, logNetworkError, logApiError, getErrorLog, clearErrorLog, getErrorCount } from './src/utils/error-logger.js';
+    import { retryWithBackoff } from './src/utils/retry-handler.js';
+    import ErrorMessage from './src/components/ErrorMessage.js';
+    import ToastContainer from './src/components/ToastContainer.js';
+
+    // Render toast container
+    render(h(ToastContainer), document.getElementById('toast-container'));
+
+    // Toast demos
+    window.demoToastInfo = function() {
+      showInfo('This is an info message');
+    };
+
+    window.demoToastSuccess = function() {
+      showSuccess('Operation completed successfully!');
+    };
+
+    window.demoToastWarning = function() {
+      showWarning('You are running low on storage');
+    };
+
+    window.demoToastError = function() {
+      showError('Failed to connect to server');
+    };
+
+    // Error message demos
+    window.demoErrorNetwork = function() {
+      const error = new Error('Network request failed');
+      error.type = 'NetworkError';
+      
+      render(
+        h(ErrorMessage, {
+          error: error,
+          title: 'Connection Failed',
+          onRetry: function() {
+            showInfo('Retrying...');
+            setTimeout(() => window.demoErrorClear(), 1000);
+          }
+        }),
+        document.getElementById('error-demo-output')
+      );
+    };
+
+    window.demoErrorAuth = function() {
+      const error = new Error('Unauthorized');
+      error.status = 401;
+      
+      render(
+        h(ErrorMessage, {
+          error: error,
+          title: 'Authentication Required',
+          showRetry: false
+        }),
+        document.getElementById('error-demo-output')
+      );
+    };
+
+    window.demoErrorServer = function() {
+      const error = new Error('Internal Server Error');
+      error.status = 500;
+      
+      render(
+        h(ErrorMessage, {
+          error: error,
+          title: 'Server Error',
+          onRetry: function() {
+            showInfo('Retrying...');
+          }
+        }),
+        document.getElementById('error-demo-output')
+      );
+    };
+
+    window.demoErrorClear = function() {
+      document.getElementById('error-demo-output').innerHTML = '<em>No errors</em>';
+    };
+
+    // Error mapping demos
+    window.demoMapping = function(errorType) {
+      let error;
+      
+      if (errorType === '401' || errorType === '429' || errorType === '500') {
+        error = { status: parseInt(errorType), message: 'HTTP Error' };
+      } else if (errorType === 'timeout') {
+        error = new Error('Request timeout exceeded');
+      } else {
+        error = { type: errorType, message: errorType };
+      }
+      
+      const message = getErrorMessage(error);
+      const retryable = isRetryableError(error);
+      
+      document.getElementById('mapping-output').innerHTML = 
+        '<strong>Technical:</strong> ' + (error.message || error.type) + '<br>' +
+        '<strong>User-Friendly:</strong> ' + message + '<br>' +
+        '<strong>Retryable:</strong> ' + (retryable ? 'Yes ✓' : 'No ✗');
+    };
+
+    // Retry demos
+    window.demoRetrySuccess = function() {
+      const output = document.getElementById('retry-output');
+      output.innerHTML = 'Starting retry demo...<br>';
+      
+      let attempts = 0;
+      
+      retryWithBackoff(
+        function() {
+          attempts++;
+          output.innerHTML += 'Attempt ' + attempts + '...<br>';
+          
+          if (attempts < 3) {
+            const error = new Error('Network error');
+            error.type = 'NetworkError';
+            return Promise.reject(error);
+          }
+          return Promise.resolve('Success!');
+        },
+        {
+          maxRetries: 3,
+          initialDelay: 500,
+          onRetry: function(attempt, delay) {
+            output.innerHTML += 'Retrying in ' + Math.round(delay) + 'ms...<br>';
+          }
+        }
+      )
+        .then(function(result) {
+          output.innerHTML += '<strong style="color: #17bf63;">✓ ' + result + '</strong>';
+          showSuccess('Retry succeeded after ' + attempts + ' attempts');
+        })
+        .catch(function(error) {
+          output.innerHTML += '<strong style="color: #dc3545;">✗ Failed</strong>';
+        });
+    };
+
+    window.demoRetryFail = function() {
+      const output = document.getElementById('retry-output');
+      output.innerHTML = 'Starting retry demo (will fail)...<br>';
+      
+      let attempts = 0;
+      
+      retryWithBackoff(
+        function() {
+          attempts++;
+          output.innerHTML += 'Attempt ' + attempts + '...<br>';
+          
+          const error = new Error('Persistent error');
+          error.type = 'NetworkError';
+          return Promise.reject(error);
+        },
+        {
+          maxRetries: 3,
+          initialDelay: 500,
+          onRetry: function(attempt, delay) {
+            output.innerHTML += 'Retrying in ' + Math.round(delay) + 'ms...<br>';
+          }
+        }
+      )
+        .then(function(result) {
+          output.innerHTML += '<strong style="color: #17bf63;">✓ Success</strong>';
+        })
+        .catch(function(error) {
+          output.innerHTML += '<strong style="color: #dc3545;">✗ Failed after ' + attempts + ' attempts</strong>';
+          showError('All retry attempts failed');
+        });
+    };
+
+    // Logging demos
+    window.demoLogErrors = function() {
+      logError(new Error('Sample error 1'), { type: 'test', component: 'Demo' });
+      logNetworkError(new Error('Network failed'), { url: '/api/test', method: 'GET', status: 500 });
+      logApiError(new Error('API error'), { endpoint: '/api/posts', method: 'POST', status: 429 });
+      
+      showSuccess('Logged 3 sample errors');
+      window.demoShowLog();
+    };
+
+    window.demoShowLog = function() {
+      const log = getErrorLog();
+      const output = document.getElementById('log-output');
+      
+      if (log.length === 0) {
+        output.innerHTML = '<em>No errors logged</em>';
+        return;
+      }
+      
+      let html = '<strong>Total Errors:</strong> ' + log.length + '<br><br>';
+      
+      log.slice(-5).reverse().forEach(function(entry, index) {
+        html += '<div style="margin-bottom: 10px; padding: 10px; background: white; border-radius: 4px;">';
+        html += '<strong>' + (index + 1) + '.</strong> ' + entry.message + '<br>';
+        html += '<small>Type: ' + (entry.context.type || 'unknown') + '</small><br>';
+        html += '<small>Time: ' + new Date(entry.timestamp).toLocaleTimeString() + '</small>';
+        html += '</div>';
+      });
+      
+      output.innerHTML = html;
+    };
+
+    window.demoClearLog = function() {
+      clearErrorLog();
+      showInfo('Error log cleared');
+      window.demoShowLog();
+    };
+
+    // Initial state
+    window.demoErrorClear();
+    document.getElementById('mapping-output').innerHTML = '<em>Click a button to see error mapping</em>';
+    document.getElementById('retry-output').innerHTML = '<em>Click a button to test retry logic</em>';
+    document.getElementById('log-output').innerHTML = '<em>No errors logged</em>';
+  </script>
+</body>
+</html>

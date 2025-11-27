@@ -10,3 +10,6 @@ export { default as Button } from './Button';
 export { default as Modal } from './Modal';
 export { default as OfflineIndicator } from './OfflineIndicator';
 export { default as App } from './App';
+export { default as ErrorBoundary } from './ErrorBoundary';
+export { default as Toast } from './Toast';
+export { default as ToastContainer } from './ToastContainer';

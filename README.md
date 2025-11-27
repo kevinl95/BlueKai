@@ -72,6 +72,10 @@ npm test
 open test-timeline.html
 open test-compose-view.html
 open test-post-detail.html
+
+# Test error handling
+open test-error-handling.html
+open test-error-handling-demo.html  # Interactive demo
 ```
 
 ## Documentation
@@ -79,6 +83,7 @@ open test-post-detail.html
 - **Component Docs**: See `src/*/README.md` files
 - **KaiOS Setup**: See `docs/KAIOS-SETUP.md`
 - **Security**: See `docs/SECURITY.md`
+- **Error Handling**: See `docs/ERROR-HANDLING-GUIDE.md`
 
 ## Features
 
@@ -90,6 +95,12 @@ open test-post-detail.html
 - ✅ D-pad navigation
 - ✅ Offline support
 - ✅ Data saver mode
+- ✅ Comprehensive error handling
+  - Global error boundary
+  - Toast notifications
+  - Automatic retry with backoff
+  - User-friendly error messages
+  - Centralized error logging
 
 ## Tech Stack
 
