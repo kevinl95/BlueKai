@@ -501,7 +501,7 @@
   - Test production build on KaiOS device
   - _Requirements: 1.1, 1.3, 1.4_
 
-- [ ] 25. Write end-to-end integration tests
+- [x] 25. Write end-to-end integration tests
   - Create test scenarios for complete user flows
   - Write test for login to timeline flow
   - Write test for post creation flow

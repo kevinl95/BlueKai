@@ -7,12 +7,14 @@
     "dev": "webpack serve --mode development --config webpack.config.js",
     "build": "webpack --mode production --config webpack.config.js",
     "build:prod": "NODE_ENV=production webpack --config webpack.prod.config.js",
+    "build:e2e": "webpack --config webpack.e2e.config.js",
     "build:analyze": "webpack --mode production --config webpack.config.js --env analyze",
     "analyze": "node analyze-bundle.js",
     "check-size": "node check-bundle-size.js",
     "verify-build": "node verify-production-build.js",
     "serve": "npx serve dist -p 8080",
-    "test:build": "npm run build:prod && npm run verify-build"
+    "test:build": "npm run build:prod && npm run verify-build",
+    "test:e2e": "npm run build:e2e && echo 'E2E bundle built. Open test-e2e-integration.html in browser.'"
   },
   "keywords": [
     "bluesky",
