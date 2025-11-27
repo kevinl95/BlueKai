@@ -105,6 +105,25 @@ open test-post-detail.html
 - Firefox 48+
 - Modern browsers (for development)
 
+## Deployment
+
+### GitHub Pages
+
+This project is configured for automatic deployment to GitHub Pages:
+
+1. **Push to main branch** - Automatically triggers deployment
+2. **GitHub Actions** builds and deploys to GitHub Pages
+3. **Access your app** at `https://yourusername.github.io/bluekai/`
+
+The manifest.webapp file is served with the correct MIME type for KaiOS compatibility.
+
+#### Manual Deployment
+
+```bash
+npm run build
+# Upload dist/ folder to your hosting provider
+```
+
 ## Contributing
 
 1. Fork the repository

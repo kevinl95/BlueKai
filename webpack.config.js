@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = (env = {}) => {
@@ -59,6 +60,13 @@ module.exports = (env = {}) => {
           removeRedundantAttributes: true,
           useShortDoctype: true
         } : false
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          { from: 'manifest.webapp', to: 'manifest.webapp' },
+          { from: 'icons', to: 'icons', noErrorOnMissing: true },
+          { from: 'public/.nojekyll', to: '.nojekyll', toType: 'file', noErrorOnMissing: true }
+        ]
       }),
       ...(env.analyze ? [new BundleAnalyzerPlugin()] : [])
     ],
