@@ -55,8 +55,6 @@ function LoginView(props) {
     // Validate password
     if (!password || password.trim() === '') {
       errors.password = 'Password is required';
-    } else if (password.length < 4) {
-      errors.password = 'Password is too short';
     }
     
     setValidationErrors(errors);
@@ -172,7 +170,9 @@ function LoginView(props) {
           placeholder: 'user.bsky.social or email',
           error: validationErrors.handle,
           required: true,
-          showCounter: false
+          showCounter: false,
+          autocomplete: 'username',
+          autocapitalize: 'off'
         }),
         
         h(TextInput, {
@@ -184,7 +184,8 @@ function LoginView(props) {
           placeholder: 'Enter your app password',
           error: validationErrors.password,
           required: true,
-          showCounter: false
+          showCounter: false,
+          autocomplete: 'current-password'
         }),
         
         error && h(ErrorMessage, {

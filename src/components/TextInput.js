@@ -58,11 +58,17 @@ function TextInput(props) {
     className: 'text-input__field',
     value: value,
     onInput: handleChange,
+    onChange: handleChange, // Also listen to onChange for better T9 support
     placeholder: placeholder,
     maxLength: maxLength,
     required: required,
     'aria-invalid': hasError ? 'true' : 'false',
-    'aria-describedby': hasError ? id + '-error' : (showCounter && maxLength ? id + '-counter' : undefined)
+    'aria-describedby': hasError ? id + '-error' : (showCounter && maxLength ? id + '-counter' : undefined),
+    // KaiOS-specific attributes
+    autocomplete: props.autocomplete || 'off',
+    autocorrect: 'off',
+    autocapitalize: props.autocapitalize || 'off',
+    spellcheck: 'false'
   };
   
   if (!multiline) {

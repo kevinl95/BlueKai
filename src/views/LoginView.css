@@ -7,10 +7,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   min-height: 100vh;
   padding: 16px;
+  padding-bottom: 60px; /* Space for softkeys */
   background: #1a1a1a;
+  overflow-y: auto; /* Enable scrolling */
 }
 
 .login-view__container {
