@@ -3,10 +3,12 @@
  * Provides key-based translation lookup with fallback to English
  */
 
+import { inlineTranslations } from './translations-inline.js';
+
 // Store for loaded translations
 let currentLanguage = 'en';
 let translations = {};
-let fallbackTranslations = {};
+let fallbackTranslations = inlineTranslations.en || {};
 
 /**
  * Detect language from browser/device settings
@@ -65,7 +67,7 @@ function loadTranslations(lang) {
 function initI18n(lang) {
   var targetLang = lang || detectLanguage();
   
-  // Always load English as fallback
+  // Try to load English translations from file
   return loadTranslations('en')
     .then(function(enTranslations) {
       fallbackTranslations = enTranslations;
@@ -89,6 +91,14 @@ function initI18n(lang) {
           currentLanguage = 'en';
           translations = fallbackTranslations;
         });
+    })
+    .catch(function(error) {
+      // If loading English fails, use inline translations
+      console.warn('Failed to load translation files, using inline translations:', error.message);
+      currentLanguage = 'en';
+      translations = inlineTranslations.en || {};
+      fallbackTranslations = inlineTranslations.en || {};
+      return Promise.resolve();
     });
 }
 
