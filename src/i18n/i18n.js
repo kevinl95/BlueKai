@@ -36,7 +36,9 @@ function loadTranslations(lang) {
   return new Promise(function(resolve, reject) {
     var xhr = new XMLHttpRequest();
     // Use relative path for better compatibility
-    xhr.open('GET', './i18n/' + lang + '.json', true);
+    var path = './i18n/' + lang + '.json';
+    console.log('Loading translation file:', path);
+    xhr.open('GET', path, true);
     
     xhr.onload = function() {
       if (xhr.status >= 200 && xhr.status < 300) {
