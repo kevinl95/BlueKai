@@ -84,7 +84,7 @@ module.exports = {
       patterns: [
         { from: 'manifest.webapp', to: 'manifest.webapp' },
         { from: 'icons', to: 'icons', noErrorOnMissing: true },
-        { from: 'public/i18n', to: 'i18n', noErrorOnMissing: true },
+        { from: 'public/i18n', to: 'i18n' }, // Removed noErrorOnMissing - should fail if missing
         { from: 'public/.nojekyll', to: '.nojekyll', toType: 'file', noErrorOnMissing: true },
         { from: 'bluekai-logo.png', to: 'bluekai-logo.png', noErrorOnMissing: true }
       ]
