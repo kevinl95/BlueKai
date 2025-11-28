@@ -168,6 +168,12 @@
   font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
 }
 
+.post-item__metric-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  margin-right: 2px;
+}
+
 /* Active state for user interactions */
 .post-item__metric--active {
   color: var(--color-primary);
