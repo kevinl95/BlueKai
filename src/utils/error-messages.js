@@ -70,7 +70,7 @@ export function getErrorMessage(error, defaultMessage) {
   }
 
   // Check for specific error messages
-  if (error.message) {
+  if (error.message && typeof error.message === 'string') {
     // Network-related errors
     if (error.message.includes('network') || error.message.includes('fetch')) {
       return ERROR_MESSAGES.NetworkError;
@@ -124,7 +124,7 @@ export function isRetryableError(error) {
   }
 
   // Timeout errors are retryable
-  if (error.type === 'TimeoutError' || error.message.includes('timeout')) {
+  if (error.type === 'TimeoutError' || (error.message && typeof error.message === 'string' && error.message.includes('timeout'))) {
     return true;
   }
 
@@ -168,7 +168,7 @@ export function getErrorCategory(error) {
   }
 
   // Check error types
-  if (error.type) {
+  if (error.type && typeof error.type === 'string') {
     if (error.type.includes('Network') || error.type.includes('Connection')) {
       return 'network';
     }
@@ -181,7 +181,7 @@ export function getErrorCategory(error) {
   }
 
   // Check error message
-  if (error.message) {
+  if (error.message && typeof error.message === 'string') {
     if (error.message.includes('network') || error.message.includes('connection')) {
       return 'network';
     }
