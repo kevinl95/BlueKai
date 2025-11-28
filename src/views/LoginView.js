@@ -86,19 +86,26 @@ function LoginView(props) {
     // Set loading state
     setLoading(true);
     
+    console.log('Attempting login for handle:', handle.trim());
+    
     // Attempt login
     atpClient.login(handle.trim(), password)
       .then(function(session) {
         // Login successful
+        console.log('Login successful, session:', session);
         setLoading(false);
         
         // Call onLogin callback with session data
         if (onLogin) {
+          console.log('Calling onLogin callback');
           onLogin(session);
+        } else {
+          console.warn('No onLogin callback provided');
         }
       })
       .catch(function(err) {
         // Login failed
+        console.error('Login failed:', err);
         setLoading(false);
         
         // Map error to user-friendly message
