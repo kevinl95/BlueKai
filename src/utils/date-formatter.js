@@ -14,15 +14,8 @@ function DateFormatter() {
   // Locale can be set, defaults to 'en'
   this.locale = 'en';
   
-  // Memoize relative time formatting (cache for 1 minute intervals)
-  this.formatRelativeTime = performance.memoize(
-    this.formatRelativeTime.bind(this),
-    function(timestamp) {
-      // Cache key based on minute precision to avoid too many cache entries
-      var date = new Date(timestamp);
-      return Math.floor(date.getTime() / 60000).toString();
-    }
-  );
+  // Note: Memoization is applied after prototype methods are defined
+  // See the end of this file for memoization setup
 }
 
 /**
