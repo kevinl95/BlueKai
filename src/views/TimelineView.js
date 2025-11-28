@@ -228,8 +228,8 @@ TimelineViewClass.prototype.cacheTimeline = function(posts, cursor) {
  * Requirements: 6.1 - Wire up navigation to post detail on selection
  */
 TimelineViewClass.prototype.handleSelectPost = function(post) {
-  if (this.props.onNavigate) {
-    this.props.onNavigate('post-detail', { post: post });
+  if (this.props.onNavigateToPost && post.uri) {
+    this.props.onNavigateToPost(post.uri);
   }
 };
 

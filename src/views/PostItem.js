@@ -384,10 +384,9 @@ PostItem.prototype.render = function() {
           'aria-hidden': 'true'
         }, '💬'),
         h('span', { 
-          className: 'post-item__metric-label'
+          className: 'post-item__metric-label',
+          'aria-hidden': 'true'
         }, 'R:'),
-        ' ',
-        h('span', { className: 'sr-only' }, replyCount === 0 ? 'No replies' : replyCount === 1 ? '1 reply' : replyCount + ' replies'),
         replyCount > 0 ? replyCount : ''
       ),
       
@@ -402,10 +401,9 @@ PostItem.prototype.render = function() {
           'aria-hidden': 'true'
         }, '🔁'),
         h('span', { 
-          className: 'post-item__metric-label'
+          className: 'post-item__metric-label',
+          'aria-hidden': 'true'
         }, 'RT:'),
-        ' ',
-        h('span', { className: 'sr-only' }, (repostCount === 0 ? 'No reposts' : repostCount === 1 ? '1 repost' : repostCount + ' reposts') + (isReposted ? ', you reposted this' : '')),
         repostCount > 0 ? repostCount : ''
       ),
       
@@ -420,10 +418,9 @@ PostItem.prototype.render = function() {
           'aria-hidden': 'true'
         }, '❤️'),
         h('span', { 
-          className: 'post-item__metric-label'
+          className: 'post-item__metric-label',
+          'aria-hidden': 'true'
         }, 'L:'),
-        ' ',
-        h('span', { className: 'sr-only' }, (likeCount === 0 ? 'No likes' : likeCount === 1 ? '1 like' : likeCount + ' likes') + (isLiked ? ', you liked this' : '')),
         likeCount > 0 ? likeCount : ''
       )
     ),

@@ -51,7 +51,7 @@
   --space-xxl: 32px;
   
   /* Typography */
-  --font-family-base: Arial, Helvetica, sans-serif;
+  --font-family-base: Arial, Helvetica, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
   --font-family-mono: 'Courier New', monospace;
   
   --font-size-xs: 11px;
