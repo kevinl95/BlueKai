@@ -27,7 +27,6 @@ import * as accessibility from '../utils/accessibility.js';
 
 // Import views
 import LoginView from '../views/LoginView.js';
-import SignupView from '../views/SignupView.js';
 import TimelineView from '../views/TimelineView.js';
 import ComposeView from '../views/ComposeView.js';
 import PostDetailView from '../views/PostDetailView.js';
@@ -166,7 +165,6 @@ class AppContentClass extends Component {
     
     // Public routes
     this.router.register('/login', this.handleRouteChange, 'login');
-    this.router.register('/signup', this.handleRouteChange, 'signup');
     
     // Protected routes (require authentication)
     this.router.register('/timeline', function(params) {
@@ -472,14 +470,6 @@ class AppContentClass extends Component {
       });
     }
     
-    // Signup view
-    if (route === '/signup') {
-      return h(SignupView, {
-        atpClient: this.atpClient,
-        onSignup: this.handleSignup
-      });
-    }
-    
     // Timeline view
     if (route === '/timeline') {
       return h(TimelineView, {
@@ -653,7 +643,7 @@ class AppContentClass extends Component {
         id: 'app-content'
       }, this.renderView()),
       // Hide softkey bar on login and signup screens
-      (this.state.currentRoute !== 'login' && this.state.currentRoute !== 'signup') && h('div', { id: 'softkey-navigation' },
+      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'softkey-navigation' },
         h(SoftkeyBar, softkeyConfig)
       )
     );
