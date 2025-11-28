@@ -9,8 +9,8 @@
   left: 0;
   right: 0;
   height: 30px;
-  background-color: #333;
-  color: #fff;
+  background-color: #333 !important;
+  color: #fff !important;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -23,12 +23,19 @@
 .softkey-left,
 .softkey-center,
 .softkey-right {
+  color: #fff !important;
+}
+
+.softkey-left,
+.softkey-center,
+.softkey-right {
   flex: 1;
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   padding: 0 2px;
+  color: #fff !important;
 }
 
 .softkey-left {

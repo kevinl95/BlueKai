@@ -21,6 +21,18 @@
 
 .post-item:hover {
   background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.post-item:hover .post-item__author-name,
+.post-item:hover .post-item__content {
+  color: var(--color-text-primary);
+}
+
+.post-item:hover .post-item__author-handle,
+.post-item:hover .post-item__timestamp,
+.post-item:hover .post-item__engagement {
+  color: var(--color-text-secondary);
 }
 
 /* Focus state - high contrast for D-pad navigation - WCAG AA 3:1 */
@@ -153,6 +165,7 @@
   font-size: var(--font-size-base);
   display: inline-block;
   min-width: 1em;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
 }
 
 /* Active state for user interactions */
