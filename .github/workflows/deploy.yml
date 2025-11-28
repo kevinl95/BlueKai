@@ -55,6 +55,23 @@ jobs:
             echo "✅ Bundle size is within 200KB target"
           fi
       
+      - name: Verify dist contents
+        run: |
+          echo "Verifying dist folder contents..."
+          ls -la dist/
+          echo ""
+          echo "Checking for i18n folder..."
+          if [ -d "dist/i18n" ]; then
+            echo "✅ i18n folder exists"
+            ls -la dist/i18n/
+          else
+            echo "❌ ERROR: i18n folder missing!"
+            exit 1
+          fi
+          echo ""
+          echo "Full directory tree:"
+          find dist -type f | sort
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

@@ -215,7 +215,13 @@ function LoginView(props) {
       
       h('footer', { className: 'login-view__footer' },
         h('p', { className: 'login-view__signup-link' },
-          t('login.signupLink')
+          'Don\'t have an account? ',
+          h('a', {
+            href: 'https://bsky.app/',
+            target: '_blank',
+            rel: 'noopener noreferrer',
+            className: 'login-view__signup-link-anchor'
+          }, 'Sign up')
         )
       )
     )

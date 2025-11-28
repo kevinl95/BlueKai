@@ -652,7 +652,8 @@ class AppContentClass extends Component {
         },
         id: 'app-content'
       }, this.renderView()),
-      h('div', { id: 'softkey-navigation' },
+      // Hide softkey bar on login and signup screens
+      (currentRoute !== 'login' && currentRoute !== 'signup') && h('div', { id: 'softkey-navigation' },
         h(SoftkeyBar, softkeyConfig)
       )
     );
