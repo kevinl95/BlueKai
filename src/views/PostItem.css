@@ -29,6 +29,18 @@
   border: 3px solid var(--color-focus);
   padding: calc(var(--space-sm) - 2px);
   box-shadow: 0 0 0 4px var(--color-focus-shadow);
+  color: #000;
+}
+
+.post-item--focused .post-item__author-name,
+.post-item--focused .post-item__content {
+  color: #000;
+}
+
+.post-item--focused .post-item__author-handle,
+.post-item--focused .post-item__timestamp,
+.post-item--focused .post-item__engagement {
+  color: #333;
 }
 
 /* Header with author info */
@@ -139,6 +151,8 @@
 
 .post-item__metric-icon {
   font-size: var(--font-size-base);
+  display: inline-block;
+  min-width: 1em;
 }
 
 /* Active state for user interactions */
