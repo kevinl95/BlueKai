@@ -18,6 +18,12 @@ class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    // Log the error to console (always, even in production)
+    if (typeof console !== 'undefined' && console.error) {
+      console.error('ErrorBoundary caught error:', error);
+      console.error('Error info:', errorInfo);
+    }
+    
     // Log the error
     logError(error, {
       componentStack: errorInfo.componentStack,
@@ -83,9 +89,18 @@ class ErrorBoundary extends Component {
           style: {
             fontSize: '14px',
             color: '#666',
-            marginBottom: '20px'
+            marginBottom: '10px'
           }
         }, 'The app encountered an unexpected error.'),
+        state.error && h('p', {
+          style: {
+            fontSize: '12px',
+            color: '#999',
+            marginBottom: '20px',
+            fontFamily: 'monospace',
+            wordBreak: 'break-word'
+          }
+        }, state.error.toString()),
         h('button', {
           onClick: this.handleReset,
           style: {
