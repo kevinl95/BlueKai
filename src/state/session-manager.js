@@ -72,8 +72,8 @@ var SessionManager = {
         return;
       }
       
-      // Set the session in ATP client
-      atpClient.setSession(session);
+      // Session is already stored in ATP client from previous login
+      // No need to set it again
       
       // Check if session needs refresh
       if (SessionManager.shouldRefreshSession(session)) {

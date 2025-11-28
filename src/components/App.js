@@ -270,8 +270,7 @@ class AppContentClass extends Component {
       avatar: sessionData.avatar
     }));
     
-    // Set session in ATP client
-    this.atpClient.setSession(sessionData);
+    // Session is already set in ATP client during login
     
     // Start session refresh timer
     var self = this;
