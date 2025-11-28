@@ -32,21 +32,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
-      - name: Check source files before build
+      - name: Verify i18n files
         run: |
-          echo "Checking if public/i18n exists..."
-          if [ -d "public/i18n" ]; then
-            echo "✅ public/i18n folder exists"
-            ls -la public/i18n/
-          else
-            echo "❌ ERROR: public/i18n folder missing!"
-            echo "Creating it from source..."
-            mkdir -p public/i18n
-            # Copy from root if they're there
-            if [ -d "i18n" ]; then
-              cp -r i18n/* public/i18n/
-            fi
-          fi
+          echo "Checking i18n translation files..."
+          ls -la public/i18n/
       
       - name: Build production bundle
         run: npm run build:prod

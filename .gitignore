@@ -4,7 +4,9 @@ node_modules/
 # Build output
 dist/
 build/
-public/
+public/*
+!public/i18n/
+!public/.nojekyll
 
 # Logs
 *.log
