@@ -146,6 +146,7 @@ body {
   line-height: var(--line-height-base);
   color: var(--color-text-primary);
   background-color: var(--color-bg-primary);
+  text-align: left;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

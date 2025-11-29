@@ -9,6 +9,7 @@ import { h, Component } from 'preact';
 import DateFormatter from '../utils/date-formatter.js';
 import TextProcessor from '../utils/text-processor.js';
 import Modal from '../components/Modal.js';
+import Icon from '../components/Icon.js';
 
 /**
  * @class PostItem
@@ -379,14 +380,11 @@ PostItem.prototype.render = function() {
         'aria-label': replyCount === 0 ? 'No replies' : replyCount === 1 ? '1 reply' : replyCount + ' replies',
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-icon',
-          'aria-hidden': 'true'
-        }, '💬'),
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, 'R:'),
+        h(Icon, { 
+          icon: 'mdi:message-reply',
+          size: '16',
+          className: 'post-item__metric-icon'
+        }),
         replyCount > 0 ? replyCount : ''
       ),
       
@@ -396,14 +394,11 @@ PostItem.prototype.render = function() {
         'aria-label': (repostCount === 0 ? 'No reposts' : repostCount === 1 ? '1 repost' : repostCount + ' reposts') + (isReposted ? ', you reposted this' : ''),
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-icon',
-          'aria-hidden': 'true'
-        }, '🔁'),
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, 'RT:'),
+        h(Icon, { 
+          icon: 'mdi:repeat',
+          size: '16',
+          className: 'post-item__metric-icon'
+        }),
         repostCount > 0 ? repostCount : ''
       ),
       
@@ -413,14 +408,11 @@ PostItem.prototype.render = function() {
         'aria-label': (likeCount === 0 ? 'No likes' : likeCount === 1 ? '1 like' : likeCount + ' likes') + (isLiked ? ', you liked this' : ''),
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-icon',
-          'aria-hidden': 'true'
-        }, '❤️'),
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, 'L:'),
+        h(Icon, { 
+          icon: 'mdi:heart',
+          size: '16',
+          className: 'post-item__metric-icon'
+        }),
         likeCount > 0 ? likeCount : ''
       )
     ),

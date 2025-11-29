@@ -92,3 +92,5 @@ export function ProfileHeader(props) {
     )
   );
 }
+
+export default ProfileHeader;

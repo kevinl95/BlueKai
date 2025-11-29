@@ -274,3 +274,5 @@ class ProfileViewClass extends Component {
     );
   }
 }
+
+export default ProfileView;

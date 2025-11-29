@@ -451,7 +451,10 @@ ATPClient.prototype.getTimeline = function(options) {
  * @returns {Promise} Promise that resolves with post data
  */
 ATPClient.prototype.getPost = function(uri) {
-  var queryString = this.buildQueryString({ uri: uri });
+  var queryString = this.buildQueryString({ 
+    uri: uri,
+    depth: 6  // Load up to 6 levels of replies
+  });
   
   return this.httpClient.get('/xrpc/app.bsky.feed.getPostThread' + queryString)
     .then(function(response) {

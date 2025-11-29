@@ -241,3 +241,5 @@ class EditProfileViewClass extends Component {
     );
   }
 }
+
+export default EditProfileView;

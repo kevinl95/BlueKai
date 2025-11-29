@@ -34,7 +34,7 @@ function NotificationsViewClass(props) {
   };
   
   // Initialize services
-  this.atpClient = props.atpClient || new ATPClient();
+  this.atpClient = props.atpClient;
   this.navigationManager = null;
   
   // Bind methods
@@ -134,6 +134,14 @@ NotificationsViewClass.prototype.handleNavigation = function(direction) {
  */
 NotificationsViewClass.prototype.loadNotifications = function() {
   var self = this;
+  
+  if (!this.atpClient) {
+    this.setState({
+      loading: false,
+      error: 'API client not available'
+    });
+    return;
+  }
   
   this.setState({ loading: true, error: null });
   
