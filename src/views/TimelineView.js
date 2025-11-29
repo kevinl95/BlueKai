@@ -7,6 +7,7 @@
 
 import { h, Component } from 'preact';
 import PostList from './PostList.js';
+import PostActionMenu from './PostActionMenu.js';
 import LoadingIndicator from '../components/LoadingIndicator.js';
 import ErrorMessage from '../components/ErrorMessage.js';
 import ATPClient from '../services/atp-client.js';
@@ -30,7 +31,10 @@ function TimelineViewClass(props) {
     loading: true,
     loadingMore: false,
     error: null,
-    hasMore: true
+    hasMore: true,
+    showActionMenu: false,
+    selectedPost: null,
+    focusedIndex: 0
   };
   
   // Memory management: Limit in-memory timeline size
@@ -51,6 +55,10 @@ function TimelineViewClass(props) {
   this.handleSelectPost = this.handleSelectPost.bind(this);
   this.handleRetry = this.handleRetry.bind(this);
   this.trimPostsIfNeeded = this.trimPostsIfNeeded.bind(this);
+  this.openActionMenu = this.openActionMenu.bind(this);
+  this.closeActionMenu = this.closeActionMenu.bind(this);
+  this.getFocusedPost = this.getFocusedPost.bind(this);
+  this.handleFocusChange = this.handleFocusChange.bind(this);
 }
 
 // Inherit from Component
@@ -72,7 +80,7 @@ TimelineViewClass.prototype.componentDidMount = function() {
     this.props.onSoftkeyUpdate({
       left: { label: 'Refresh', action: this.refresh },
       center: { label: 'Select', action: null },
-      right: { label: 'Menu', action: null }
+      right: { label: 'Actions', action: this.openActionMenu }
     });
   }
 };
@@ -242,6 +250,45 @@ TimelineViewClass.prototype.handleRetry = function() {
 };
 
 /**
+ * Get the currently focused post
+ */
+TimelineViewClass.prototype.getFocusedPost = function() {
+  var posts = this.state.posts;
+  var focusedIndex = this.state.focusedIndex;
+  return posts[focusedIndex] || null;
+};
+
+/**
+ * Handle focus change from PostList
+ */
+TimelineViewClass.prototype.handleFocusChange = function(index) {
+  this.setState({ focusedIndex: index });
+};
+
+/**
+ * Open action menu for focused post
+ */
+TimelineViewClass.prototype.openActionMenu = function() {
+  var focusedPost = this.getFocusedPost();
+  if (focusedPost) {
+    this.setState({
+      showActionMenu: true,
+      selectedPost: focusedPost
+    });
+  }
+};
+
+/**
+ * Close action menu
+ */
+TimelineViewClass.prototype.closeActionMenu = function() {
+  this.setState({
+    showActionMenu: false,
+    selectedPost: null
+  });
+};
+
+/**
  * Render the component
  */
 TimelineViewClass.prototype.render = function() {
@@ -323,6 +370,14 @@ TimelineViewClass.prototype.render = function() {
           window.addEventListener('scroll', checkScroll);
         }
       }.bind(this)
+    }),
+    
+    // Action menu overlay
+    this.state.showActionMenu && h(PostActionMenu, {
+      post: this.state.selectedPost,
+      onAction: this.props.onPostAction,
+      onClose: this.closeActionMenu,
+      dataSaverMode: dataSaverMode
     })
   );
 };
