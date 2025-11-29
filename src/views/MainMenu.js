@@ -215,7 +215,17 @@ class MainMenuClass extends Component {
               className: className,
               'role': 'menuitem',
               'aria-selected': isSelected ? 'true' : 'false',
-              tabIndex: isSelected ? 0 : -1
+              tabIndex: isSelected ? 0 : -1,
+              onClick: function(e) {
+                e.stopPropagation();
+                if (item.action) {
+                  item.action();
+                }
+              },
+              onMouseEnter: function() {
+                // Update focus when hovering with cursor
+                self.setState({ selectedIndex: index });
+              }
             },
               h('span', { className: 'main-menu__icon' }, item.icon),
               h('span', { className: 'main-menu__label' }, item.label)
