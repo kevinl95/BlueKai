@@ -118,19 +118,23 @@ class ProfileViewClass extends Component {
 
     self.setState({ postsLoading: true, postsError: null });
 
-    // Use getAuthorFeed method (assuming it exists in ATP client)
-    // For now, we'll use a simplified approach
+    // Use getTimeline with author filter
     atpClient.getTimeline({ author: actor, cursor: cursor, limit: 20 })
       .then(function(response) {
-        var newPosts = response.feed || [];
+        var feed = response.feed || [];
         var existingPosts = cursor ? self.state.posts : [];
+        
+        // Extract posts from feed items and filter out any null/undefined
+        var newPosts = feed
+          .map(function(item) { return item.post; })
+          .filter(function(post) { return post != null; });
 
         self.setState({
           posts: existingPosts.concat(newPosts),
           postsLoading: false,
           postsError: null,
           cursor: response.cursor || null,
-          hasMore: !!response.cursor
+          hasMore: !!response.cursor && newPosts.length > 0
         });
       })
       .catch(function(error) {

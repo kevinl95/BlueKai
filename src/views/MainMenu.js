@@ -7,7 +7,6 @@
 
 import { h, Component } from 'preact';
 import { useTranslation } from '../i18n/useTranslation';
-import LogoutConfirmation from '../components/LogoutConfirmation';
 import './MainMenu.css';
 
 /**
@@ -42,8 +41,7 @@ class MainMenuClass extends Component {
     super(props);
     
     this.state = {
-      selectedIndex: 0,
-      showLogoutConfirm: false
+      selectedIndex: 0
     };
     
     this.handleKeyDown = this.handleKeyDown.bind(this);
@@ -100,7 +98,7 @@ class MainMenuClass extends Component {
         labelKey: 'menu.logout',
         label: t('menu.logout'),
         icon: '🚪',
-        action: this.confirmLogout
+        action: this.handleLogout
       }
     ];
   }
@@ -110,11 +108,6 @@ class MainMenuClass extends Component {
    * Requirements: 1.2, 1.7
    */
   handleKeyDown(e) {
-    // Don't handle keys if logout confirmation is showing
-    if (this.state.showLogoutConfirm) {
-      return;
-    }
-    
     var key = e.key;
     
     // D-pad navigation
@@ -167,31 +160,13 @@ class MainMenuClass extends Component {
   }
   
   /**
-   * Show logout confirmation dialog
-   * Requirements: 1.5
-   */
-  confirmLogout() {
-    this.setState({ showLogoutConfirm: true });
-  }
-  
-  /**
-   * Handle logout after confirmation
+   * Handle logout directly without confirmation
    * Requirements: 1.5
    */
   handleLogout() {
-    this.setState({ showLogoutConfirm: false });
-    
     if (this.props.onLogout) {
       this.props.onLogout();
     }
-  }
-  
-  /**
-   * Cancel logout and return to menu
-   * Requirements: 1.5
-   */
-  cancelLogout() {
-    this.setState({ showLogoutConfirm: false });
   }
   
   /**
@@ -256,11 +231,7 @@ class MainMenuClass extends Component {
         )
       ),
       
-      // Logout confirmation dialog
-      showLogoutConfirm && h(LogoutConfirmation, {
-        onConfirm: this.handleLogout,
-        onCancel: this.cancelLogout
-      })
+
     );
   }
 }

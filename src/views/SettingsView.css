@@ -45,6 +45,10 @@
   padding-left: 5px;
 }
 
+.settings-view__item--focused .settings-view__label {
+  color: #14171a;
+}
+
 .settings-view__label {
   font-size: 16px;
   font-weight: 500;
@@ -111,7 +115,7 @@
 
 .settings-view__language-option--focused {
   background: #1da1f2;
-  color: #fff;
+  color: #ffffff;
 }
 
 /* Accessibility */
