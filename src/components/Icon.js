@@ -1,22 +1,26 @@
 /**
  * Icon Component
- * Simple wrapper for Iconify icons
+ * Simple wrapper for icons using Unicode symbols
  */
 
 import { h } from 'preact';
 
+// Map icon names to Unicode symbols
+var iconMap = {
+  'mdi:message-reply': '↩',
+  'mdi:repeat': '🔁',
+  'mdi:heart': '♥'
+};
+
 function Icon(props) {
   var icon = props.icon;
-  var size = props.size || '16';
   var className = props.className || '';
+  var symbol = iconMap[icon] || '•';
   
-  return h('iconify-icon', {
-    icon: icon,
-    width: size,
-    height: size,
-    className: className,
+  return h('span', {
+    className: 'icon ' + className,
     'aria-hidden': 'true'
-  });
+  }, symbol);
 }
 
 // Export
