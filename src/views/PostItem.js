@@ -250,6 +250,96 @@ PostItem.prototype.handleUnrepost = function() {
 };
 
 /**
+ * Render post embed (images, external links, etc.)
+ */
+PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
+  if (!embed) {
+    return null;
+  }
+  
+  var embedType = embed.$type;
+  
+  // Handle image embeds
+  if (embedType === 'app.bsky.embed.images#view') {
+    var images = embed.images || [];
+    
+    if (!shouldShowImages) {
+      return h('div', { className: 'post-item__media-placeholder' },
+        h('button', {
+          className: 'post-item__load-images-btn',
+          onClick: this.loadImages,
+          'aria-label': 'Load ' + images.length + ' image' + (images.length > 1 ? 's' : '')
+        }, '🖼️ Load ' + images.length + ' image' + (images.length > 1 ? 's' : ''))
+      );
+    }
+    
+    return h('div', { className: 'post-item__media' },
+      images.map(function(img, index) {
+        return h('img', {
+          key: index,
+          className: 'post-item__media-image',
+          src: img.thumb || img.fullsize,
+          alt: img.alt || 'Post image ' + (index + 1),
+          loading: 'lazy'
+        });
+      })
+    );
+  }
+  
+  // Handle external link embeds
+  if (embedType === 'app.bsky.embed.external#view') {
+    var external = embed.external || {};
+    
+    return h('a', {
+      className: 'post-item__external-link',
+      href: external.uri,
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    },
+      shouldShowImages && external.thumb && h('img', {
+        className: 'post-item__external-thumb',
+        src: external.thumb,
+        alt: external.title || 'Link preview'
+      }),
+      h('div', { className: 'post-item__external-info' },
+        external.title && h('div', { className: 'post-item__external-title' }, external.title),
+        external.description && h('div', { className: 'post-item__external-desc' }, external.description)
+      )
+    );
+  }
+  
+  // Handle record embeds (quoted posts)
+  if (embedType === 'app.bsky.embed.record#view') {
+    var record = embed.record;
+    if (record && record.author && record.value) {
+      return h('div', { className: 'post-item__quoted-post' },
+        h('div', { className: 'post-item__quoted-author' },
+          '@' + record.author.handle
+        ),
+        h('div', { className: 'post-item__quoted-text' },
+          record.value.text || ''
+        )
+      );
+    }
+  }
+  
+  // Handle record with media embeds (quoted post + images/external)
+  if (embedType === 'app.bsky.embed.recordWithMedia#view') {
+    var record = embed.record;
+    var media = embed.media;
+    
+    return h('div', { className: 'post-item__record-with-media' },
+      // Render the media first
+      media && this.renderEmbed(media, shouldShowImages),
+      // Then render the quoted post
+      record && this.renderEmbed(record, shouldShowImages)
+    );
+  }
+  
+  return null;
+};
+
+/**
  * Render component
  */
 PostItem.prototype.render = function() {
@@ -366,6 +456,9 @@ PostItem.prototype.render = function() {
       className: 'post-item__content',
       dangerouslySetInnerHTML: { __html: processedText }
     }),
+    
+    // Post media/embeds
+    this.renderEmbed(post.embed, shouldShowImages),
     
     // Engagement metrics
     h('footer', { 

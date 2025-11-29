@@ -653,6 +653,141 @@ function runPostItemTests() {
     document.body.removeChild(container);
   });
   
+  // Test: Renders image embeds
+  test('renders image embeds correctly', function() {
+    var postWithImages = Object.assign({}, mockPost, {
+      embed: {
+        $type: 'app.bsky.embed.images#view',
+        images: [
+          { thumb: 'https://example.com/thumb1.jpg', alt: 'Image 1' },
+          { thumb: 'https://example.com/thumb2.jpg', alt: 'Image 2' }
+        ]
+      }
+    });
+    
+    var container = document.createElement('div');
+    render(h(PostItem, { post: postWithImages, dataSaverMode: false }), container);
+    
+    var images = container.querySelectorAll('.post-item__media-image');
+    assert(images.length === 2, 'Should render 2 images');
+    assert(images[0].src === 'https://example.com/thumb1.jpg', 'First image should have correct src');
+    assert(images[1].alt === 'Image 2', 'Second image should have correct alt text');
+  });
+  
+  // Test: Shows load images button in data saver mode
+  test('shows load images button for image embeds in data saver mode', function() {
+    var postWithImages = Object.assign({}, mockPost, {
+      embed: {
+        $type: 'app.bsky.embed.images#view',
+        images: [
+          { thumb: 'https://example.com/thumb1.jpg', alt: 'Image 1' }
+        ]
+      }
+    });
+    
+    var container = document.createElement('div');
+    render(h(PostItem, { post: postWithImages, dataSaverMode: true }), container);
+    
+    var loadButton = container.querySelector('.post-item__load-images-btn');
+    assert(loadButton !== null, 'Should show load images button');
+    assert(loadButton.textContent.indexOf('Load 1 image') > -1, 'Button should show correct count');
+  });
+  
+  // Test: Renders external link embeds
+  test('renders external link embeds correctly', function() {
+    var postWithLink = Object.assign({}, mockPost, {
+      embed: {
+        $type: 'app.bsky.embed.external#view',
+        external: {
+          uri: 'https://example.com/article',
+          title: 'Example Article',
+          description: 'This is an example article',
+          thumb: 'https://example.com/thumb.jpg'
+        }
+      }
+    });
+    
+    var container = document.createElement('div');
+    render(h(PostItem, { post: postWithLink, dataSaverMode: false }), container);
+    
+    var link = container.querySelector('.post-item__external-link');
+    assert(link !== null, 'Should render external link');
+    assert(link.href === 'https://example.com/article', 'Link should have correct href');
+    
+    var title = container.querySelector('.post-item__external-title');
+    assert(title !== null, 'Should render link title');
+    assert(title.textContent === 'Example Article', 'Title should match');
+  });
+  
+  // Test: Renders quoted post embeds
+  test('renders quoted post embeds correctly', function() {
+    var postWithQuote = Object.assign({}, mockPost, {
+      embed: {
+        $type: 'app.bsky.embed.record#view',
+        record: {
+          author: {
+            handle: 'quoted.user',
+            displayName: 'Quoted User'
+          },
+          value: {
+            text: 'This is a quoted post'
+          }
+        }
+      }
+    });
+    
+    var container = document.createElement('div');
+    render(h(PostItem, { post: postWithQuote }), container);
+    
+    var quotedPost = container.querySelector('.post-item__quoted-post');
+    assert(quotedPost !== null, 'Should render quoted post');
+    
+    var quotedAuthor = container.querySelector('.post-item__quoted-author');
+    assert(quotedAuthor.textContent === '@quoted.user', 'Should show quoted author handle');
+    
+    var quotedText = container.querySelector('.post-item__quoted-text');
+    assert(quotedText.textContent === 'This is a quoted post', 'Should show quoted text');
+  });
+  
+  // Test: Renders record with media embeds
+  test('renders record with media embeds correctly', function() {
+    var postWithRecordAndMedia = Object.assign({}, mockPost, {
+      embed: {
+        $type: 'app.bsky.embed.recordWithMedia#view',
+        record: {
+          $type: 'app.bsky.embed.record#view',
+          record: {
+            author: {
+              handle: 'quoted.user',
+              displayName: 'Quoted User'
+            },
+            value: {
+              text: 'This is a quoted post'
+            }
+          }
+        },
+        media: {
+          $type: 'app.bsky.embed.images#view',
+          images: [
+            { thumb: 'https://example.com/thumb1.jpg', alt: 'Image 1' }
+          ]
+        }
+      }
+    });
+    
+    var container = document.createElement('div');
+    render(h(PostItem, { post: postWithRecordAndMedia, dataSaverMode: false }), container);
+    
+    var recordWithMedia = container.querySelector('.post-item__record-with-media');
+    assert(recordWithMedia !== null, 'Should render record with media container');
+    
+    var image = container.querySelector('.post-item__media-image');
+    assert(image !== null, 'Should render media image');
+    
+    var quotedPost = container.querySelector('.post-item__quoted-post');
+    assert(quotedPost !== null, 'Should render quoted post');
+  });
+  
   // Test: loadImages method toggles image display
   test('loadImages method enables image display in data saver mode', function(done) {
     var container = document.createElement('div');
