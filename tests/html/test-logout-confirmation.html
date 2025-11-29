@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogoutConfirmation Component Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f8fa;
+    }
+    .test-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #14171a;
+      margin-bottom: 20px;
+    }
+    .test-section {
+      margin: 20px 0;
+      padding: 15px;
+      background: #f5f8fa;
+      border-radius: 4px;
+    }
+    .test-result {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .test-result.pass {
+      background: #d4edda;
+      color: #155724;
+    }
+    .test-result.fail {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      background: #1da1f2;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #1a91da;
+    }
+    .instructions {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      color: #856404;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>LogoutConfirmation Component Test</h1>
+    
+    <div class="instructions">
+      <strong>Instructions:</strong>
+      <ul>
+        <li>Click "Run Unit Tests" to verify component logic</li>
+        <li>Click "Show Confirmation" to test the visual component</li>
+        <li>Use arrow keys (left/right) to navigate between Cancel and Confirm</li>
+        <li>Press Enter to select, or Escape/Backspace to cancel</li>
+      </ul>
+    </div>
+
+    <div class="test-section">
+      <h2>Unit Tests</h2>
+      <button onclick="runTests()">Run Unit Tests</button>
+      <div id="test-results"></div>
+    </div>
+
+    <div class="test-section">
+      <h2>Visual Test</h2>
+      <button onclick="showConfirmation()">Show Confirmation</button>
+      <div id="visual-result"></div>
+    </div>
+  </div>
+
+  <script src="../../src/components/LogoutConfirmation.test.js"></script>
+  
+  <script>
+    function runTests() {
+      var resultsDiv = document.getElementById('test-results');
+      resultsDiv.innerHTML = '<p>Running tests...</p>';
+      
+      // Capture console output
+      var originalLog = console.log;
+      var logs = [];
+      console.log = function() {
+        logs.push(Array.prototype.slice.call(arguments).join(' '));
+        originalLog.apply(console, arguments);
+      };
+      
+      // Run tests
+      var allPassed = runLogoutConfirmationTests();
+      
+      // Restore console
+      console.log = originalLog;
+      
+      // Display results
+      var html = '<div class="test-result ' + (allPassed ? 'pass' : 'fail') + '">';
+      html += '<strong>' + (allPassed ? '✓ All tests passed!' : '✗ Some tests failed') + '</strong>';
+      html += '</div>';
+      html += '<pre style="background: #f5f8fa; padding: 10px; border-radius: 4px; overflow-x: auto;">';
+      html += logs.join('\n');
+      html += '</pre>';
+      
+      resultsDiv.innerHTML = html;
+    }
+
+    function showConfirmation() {
+      var resultDiv = document.getElementById('visual-result');
+      
+      // Create a mock confirmation dialog using HTML
+      var backdrop = document.createElement('div');
+      backdrop.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1001;';
+      
+      var dialog = document.createElement('div');
+      dialog.style.cssText = 'background: white; border-radius: 8px; padding: 20px; min-width: 200px; max-width: 280px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);';
+      
+      var message = document.createElement('p');
+      message.textContent = 'Are you sure you want to logout?';
+      message.style.cssText = 'font-size: 16px; text-align: center; margin: 0 0 16px 0;';
+      
+      var buttonsDiv = document.createElement('div');
+      buttonsDiv.style.cssText = 'display: flex; gap: 12px; justify-content: center;';
+      
+      var cancelBtn = document.createElement('button');
+      cancelBtn.textContent = 'Cancel';
+      cancelBtn.style.cssText = 'flex: 1; padding: 10px 16px; background: #657786; border: none; border-radius: 4px; color: white; cursor: pointer;';
+      
+      var confirmBtn = document.createElement('button');
+      confirmBtn.textContent = 'Logout';
+      confirmBtn.style.cssText = 'flex: 1; padding: 10px 16px; background: #e0245e; border: none; border-radius: 4px; color: white; cursor: pointer;';
+      
+      var selectedOption = 'cancel';
+      
+      function updateSelection() {
+        if (selectedOption === 'cancel') {
+          cancelBtn.style.background = '#657786';
+          cancelBtn.style.border = '2px solid #657786';
+          confirmBtn.style.background = '#fff';
+          confirmBtn.style.color = '#14171a';
+          confirmBtn.style.border = '2px solid #e1e8ed';
+        } else {
+          confirmBtn.style.background = '#e0245e';
+          confirmBtn.style.border = '2px solid #e0245e';
+          confirmBtn.style.color = '#fff';
+          cancelBtn.style.background = '#fff';
+          cancelBtn.style.color = '#14171a';
+          cancelBtn.style.border = '2px solid #e1e8ed';
+        }
+      }
+      
+      updateSelection();
+      
+      function handleKeyDown(e) {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          selectedOption = 'cancel';
+          updateSelection();
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          selectedOption = 'confirm';
+          updateSelection();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (selectedOption === 'confirm') {
+            handleConfirm();
+          } else {
+            handleCancel();
+          }
+        } else if (e.key === 'Escape' || e.key === 'Backspace') {
+          e.preventDefault();
+          handleCancel();
+        }
+      }
+      
+      function handleCancel() {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.removeChild(backdrop);
+        resultDiv.innerHTML = '<div class="test-result pass">✓ Logout cancelled</div>';
+      }
+      
+      function handleConfirm() {
+        document.removeEventListener('keydown', handleKeyDown);
+        document.body.removeChild(backdrop);
+        resultDiv.innerHTML = '<div class="test-result pass">✓ Logout confirmed</div>';
+      }
+      
+      cancelBtn.onclick = handleCancel;
+      confirmBtn.onclick = handleConfirm;
+      
+      buttonsDiv.appendChild(cancelBtn);
+      buttonsDiv.appendChild(confirmBtn);
+      
+      dialog.appendChild(message);
+      dialog.appendChild(buttonsDiv);
+      backdrop.appendChild(dialog);
+      
+      document.body.appendChild(backdrop);
+      document.addEventListener('keydown', handleKeyDown);
+      
+      resultDiv.innerHTML = '<div class="test-result">Dialog shown. Use arrow keys to navigate, Enter to select.</div>';
+    }
+  </script>
+</body>
+</html>

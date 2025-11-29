@@ -158,15 +158,25 @@
     "loadingReplies": "Chargement des réponses...",
     "viewMoreReplies": "Voir plus de réponses"
   },
+  "menu": {
+    "title": "Menu",
+    "profile": "Mon Profil",
+    "settings": "Paramètres",
+    "logout": "Déconnexion",
+    "logoutConfirm": "Êtes-vous sûr de vouloir vous déconnecter?",
+    "logoutConfirmYes": "Déconnexion",
+    "logoutConfirmNo": "Annuler"
+  },
   "settings": {
     "title": "Paramètres",
     "dataSaver": "Mode économie de données",
     "dataSaverDesc": "Désactiver le chargement automatique des images",
     "autoLoadImages": "Charger les images automatiquement",
     "language": "Langue",
+    "about": "À Propos",
+    "version": "Version",
     "logout": "Déconnexion",
-    "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?",
-    "version": "Version {{version}}"
+    "confirmLogout": "Êtes-vous sûr de vouloir vous déconnecter ?"
   },
   "errors": {
     "network": "Erreur réseau. Vérifiez votre connexion.",

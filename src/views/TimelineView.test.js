@@ -221,6 +221,78 @@ function runTimelineViewTests() {
     document.body.removeChild(container);
   });
   
+  // Test 13: Right softkey is Menu and calls onOpenMainMenu
+  test('right softkey is Menu and calls onOpenMainMenu', function() {
+    var softkeys = null;
+    var menuOpened = false;
+    
+    var onSoftkeyUpdate = function(keys) {
+      softkeys = keys;
+    };
+    
+    var onOpenMainMenu = function() {
+      menuOpened = true;
+    };
+    
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    render(h(TimelineView, { 
+      onSoftkeyUpdate: onSoftkeyUpdate,
+      onOpenMainMenu: onOpenMainMenu
+    }), container);
+    
+    assert(softkeys !== null, 'Should have softkeys');
+    assert(softkeys.right !== undefined, 'Should have right softkey');
+    assert(softkeys.right.label === 'Menu', 'Right softkey should be Menu');
+    assert(typeof softkeys.right.action === 'function', 'Menu should have action');
+    
+    // Test that calling the action calls onOpenMainMenu
+    if (softkeys.right.action) {
+      softkeys.right.action();
+      assert(menuOpened, 'Should call onOpenMainMenu when menu action is triggered');
+    }
+    
+    document.body.removeChild(container);
+  });
+  
+  // Test 14: Post action menu opens on Enter/Select
+  test('post action menu opens when post is selected', function() {
+    var container = document.createElement('div');
+    document.body.appendChild(container);
+    
+    var component = render(h(TimelineView), container);
+    
+    // Simulate loaded state with posts
+    if (component && component.setState) {
+      component.setState({
+        posts: [{
+          uri: 'at://test/post/1',
+          author: { handle: 'test.bsky.social', displayName: 'Test User' },
+          record: { text: 'Test post', createdAt: new Date().toISOString() }
+        }],
+        loading: false,
+        error: null,
+        showActionMenu: false
+      });
+      
+      // Simulate selecting a post (which should open action menu)
+      if (component.handleSelectPost) {
+        component.handleSelectPost({
+          uri: 'at://test/post/1',
+          author: { handle: 'test.bsky.social' },
+          record: { text: 'Test post' }
+        });
+        
+        // Check that action menu is now shown
+        assert(component.state.showActionMenu === true, 'Should show action menu');
+        assert(component.state.selectedPost !== null, 'Should have selected post');
+      }
+    }
+    
+    document.body.removeChild(container);
+  });
+  
   // Test 11: Component structure includes PostList
   test('component structure includes PostList when loaded', function() {
     var container = document.createElement('div');

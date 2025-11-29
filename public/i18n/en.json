@@ -158,15 +158,25 @@
     "loadingReplies": "Loading replies...",
     "viewMoreReplies": "View more replies"
   },
+  "menu": {
+    "title": "Menu",
+    "profile": "My Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to logout?",
+    "logoutConfirmYes": "Logout",
+    "logoutConfirmNo": "Cancel"
+  },
   "settings": {
     "title": "Settings",
     "dataSaver": "Data Saver Mode",
     "dataSaverDesc": "Disable automatic image loading",
     "autoLoadImages": "Auto-load Images",
     "language": "Language",
+    "about": "About",
+    "version": "Version",
     "logout": "Logout",
-    "confirmLogout": "Are you sure you want to logout?",
-    "version": "Version {{version}}"
+    "confirmLogout": "Are you sure you want to logout?"
   },
   "errors": {
     "network": "Network error. Check your connection.",

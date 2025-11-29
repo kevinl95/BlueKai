@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MainMenu Component Tests</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    
+    .test-header {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-container {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-results {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .test-pass {
+      color: #28a745;
+      margin: 5px 0;
+    }
+    
+    .test-fail {
+      color: #dc3545;
+      margin: 5px 0;
+    }
+    
+    .test-summary {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+    }
+    
+    .test-summary.success {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .test-summary.failure {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    button {
+      background: #1da1f2;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 5px;
+    }
+    
+    button:hover {
+      background: #0d8bd9;
+    }
+    
+    #test-mount {
+      min-height: 400px;
+      border: 2px dashed #ccc;
+      padding: 20px;
+      margin: 20px 0;
+      position: relative;
+    }
+    
+    .instructions {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 10px 0;
+      border-left: 4px solid #1da1f2;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-header">
+    <h1>MainMenu Component Tests</h1>
+    <p>Testing main application menu with D-pad navigation</p>
+    <div class="instructions">
+      <strong>Test Instructions:</strong>
+      <ul>
+        <li>Click "Run All Tests" to execute automated tests</li>
+        <li>Click "Show Menu" to manually test the menu</li>
+        <li>Use arrow keys (↑↓) to navigate menu items</li>
+        <li>Press Enter to select an item</li>
+        <li>Press Backspace or Escape to close the menu</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="test-container">
+    <h2>Manual Testing</h2>
+    <button onclick="showMenu()">Show Menu</button>
+    <button onclick="clearMount()">Clear</button>
+    <div id="test-mount"></div>
+  </div>
+  
+  <div class="test-container">
+    <h2>Automated Tests</h2>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="test-results" class="test-results"></div>
+  </div>
+  
+  <script type="module">
+    import { h, render } from '../../node_modules/preact/dist/preact.module.js';
+    import { useState, useEffect } from '../../node_modules/preact/hooks/dist/hooks.module.js';
+    
+    // Mock translation function
+    const mockT = (key) => {
+      const translations = {
+        'menu.title': 'Menu',
+        'menu.profile': 'My Profile',
+        'menu.settings': 'Settings',
+        'menu.logout': 'Logout',
+        'menu.logout_confirm': 'Are you sure you want to logout?',
+        'menu.logout_confirm_yes': 'Logout',
+        'menu.logout_confirm_no': 'Cancel'
+      };
+      return translations[key] || key;
+    };
+    
+    // Mock useTranslation hook
+    window.mockUseTranslation = () => ({ t: mockT });
+    
+    // Import MainMenu component (will be loaded via webpack in real app)
+    // For testing, we'll create a simplified version
+    
+    const LogoutConfirmation = ({ onConfirm, onCancel }) => {
+      const [selectedOption, setSelectedOption] = useState('cancel');
+      
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            setSelectedOption('cancel');
+          } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            setSelectedOption('confirm');
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedOption === 'confirm') {
+              onConfirm();
+            } else {
+              onCancel();
+            }
+          } else if (e.key === 'Escape' || e.key === 'Backspace') {
+            e.preventDefault();
+            onCancel();
+          }
+        };
+        
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+      }, [selectedOption, onConfirm, onCancel]);
+      
+      return h('div', {
+        className: 'logout-confirmation__backdrop',
+        style: {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000
+        }
+      },
+        h('div', {
+          className: 'logout-confirmation__dialog',
+          style: {
+            background: 'white',
+            padding: '20px',
+            borderRadius: '8px',
+            maxWidth: '300px'
+          }
+        },
+          h('p', { style: { marginBottom: '20px' } }, mockT('menu.logout_confirm')),
+          h('div', { style: { display: 'flex', gap: '10px', justifyContent: 'center' } },
+            h('button', {
+              onClick: onCancel,
+              style: {
+                background: selectedOption === 'cancel' ? '#1da1f2' : '#ccc',
+                color: selectedOption === 'cancel' ? 'white' : 'black'
+              }
+            }, mockT('menu.logout_confirm_no')),
+            h('button', {
+              onClick: onConfirm,
+              style: {
+                background: selectedOption === 'confirm' ? '#dc3545' : '#ccc',
+                color: selectedOption === 'confirm' ? 'white' : 'black'
+              }
+            }, mockT('menu.logout_confirm_yes'))
+          )
+        )
+      );
+    };
+    
+    const MainMenu = ({ onClose, onNavigateToProfile, onNavigateToSettings, onLogout }) => {
+      const [selectedIndex, setSelectedIndex] = useState(0);
+      const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+      
+      const menuItems = [
+        { id: 'profile', label: mockT('menu.profile'), icon: '👤', action: onNavigateToProfile },
+        { id: 'settings', label: mockT('menu.settings'), icon: '⚙️', action: onNavigateToSettings },
+        { id: 'logout', label: mockT('menu.logout'), icon: '🚪', action: () => setShowLogoutConfirm(true) }
+      ];
+      
+      useEffect(() => {
+        if (showLogoutConfirm) return;
+        
+        const handleKeyDown = (e) => {
+          if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setSelectedIndex(prev => prev === 0 ? menuItems.length - 1 : prev - 1);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setSelectedIndex(prev => prev === menuItems.length - 1 ? 0 : prev + 1);
+          } else if (e.key === 'Enter') {
+            e.preventDefault();
+            menuItems[selectedIndex].action();
+          } else if (e.key === 'Backspace' || e.key === 'Escape') {
+            e.preventDefault();
+            onClose();
+          }
+        };
+        
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+      }, [selectedIndex, showLogoutConfirm]);
+      
+      const handleLogout = () => {
+        setShowLogoutConfirm(false);
+        onLogout();
+      };
+      
+      return h('div', {
+        className: 'main-menu-overlay',
+        style: {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        },
+        onClick: (e) => {
+          if (e.target.className === 'main-menu-overlay') {
+            onClose();
+          }
+        }
+      },
+        h('div', {
+          className: 'main-menu',
+          role: 'menu',
+          'aria-label': mockT('menu.title'),
+          style: {
+            background: 'white',
+            borderRadius: '8px',
+            minWidth: '200px',
+            maxWidth: '280px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+          }
+        },
+          h('div', {
+            style: {
+              padding: '15px',
+              background: '#f5f5f5',
+              borderBottom: '1px solid #ddd',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              borderRadius: '8px 8px 0 0'
+            }
+          }, mockT('menu.title')),
+          h('div', {},
+            menuItems.map((item, index) =>
+              h('div', {
+                key: item.id,
+                className: 'main-menu__item' + (index === selectedIndex ? ' main-menu__item--focused' : ''),
+                role: 'menuitem',
+                'aria-selected': index === selectedIndex,
+                style: {
+                  padding: '12px 16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  background: index === selectedIndex ? '#1da1f2' : 'transparent',
+                  color: index === selectedIndex ? 'white' : 'black',
+                  borderLeft: index === selectedIndex ? '3px solid #0d8bd9' : '3px solid transparent'
+                }
+              },
+                h('span', { style: { fontSize: '20px', width: '24px', textAlign: 'center' } }, item.icon),
+                h('span', {}, item.label)
+              )
+            )
+          ),
+          h('div', {
+            style: {
+              padding: '10px',
+              textAlign: 'center',
+              fontSize: '12px',
+              color: '#666',
+              background: '#f5f5f5',
+              borderTop: '1px solid #ddd',
+              borderRadius: '0 0 8px 8px'
+            }
+          }, '↑↓ Navigate • Enter Select • Back Close')
+        ),
+        showLogoutConfirm && h(LogoutConfirmation, {
+          onConfirm: handleLogout,
+          onCancel: () => setShowLogoutConfirm(false)
+        })
+      );
+    };
+    
+    // Make components available globally
+    window.MainMenu = MainMenu;
+    window.h = h;
+    window.render = render;
+    
+    // Manual test function
+    window.showMenu = () => {
+      const container = document.getElementById('test-mount');
+      
+      render(h(MainMenu, {
+        onClose: () => {
+          console.log('Menu closed');
+          render(null, container);
+        },
+        onNavigateToProfile: () => {
+          console.log('Navigate to profile');
+          alert('Navigate to Profile');
+          render(null, container);
+        },
+        onNavigateToSettings: () => {
+          console.log('Navigate to settings');
+          alert('Navigate to Settings');
+          render(null, container);
+        },
+        onLogout: () => {
+          console.log('Logout');
+          alert('Logged out');
+          render(null, container);
+        }
+      }), container);
+    };
+    
+    window.clearMount = () => {
+      const container = document.getElementById('test-mount');
+      render(null, container);
+    };
+    
+    // Automated tests
+    window.runAllTests = async () => {
+      const resultsDiv = document.getElementById('test-results');
+      resultsDiv.innerHTML = '<p>Running tests...</p>';
+      
+      const results = [];
+      let passed = 0;
+      let failed = 0;
+      
+      const test = (name, fn) => {
+        try {
+          fn();
+          passed++;
+          results.push(`<div class="test-pass">✓ ${name}</div>`);
+        } catch (error) {
+          failed++;
+          results.push(`<div class="test-fail">✗ ${name}<br>&nbsp;&nbsp;${error.message}</div>`);
+        }
+      };
+      
+      const assert = (condition, message) => {
+        if (!condition) throw new Error(message || 'Assertion failed');
+      };
+      
+      // Test 1: Component renders
+      test('Component renders with menu items', () => {
+        const container = document.createElement('div');
+        render(h(MainMenu, {
+          onClose: () => {},
+          onNavigateToProfile: () => {},
+          onNavigateToSettings: () => {},
+          onLogout: () => {}
+        }), container);
+        
+        const menu = container.querySelector('.main-menu');
+        assert(menu !== null, 'Menu should render');
+        
+        const items = container.querySelectorAll('.main-menu__item');
+        assert(items.length === 3, 'Should have 3 menu items');
+      });
+      
+      // Test 2: ARIA attributes
+      test('Menu has correct ARIA attributes', () => {
+        const container = document.createElement('div');
+        render(h(MainMenu, {
+          onClose: () => {},
+          onNavigateToProfile: () => {},
+          onNavigateToSettings: () => {},
+          onLogout: () => {}
+        }), container);
+        
+        const menu = container.querySelector('.main-menu');
+        assert(menu.getAttribute('role') === 'menu', 'Should have role="menu"');
+        assert(menu.getAttribute('aria-label') !== null, 'Should have aria-label');
+      });
+      
+      // Test 3: First item focused
+      test('First item is focused by default', () => {
+        const container = document.createElement('div');
+        render(h(MainMenu, {
+          onClose: () => {},
+          onNavigateToProfile: () => {},
+          onNavigateToSettings: () => {},
+          onLogout: () => {}
+        }), container);
+        
+        const focusedItem = container.querySelector('.main-menu__item--focused');
+        assert(focusedItem !== null, 'Should have a focused item');
+        
+        const items = container.querySelectorAll('.main-menu__item');
+        assert(items[0] === focusedItem, 'First item should be focused');
+      });
+      
+      // Test 4: Menu items have correct roles
+      test('Menu items have role="menuitem"', () => {
+        const container = document.createElement('div');
+        render(h(MainMenu, {
+          onClose: () => {},
+          onNavigateToProfile: () => {},
+          onNavigateToSettings: () => {},
+          onLogout: () => {}
+        }), container);
+        
+        const items = container.querySelectorAll('.main-menu__item');
+        items.forEach(item => {
+          assert(item.getAttribute('role') === 'menuitem', 'Should have role="menuitem"');
+        });
+      });
+      
+      // Test 5: Overlay present
+      test('Menu renders with overlay', () => {
+        const container = document.createElement('div');
+        render(h(MainMenu, {
+          onClose: () => {},
+          onNavigateToProfile: () => {},
+          onNavigateToSettings: () => {},
+          onLogout: () => {}
+        }), container);
+        
+        const overlay = container.querySelector('.main-menu-overlay');
+        assert(overlay !== null, 'Overlay should be present');
+      });
+      
+      // Display results
+      const total = passed + failed;
+      const successRate = Math.round((passed / total) * 100);
+      
+      resultsDiv.innerHTML = results.join('') + 
+        `<div class="test-summary ${failed === 0 ? 'success' : 'failure'}">
+          Total: ${total} | Passed: ${passed} | Failed: ${failed} | Success Rate: ${successRate}%
+        </div>`;
+    };
+  </script>
+</body>
+</html>

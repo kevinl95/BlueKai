@@ -33,6 +33,8 @@ import PostDetailView from '../views/PostDetailView.js';
 import ProfileView from '../views/ProfileView.js';
 import EditProfileView from '../views/EditProfileView.js';
 import NotificationsView from '../views/NotificationsView.js';
+import SettingsView from '../views/SettingsView.js';
+import MainMenu from '../views/MainMenu.js';
 
 /**
  * AppContent Component
@@ -64,13 +66,18 @@ class AppContentClass extends Component {
     this.handleNetworkChange = this.handleNetworkChange.bind(this);
     this.requireAuth = this.requireAuth.bind(this);
     this.getSoftkeyConfig = this.getSoftkeyConfig.bind(this);
+    this.openMainMenu = this.openMainMenu.bind(this);
+    this.closeMainMenu = this.closeMainMenu.bind(this);
+    this.handleNavigateToProfile = this.handleNavigateToProfile.bind(this);
+    this.handleNavigateToSettings = this.handleNavigateToSettings.bind(this);
     
     // Component state
     this.state = {
       isInitialized: false,
       currentRoute: null,
       routeParams: {},
-      isOnline: networkStatus.getStatus()
+      isOnline: networkStatus.getStatus(),
+      showMainMenu: false
     };
   }
   
@@ -203,6 +210,12 @@ class AppContentClass extends Component {
       });
     }, 'notifications');
     
+    this.router.register('/settings', function(params) {
+      self.requireAuth(function() {
+        self.handleRouteChange(params, '/settings');
+      });
+    }, 'settings');
+    
     // Default route
     this.router.register('/', function() {
       var context = self.context;
@@ -299,17 +312,56 @@ class AppContentClass extends Component {
     var context = this.context;
     var dispatch = context.dispatch;
     
+    // Close main menu if open
+    this.setState({ showMainMenu: false });
+    
     // Stop session refresh timer
     if (this.sessionRefreshTimer) {
       SessionManager.stopSessionRefreshTimer(this.sessionRefreshTimer);
       this.sessionRefreshTimer = null;
     }
     
+    // Clear cache
+    this.cacheManager.clear();
+    
     // Logout
     SessionManager.logout(dispatch, this.atpClient);
     
     // Navigate to login
     this.router.navigate('/login');
+  }
+  
+  /**
+   * Open main menu
+   */
+  openMainMenu() {
+    this.setState({ showMainMenu: true });
+  }
+  
+  /**
+   * Close main menu
+   */
+  closeMainMenu() {
+    this.setState({ showMainMenu: false });
+  }
+  
+  /**
+   * Navigate to user's profile
+   */
+  handleNavigateToProfile() {
+    var context = this.context;
+    var handle = context.state.user.handle;
+    
+    this.closeMainMenu();
+    this.router.navigate('/profile/' + handle);
+  }
+  
+  /**
+   * Navigate to settings
+   */
+  handleNavigateToSettings() {
+    this.closeMainMenu();
+    this.router.navigate('/settings');
   }
   
   /**
@@ -441,6 +493,17 @@ class AppContentClass extends Component {
       };
     }
     
+    // Settings view
+    if (route === '/settings') {
+      return {
+        left: { label: 'Back', action: function() {
+          self.router.back();
+        }},
+        center: null,
+        right: null
+      };
+    }
+    
     // Default
     return {
       left: isAuthenticated ? { label: 'Back', action: function() {
@@ -485,7 +548,8 @@ class AppContentClass extends Component {
         },
         onNavigateToProfile: function(actor) {
           self.router.navigate('/profile/' + actor);
-        }
+        },
+        onOpenMainMenu: this.openMainMenu
       });
     }
     
@@ -577,6 +641,20 @@ class AppContentClass extends Component {
       });
     }
     
+    // Settings view
+    if (route === '/settings') {
+      return h(SettingsView, {
+        settings: state.settings,
+        onUpdateSettings: function(updatedSettings) {
+          var dispatch = context.dispatch;
+          dispatch(actions.updateSettings(updatedSettings));
+        },
+        onBack: function() {
+          self.router.back();
+        }
+      });
+    }
+    
     // Unknown route
     return h('div', { 
       style: { 
@@ -627,6 +705,8 @@ class AppContentClass extends Component {
     }
     
     // Render main app
+    var context = this.context;
+    
     return h('div', {
       style: {
         height: '100vh',
@@ -647,7 +727,15 @@ class AppContentClass extends Component {
       // Hide softkey bar on login and signup screens
       (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'softkey-navigation' },
         h(SoftkeyBar, softkeyConfig)
-      )
+      ),
+      // Render MainMenu when open
+      this.state.showMainMenu && h(MainMenu, {
+        onClose: this.closeMainMenu,
+        onNavigateToProfile: this.handleNavigateToProfile,
+        onNavigateToSettings: this.handleNavigateToSettings,
+        onLogout: this.handleLogout,
+        currentUser: context.state.user
+      })
     );
   }
 }

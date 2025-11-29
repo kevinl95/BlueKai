@@ -1,0 +1,100 @@
+/* LogoutConfirmation Component Styles */
+
+.logout-confirmation__backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; /* Higher than main menu */
+}
+
+.logout-confirmation__dialog {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 200px;
+  max-width: 280px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.logout-confirmation__dialog:focus {
+  outline: none;
+}
+
+.logout-confirmation__content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logout-confirmation__message {
+  font-size: 16px;
+  color: #14171a;
+  text-align: center;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.logout-confirmation__buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.logout-confirmation__button {
+  flex: 1;
+  padding: 10px 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 4px;
+  background: #fff;
+  color: #14171a;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-confirmation__button:hover {
+  background: #f5f8fa;
+}
+
+.logout-confirmation__button--selected {
+  background: #1da1f2;
+  color: #fff;
+  border-color: #1da1f2;
+}
+
+.logout-confirmation__button--cancel.logout-confirmation__button--selected {
+  background: #657786;
+  border-color: #657786;
+}
+
+.logout-confirmation__button--confirm.logout-confirmation__button--selected {
+  background: #e0245e;
+  border-color: #e0245e;
+}
+
+/* Focus states for accessibility */
+.logout-confirmation__button:focus {
+  outline: 2px solid #1da1f2;
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .logout-confirmation__button--selected {
+    border-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .logout-confirmation__button {
+    transition: none;
+  }
+}

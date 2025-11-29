@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SettingsView Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 320px;
+      margin: 20px auto;
+      padding: 10px;
+      background: #f5f8fa;
+    }
+    
+    .test-container {
+      background: white;
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    h1 {
+      font-size: 20px;
+      margin: 0 0 16px 0;
+    }
+    
+    h2 {
+      font-size: 16px;
+      margin: 16px 0 8px 0;
+      color: #1da1f2;
+    }
+    
+    .test-result {
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .test-result.pass {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .test-result.fail {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .test-result.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .controls {
+      margin: 16px 0;
+    }
+    
+    button {
+      padding: 8px 16px;
+      margin: 4px;
+      border: none;
+      border-radius: 4px;
+      background: #1da1f2;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background: #1a91da;
+    }
+    
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .info {
+      padding: 12px;
+      background: #e7f5ff;
+      border-left: 4px solid #1da1f2;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    
+    #app {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>SettingsView Component Test</h1>
+    
+    <div class="info">
+      <strong>Test Instructions:</strong><br>
+      1. Click "Mount SettingsView" to render the component<br>
+      2. Use arrow keys (↑↓) to navigate between settings<br>
+      3. Press Enter to toggle/select items<br>
+      4. Test language picker by selecting language option<br>
+      5. Verify data saver toggle works<br>
+      6. Press Backspace to go back
+    </div>
+    
+    <div class="controls">
+      <button id="mountBtn">Mount SettingsView</button>
+      <button id="unmountBtn" disabled>Unmount SettingsView</button>
+      <button id="runTestsBtn">Run Automated Tests</button>
+    </div>
+    
+    <h2>Test Results</h2>
+    <div id="testResults"></div>
+    
+    <h2>Component Preview</h2>
+    <div id="app"></div>
+  </div>
+  
+  <script type="module">
+    import { h, render } from '../../node_modules/preact/dist/preact.module.js';
+    import { SettingsView } from '../../src/views/SettingsView.js';
+    import { initState, getState, dispatch } from '../../src/state/app-state.js';
+    import { updateSettings } from '../../src/state/actions.js';
+    import { initI18n } from '../../src/i18n/i18n.js';
+    
+    let componentInstance = null;
+    const appContainer = document.getElementById('app');
+    const resultsContainer = document.getElementById('testResults');
+    const mountBtn = document.getElementById('mountBtn');
+    const unmountBtn = document.getElementById('unmountBtn');
+    const runTestsBtn = document.getElementById('runTestsBtn');
+    
+    // Initialize app state and i18n
+    initState();
+    await initI18n('en');
+    
+    // Set up initial settings
+    dispatch(updateSettings({
+      dataSaverMode: false,
+      language: 'en'
+    }));
+    
+    function addTestResult(name, status, message = '') {
+      const resultDiv = document.createElement('div');
+      resultDiv.className = `test-result ${status}`;
+      resultDiv.textContent = `${status === 'pass' ? '✓' : status === 'fail' ? '✗' : '⋯'} ${name}${message ? ': ' + message : ''}`;
+      resultsContainer.appendChild(resultDiv);
+    }
+    
+    function clearResults() {
+      resultsContainer.innerHTML = '';
+    }
+    
+    function mountComponent() {
+      const component = h(SettingsView, {
+        onBack: () => {
+          addTestResult('Back callback', 'pass', 'onBack was called');
+        },
+        onUpdateSoftkeys: (softkeys) => {
+          console.log('Softkeys updated:', softkeys);
+        }
+      });
+      
+      componentInstance = render(component, appContainer);
+      mountBtn.disabled = true;
+      unmountBtn.disabled = false;
+      addTestResult('Component Mount', 'pass', 'SettingsView mounted successfully');
+    }
+    
+    function unmountComponent() {
+      render(null, appContainer);
+      componentInstance = null;
+      mountBtn.disabled = false;
+      unmountBtn.disabled = true;
+      addTestResult('Component Unmount', 'pass', 'SettingsView unmounted successfully');
+    }
+    
+    async function runAutomatedTests() {
+      clearResults();
+      
+      // Test 1: Component renders
+      addTestResult('Render Test', 'pending', 'Mounting component...');
+      mountComponent();
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const settingsView = document.querySelector('[data-testid="settings-view"]');
+      if (settingsView) {
+        addTestResult('Component Renders', 'pass', 'SettingsView is in DOM');
+      } else {
+        addTestResult('Component Renders', 'fail', 'SettingsView not found');
+        return;
+      }
+      
+      // Test 2: All settings items present
+      const dataSaverItem = document.querySelector('[data-testid="settings-item-data-saver"]');
+      const languageItem = document.querySelector('[data-testid="settings-item-language"]');
+      const aboutItem = document.querySelector('[data-testid="settings-item-about"]');
+      
+      if (dataSaverItem && languageItem && aboutItem) {
+        addTestResult('Settings Items', 'pass', 'All 3 items rendered');
+      } else {
+        addTestResult('Settings Items', 'fail', 'Missing items');
+      }
+      
+      // Test 3: Data saver toggle present
+      const toggle = document.querySelector('[data-testid="data-saver-toggle"]');
+      if (toggle) {
+        addTestResult('Data Saver Toggle', 'pass', 'Toggle element found');
+      } else {
+        addTestResult('Data Saver Toggle', 'fail', 'Toggle not found');
+      }
+      
+      // Test 4: Language value displayed
+      const languageValue = document.querySelector('[data-testid="language-value"]');
+      if (languageValue && languageValue.textContent === 'English') {
+        addTestResult('Language Display', 'pass', 'Shows "English"');
+      } else {
+        addTestResult('Language Display', 'fail', `Shows "${languageValue?.textContent}"`);
+      }
+      
+      // Test 5: App version displayed
+      const version = document.querySelector('[data-testid="app-version"]');
+      if (version && version.textContent.includes('1.0.0')) {
+        addTestResult('Version Display', 'pass', 'Shows version 1.0.0');
+      } else {
+        addTestResult('Version Display', 'fail', `Shows "${version?.textContent}"`);
+      }
+      
+      // Test 6: First item is focused
+      const firstItem = document.querySelector('[data-testid="settings-item-data-saver"]');
+      if (firstItem && firstItem.classList.contains('settings-view__item--focused')) {
+        addTestResult('Initial Focus', 'pass', 'First item is focused');
+      } else {
+        addTestResult('Initial Focus', 'fail', 'First item not focused');
+      }
+      
+      // Test 7: Keyboard navigation
+      addTestResult('Keyboard Navigation', 'pending', 'Testing arrow keys...');
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Simulate down arrow
+      const downEvent = new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true });
+      document.dispatchEvent(downEvent);
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const secondItem = document.querySelector('[data-testid="settings-item-language"]');
+      if (secondItem && secondItem.classList.contains('settings-view__item--focused')) {
+        addTestResult('Keyboard Navigation', 'pass', 'Arrow down works');
+      } else {
+        addTestResult('Keyboard Navigation', 'fail', 'Arrow down failed');
+      }
+      
+      // Test 8: Data saver toggle
+      addTestResult('Toggle Data Saver', 'pending', 'Testing toggle...');
+      
+      // Navigate back to first item
+      const upEvent = new KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true });
+      document.dispatchEvent(upEvent);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Press Enter to toggle
+      const enterEvent = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true });
+      document.dispatchEvent(enterEvent);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const state = getState();
+      if (state.settings.dataSaverMode === true) {
+        addTestResult('Toggle Data Saver', 'pass', 'Data saver enabled');
+      } else {
+        addTestResult('Toggle Data Saver', 'fail', 'Toggle did not work');
+      }
+      
+      addTestResult('All Tests Complete', 'pass', 'Test suite finished');
+    }
+    
+    // Event listeners
+    mountBtn.addEventListener('click', () => {
+      clearResults();
+      mountComponent();
+    });
+    
+    unmountBtn.addEventListener('click', () => {
+      unmountComponent();
+    });
+    
+    runTestsBtn.addEventListener('click', () => {
+      runAutomatedTests();
+    });
+    
+    // Auto-mount on load
+    mountComponent();
+  </script>
+</body>
+</html>

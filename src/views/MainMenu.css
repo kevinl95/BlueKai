@@ -1,0 +1,165 @@
+/**
+ * MainMenu Component Styles
+ * Requirements: 1.1, 1.7, 1.8
+ * Optimized for KaiOS small screens (240x320)
+ * WCAG AA compliant with 3:1 contrast for focus
+ */
+
+.main-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  animation: overlay-fade-in var(--transition-base);
+}
+
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.main-menu {
+  background: var(--color-bg-primary);
+  border-radius: 8px;
+  padding: 0;
+  min-width: 200px;
+  max-width: 280px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  animation: menu-scale-in var(--transition-base);
+  outline: none;
+}
+
+@keyframes menu-scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.main-menu__header {
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-light);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  text-align: center;
+  color: var(--color-text-primary);
+  border-radius: 8px 8px 0 0;
+}
+
+.main-menu__list {
+  padding: var(--space-xs) 0;
+}
+
+.main-menu__item {
+  padding: var(--space-md) var(--space-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  border-left: 3px solid transparent;
+  transition: background-color var(--transition-fast),
+              border-color var(--transition-fast);
+}
+
+.main-menu__item:hover {
+  background: var(--color-bg-hover);
+}
+
+.main-menu__item--focused {
+  background: #1da1f2;
+  color: #ffffff;
+  border-left-color: #0d8bd9;
+  font-weight: var(--font-weight-bold);
+  outline: 3px solid #1da1f2;
+  outline-offset: -3px;
+}
+
+/* High contrast focus indicators for accessibility - WCAG AA 3:1 */
+.main-menu__item--focused:focus {
+  outline: 3px solid #1da1f2;
+  outline-offset: -3px;
+  box-shadow: 0 0 0 4px rgba(29, 161, 242, 0.3);
+}
+
+.main-menu__icon {
+  font-size: 20px;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.main-menu__label {
+  font-size: var(--font-size-base);
+  flex: 1;
+}
+
+.main-menu__instructions {
+  padding: var(--space-sm) var(--space-md);
+  text-align: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border-light);
+  border-radius: 0 0 8px 8px;
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .main-menu {
+    min-width: 180px;
+    max-width: 220px;
+  }
+  
+  .main-menu__item {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+    gap: var(--space-sm);
+  }
+  
+  .main-menu__icon {
+    font-size: 18px;
+    width: 20px;
+  }
+  
+  .main-menu__label {
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .main-menu-overlay,
+  .main-menu {
+    animation: none;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .main-menu-overlay {
+    background: rgba(0, 0, 0, 0.85);
+  }
+  
+  .main-menu__item--focused {
+    background: #1da1f2;
+    color: #ffffff;
+  }
+}

@@ -80,7 +80,7 @@ TimelineViewClass.prototype.componentDidMount = function() {
     this.props.onSoftkeyUpdate({
       left: { label: 'Refresh', action: this.refresh },
       center: { label: 'Select', action: null },
-      right: { label: 'Actions', action: this.openActionMenu }
+      right: { label: 'Menu', action: this.props.onOpenMainMenu }
     });
   }
 };
@@ -232,13 +232,15 @@ TimelineViewClass.prototype.cacheTimeline = function(posts, cursor) {
 };
 
 /**
- * Handle post selection
+ * Handle post selection - opens action menu for the selected post
  * Requirements: 6.1 - Wire up navigation to post detail on selection
  */
 TimelineViewClass.prototype.handleSelectPost = function(post) {
-  if (this.props.onNavigateToPost && post.uri) {
-    this.props.onNavigateToPost(post.uri);
-  }
+  // Open action menu for the selected post
+  this.setState({
+    showActionMenu: true,
+    selectedPost: post
+  });
 };
 
 /**
