@@ -19,9 +19,12 @@
 .profile-header__avatar {
   width: 64px;
   height: 64px;
+  max-width: 64px;
+  max-height: 64px;
   border-radius: var(--radius-full);
   object-fit: cover;
   border: 2px solid var(--color-border-light);
+  display: block;
 }
 
 .profile-header__avatar-placeholder {

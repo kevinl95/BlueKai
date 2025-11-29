@@ -7,12 +7,13 @@
  */
 
 import { h, Component } from 'preact';
-import { getState, dispatch } from '../state/app-state';
-import { updateSettings } from '../state/actions';
+import { AppStateContext } from '../state/app-state';
 import { changeLanguage } from '../i18n/i18n';
 import { useTranslation } from '../i18n/useTranslation';
 import Modal from '../components/Modal';
 import './SettingsView.css';
+
+var actions = require('../state/actions.js');
 
 /**
  * SettingsView Component
@@ -21,11 +22,10 @@ import './SettingsView.css';
  * @extends {Component}
  */
 class SettingsViewClass extends Component {
-  constructor(props) {
+  constructor(props, context) {
     super(props);
     
-    var state = getState();
-    var settings = state.settings || {};
+    var settings = (context && context.state && context.state.settings) || {};
     
     this.state = {
       selectedIndex: 0,
@@ -195,10 +195,12 @@ class SettingsViewClass extends Component {
     this.setState({ dataSaverMode: newValue });
     
     // Update state
-    dispatch(updateSettings({
-      dataSaverMode: newValue,
-      autoLoadImages: !newValue
-    }));
+    if (this.context && this.context.dispatch) {
+      this.context.dispatch(actions.updateSettings({
+        dataSaverMode: newValue,
+        autoLoadImages: !newValue
+      }));
+    }
   }
   
   /**
@@ -259,9 +261,11 @@ class SettingsViewClass extends Component {
     this.setState({ language: selectedLang.code });
     
     // Update state
-    dispatch(updateSettings({
-      language: selectedLang.code
-    }));
+    if (this.context && this.context.dispatch) {
+      this.context.dispatch(actions.updateSettings({
+        language: selectedLang.code
+      }));
+    }
     
     // Update i18n
     changeLanguage(selectedLang.code).then(function() {
@@ -397,6 +401,9 @@ class SettingsViewClass extends Component {
   }
 }
 
+
+// Set context type for SettingsViewClass
+SettingsViewClass.contextType = AppStateContext;
 
 /**
  * Functional wrapper for SettingsView that provides translation

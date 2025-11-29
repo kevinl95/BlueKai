@@ -14,12 +14,14 @@
 }
 
 .logout-confirmation__dialog {
-  background: #fff;
+  background: #ffffff;
+  background-color: #ffffff;
   border-radius: 8px;
   padding: 20px;
   min-width: 200px;
   max-width: 280px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid #e1e8ed;
 }
 
 .logout-confirmation__dialog:focus {
