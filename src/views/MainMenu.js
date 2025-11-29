@@ -47,9 +47,7 @@ class MainMenuClass extends Component {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.moveFocus = this.moveFocus.bind(this);
-    this.confirmLogout = this.confirmLogout.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
-    this.cancelLogout = this.cancelLogout.bind(this);
   }
   
   /**
