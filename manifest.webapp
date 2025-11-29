@@ -19,5 +19,5 @@
   "chrome": {
     "navigation": true
   },
-  "cursor": false
+  "cursor": true
 }
