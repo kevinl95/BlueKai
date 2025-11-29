@@ -73,13 +73,17 @@ class AppContentClass extends Component {
     this.handleNavigateToProfile = this.handleNavigateToProfile.bind(this);
     this.handleNavigateToSettings = this.handleNavigateToSettings.bind(this);
     
+    // Bind softkey update handler
+    this.handleSoftkeyUpdate = this.handleSoftkeyUpdate.bind(this);
+    
     // Component state
     this.state = {
       isInitialized: false,
       currentRoute: null,
       routeParams: {},
       isOnline: networkStatus.getStatus(),
-      showMainMenu: false
+      showMainMenu: false,
+      dynamicSoftkeys: null // Softkeys set by child components
     };
   }
   
@@ -334,6 +338,13 @@ class AppContentClass extends Component {
   }
   
   /**
+   * Handle softkey updates from child components
+   */
+  handleSoftkeyUpdate(softkeys) {
+    this.setState({ dynamicSoftkeys: softkeys });
+  }
+  
+  /**
    * Open main menu
    */
   openMainMenu() {
@@ -418,7 +429,11 @@ class AppContentClass extends Component {
     
     // Timeline view - softkeys are set by TimelineView component
     if (route === '/timeline') {
-      return null; // TimelineView manages its own softkeys
+      return this.state.dynamicSoftkeys || {
+        left: null,
+        center: null,
+        right: null
+      };
     }
     
     // Compose view
@@ -529,6 +544,7 @@ class AppContentClass extends Component {
         atpClient: this.atpClient,
         cacheManager: this.cacheManager,
         navigationManager: this.navigationManager,
+        onSoftkeyUpdate: this.handleSoftkeyUpdate,
         onReply: function(post) {
           // Store reply context and navigate
           self.replyContext = post;

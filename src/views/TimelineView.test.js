@@ -256,12 +256,20 @@ function runTimelineViewTests() {
     document.body.removeChild(container);
   });
   
-  // Test 14: Post action menu opens on Enter/Select
-  test('post action menu opens when post is selected', function() {
+  // Test 14: Post selection navigates to post detail
+  test('post selection calls onNavigateToPost', function() {
+    var navigatedUri = null;
+    
+    var onNavigateToPost = function(uri) {
+      navigatedUri = uri;
+    };
+    
     var container = document.createElement('div');
     document.body.appendChild(container);
     
-    var component = render(h(TimelineView), container);
+    var component = render(h(TimelineView, {
+      onNavigateToPost: onNavigateToPost
+    }), container);
     
     // Simulate loaded state with posts
     if (component && component.setState) {
@@ -272,11 +280,10 @@ function runTimelineViewTests() {
           record: { text: 'Test post', createdAt: new Date().toISOString() }
         }],
         loading: false,
-        error: null,
-        showActionMenu: false
+        error: null
       });
       
-      // Simulate selecting a post (which should open action menu)
+      // Simulate selecting a post (which should navigate to detail)
       if (component.handleSelectPost) {
         component.handleSelectPost({
           uri: 'at://test/post/1',
@@ -284,9 +291,8 @@ function runTimelineViewTests() {
           record: { text: 'Test post' }
         });
         
-        // Check that action menu is now shown
-        assert(component.state.showActionMenu === true, 'Should show action menu');
-        assert(component.state.selectedPost !== null, 'Should have selected post');
+        // Check that navigation was called
+        assert(navigatedUri === 'at://test/post/1', 'Should navigate to post detail');
       }
     }
     

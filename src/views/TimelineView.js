@@ -232,15 +232,13 @@ TimelineViewClass.prototype.cacheTimeline = function(posts, cursor) {
 };
 
 /**
- * Handle post selection - opens action menu for the selected post
+ * Handle post selection - navigates to post detail
  * Requirements: 6.1 - Wire up navigation to post detail on selection
  */
 TimelineViewClass.prototype.handleSelectPost = function(post) {
-  // Open action menu for the selected post
-  this.setState({
-    showActionMenu: true,
-    selectedPost: post
-  });
+  if (this.props.onNavigateToPost && post.uri) {
+    this.props.onNavigateToPost(post.uri);
+  }
 };
 
 /**
