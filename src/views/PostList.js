@@ -1,6 +1,7 @@
 /**
- * PostList Component with Virtual Scrolling
- * Renders a list of posts efficiently using virtual scrolling
+ * PostList Component with Optional Virtual Scrolling
+ * Renders a list of posts efficiently
+ * Virtual scrolling disabled by default for variable-height content (posts with images)
  * Compatible with Gecko 48 (ES5 transpiled)
  * Requirements: 3.1, 3.4, 7.2, 7.3
  */
@@ -156,6 +157,17 @@ PostListClass.prototype.scrollToIndex = function(index) {
     return;
   }
   
+  // Try to find the actual element and scroll to it (works with variable heights)
+  var postElements = this.containerRef.querySelectorAll('[data-focusable="true"]');
+  if (postElements && postElements[index]) {
+    postElements[index].scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest'
+    });
+    return;
+  }
+  
+  // Fallback to estimated height calculation (for virtual scrolling)
   var itemTop = index * this.itemHeight;
   var itemBottom = itemTop + this.itemHeight;
   var scrollTop = this.state.scrollTop;
@@ -209,6 +221,7 @@ PostListClass.prototype.render = function() {
   var onSelectPost = this.props.onSelectPost;
   var dataSaverMode = this.props.dataSaverMode || false;
   var emptyMessage = this.props.emptyMessage || 'No posts to display';
+  var useVirtualScrolling = this.props.useVirtualScrolling !== false; // Default true, but can be disabled
   
   // Handle empty state
   if (posts.length === 0) {
@@ -223,7 +236,39 @@ PostListClass.prototype.render = function() {
     );
   }
   
-  // Calculate visible range
+  // For variable-height content (posts with images), disable virtual scrolling
+  // Virtual scrolling requires fixed heights, which we can't guarantee with media
+  if (!useVirtualScrolling || posts.length < 50) {
+    // Render all posts directly (better for variable heights)
+    var allPosts = [];
+    for (var i = 0; i < posts.length; i++) {
+      var post = posts[i];
+      var isFocused = i === this.state.focusedIndex;
+      
+      allPosts.push(
+        h(PostItem, {
+          key: post.uri || i,
+          post: post,
+          focused: isFocused,
+          dataSaverMode: dataSaverMode,
+          onSelect: onSelectPost
+        })
+      );
+    }
+    
+    return h('div', {
+      ref: this.setContainerRef,
+      className: 'post-list',
+      onKeyDown: this.handleKeyDown,
+      tabIndex: 0,
+      role: 'list',
+      'aria-label': 'Post list'
+    },
+      allPosts
+    );
+  }
+  
+  // Virtual scrolling for large lists (legacy code, kept for backwards compatibility)
   var range = this.getVisibleRange();
   var totalHeight = posts.length * this.itemHeight;
   var offsetTop = range.start * this.itemHeight;
