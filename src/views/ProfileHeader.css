@@ -14,13 +14,20 @@
 .profile-header__avatar-container {
   text-align: center;
   margin-bottom: var(--space-md);
+  width: 40px;
+  height: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
 }
 
 .profile-header__avatar {
-  width: 40px;
-  height: 40px;
-  max-width: 40px;
-  max-height: 40px;
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  min-width: 40px;
+  min-height: 40px;
   border-radius: var(--radius-full);
   object-fit: cover;
   border: 2px solid var(--color-border-light);
