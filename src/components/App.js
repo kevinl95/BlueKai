@@ -416,20 +416,9 @@ class AppContentClass extends Component {
       };
     }
     
-    // Timeline view
+    // Timeline view - softkeys are set by TimelineView component
     if (route === '/timeline') {
-      return {
-        left: { label: 'Menu', action: function() {
-          // Could open a menu with Profile, Notifications, Settings, Logout
-          self.handleLogout();
-        }},
-        center: { label: 'Compose', action: function() {
-          self.router.navigate('/compose');
-        }},
-        right: { label: 'Notifications', action: function() {
-          self.router.navigate('/notifications');
-        }}
-      };
+      return null; // TimelineView manages its own softkeys
     }
     
     // Compose view

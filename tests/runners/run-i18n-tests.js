@@ -120,7 +120,7 @@ componentsToCheck.forEach(file => {
 // Test 6: Sample translations are correct
 console.log('\nTest 6: Sample translation values');
 assert(enContent.common.ok === 'OK', 'English common.ok is "OK"');
-assert(enContent.login.title === 'Login to BlueSky', 'English login.title is correct');
+assert(enContent.login.title === 'BlueKai Login', 'English login.title is correct');
 assert(enContent.timeline.title === 'Timeline', 'English timeline.title is correct');
 
 const esPath = path.join(__dirname, 'public', 'i18n', 'es.json');

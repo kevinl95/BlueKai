@@ -16,7 +16,7 @@
     "no": "No"
   },
   "login": {
-    "title": "Login to BlueSky",
+    "title": "BlueKai Login",
     "handle": "Handle or Email",
     "handlePlaceholder": "user.bsky.social",
     "password": "Password",
