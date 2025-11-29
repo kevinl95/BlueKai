@@ -15,6 +15,7 @@ import ErrorBoundary from './ErrorBoundary.js';
 import OfflineIndicator from './OfflineIndicator.js';
 import ATPClient from '../services/atp-client.js';
 import CacheManager from '../utils/cache-manager.js';
+import StorageManager from '../utils/storage.js';
 import networkStatus from '../utils/network-status.js';
 import { I18nProvider } from '../i18n/useTranslation.js';
 import i18n from '../i18n/i18n-init.js';
@@ -53,7 +54,8 @@ class AppContentClass extends Component {
     
     // Initialize services
     this.atpClient = new ATPClient({ baseURL: 'https://bsky.social' });
-    this.cacheManager = new CacheManager();
+    this.storage = new StorageManager('bluekai');
+    this.cacheManager = new CacheManager(this.storage);
     this.router = new Router();
     this.navigationManager = null;
     this.sessionRefreshTimer = null;

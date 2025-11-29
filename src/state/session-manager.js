@@ -130,8 +130,8 @@ var SessionManager = {
    */
   logout: function(dispatch, atpClient) {
     // Clear session from ATP client
-    if (atpClient) {
-      atpClient.clearSession();
+    if (atpClient && atpClient.logout) {
+      atpClient.logout();
     }
     
     // Clear stored state
