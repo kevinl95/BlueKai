@@ -379,11 +379,7 @@ PostItem.prototype.render = function() {
         'aria-label': replyCount === 0 ? 'No replies' : replyCount === 1 ? '1 reply' : replyCount + ' replies',
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, '💬 '),
-        replyCount > 0 ? replyCount : ''
+        '💬 ' + (replyCount || 0)
       ),
       
       // Repost count
@@ -392,11 +388,7 @@ PostItem.prototype.render = function() {
         'aria-label': (repostCount === 0 ? 'No reposts' : repostCount === 1 ? '1 repost' : repostCount + ' reposts') + (isReposted ? ', you reposted this' : ''),
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, '🔁 '),
-        repostCount > 0 ? repostCount : ''
+        '🔁 ' + (repostCount || 0)
       ),
       
       // Like count
@@ -405,11 +397,7 @@ PostItem.prototype.render = function() {
         'aria-label': (likeCount === 0 ? 'No likes' : likeCount === 1 ? '1 like' : likeCount + ' likes') + (isLiked ? ', you liked this' : ''),
         role: 'status'
       },
-        h('span', { 
-          className: 'post-item__metric-label',
-          'aria-hidden': 'true'
-        }, '❤️ '),
-        likeCount > 0 ? likeCount : ''
+        '❤️ ' + (likeCount || 0)
       )
     ),
     
