@@ -510,7 +510,7 @@ class AppContentClass extends Component {
     if (route && route.indexOf('/post/') === 0) {
       var uri = decodeURIComponent(params.uri);
       return h(PostDetailView, {
-        atpClient: this.atpClient,
+        apiClient: this.atpClient,
         cacheManager: this.cacheManager,
         navigationManager: this.navigationManager,
         postUri: uri,
@@ -518,7 +518,10 @@ class AppContentClass extends Component {
         onNavigateToProfile: function(actor) {
           self.router.navigate('/profile/' + actor);
         },
-        onReply: function(post) {
+        onNavigateToPost: function(uri) {
+          self.router.navigate('/post/' + encodeURIComponent(uri));
+        },
+        onNavigateToReply: function(post) {
           self.replyContext = post;
           self.router.navigate('/compose');
         }
