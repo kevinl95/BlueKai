@@ -87,20 +87,13 @@ NotificationsViewClass.prototype.componentWillUnmount = function() {
  * Set up navigation manager
  */
 NotificationsViewClass.prototype.setupNavigation = function() {
-  var self = this;
+  // Use the navigation manager passed via props
+  this.navigationManager = this.props.navigationManager;
   
-  this.navigationManager = new NavigationManager({
-    onNavigate: this.handleNavigation,
-    onSelect: function() {
-      var notification = self.state.notifications[self.state.focusedIndex];
-      if (notification) {
-        self.handleSelectNotification(notification);
-      }
-    },
-    onBack: this.props.onBack
-  });
-  
-  this.navigationManager.enable();
+  if (!this.navigationManager) {
+    console.warn('No navigation manager provided to NotificationsView');
+    return;
+  }
 };
 
 /**

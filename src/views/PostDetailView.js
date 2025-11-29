@@ -78,6 +78,8 @@ PostDetailView.prototype.loadPost = function() {
   
   apiClient.getPost(postUri)
     .then(function(thread) {
+      console.log('Thread data:', thread);
+      console.log('Thread replies:', thread.replies);
       self.setState({
         thread: thread,
         loading: false,

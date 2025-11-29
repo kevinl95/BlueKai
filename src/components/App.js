@@ -372,7 +372,7 @@ class AppContentClass extends Component {
         center: { label: 'Compose', action: function() {
           self.router.navigate('/compose');
         }},
-        right: { label: 'Notify', action: function() {
+        right: { label: 'Notifications', action: function() {
           self.router.navigate('/notifications');
         }}
       };
