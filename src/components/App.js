@@ -398,7 +398,7 @@ class AppContentClass extends Component {
         center: { label: 'Reply', action: function() {
           self.router.navigate('/compose');
         }},
-        right: { label: 'Actions', action: null }
+        right: null
       };
     }
     
