@@ -116,7 +116,7 @@ class LogoutConfirmationClass extends Component {
           h('p', {
             className: 'logout-confirmation__message',
             id: 'logout-confirmation-title'
-          }, t('menu.logout_confirm')),
+          }, t('menu.logoutConfirm')),
           
           h('div', { className: 'logout-confirmation__buttons' },
             h('button', {
@@ -124,14 +124,14 @@ class LogoutConfirmationClass extends Component {
               onClick: this.props.onCancel,
               'aria-selected': selectedOption === 'cancel' ? 'true' : 'false',
               type: 'button'
-            }, t('menu.logout_confirm_no')),
+            }, t('menu.logoutConfirmNo')),
             
             h('button', {
               className: confirmClass,
               onClick: this.props.onConfirm,
               'aria-selected': selectedOption === 'confirm' ? 'true' : 'false',
               type: 'button'
-            }, t('menu.logout_confirm_yes'))
+            }, t('menu.logoutConfirmYes'))
           )
         )
       )

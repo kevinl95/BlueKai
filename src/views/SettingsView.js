@@ -9,17 +9,18 @@
 import { h, Component } from 'preact';
 import { getState, dispatch } from '../state/app-state';
 import { updateSettings } from '../state/actions';
-import { t, changeLanguage } from '../i18n/i18n';
-import { Modal } from '../components/Modal';
+import { changeLanguage } from '../i18n/i18n';
+import { useTranslation } from '../i18n/useTranslation';
+import Modal from '../components/Modal';
 import './SettingsView.css';
 
 /**
  * SettingsView Component
  * 
- * @class SettingsView
+ * @class SettingsViewClass
  * @extends {Component}
  */
-export class SettingsView extends Component {
+class SettingsViewClass extends Component {
   constructor(props) {
     super(props);
     
@@ -290,6 +291,7 @@ export class SettingsView extends Component {
   renderSettingsItem(item, index) {
     var isFocused = this.state.selectedIndex === index;
     var className = 'settings-view__item' + (isFocused ? ' settings-view__item--focused' : '');
+    var t = this.props.t;
     
     if (item.id === 'dataSaver') {
       return h('div', {
@@ -353,6 +355,8 @@ export class SettingsView extends Component {
       return null;
     }
     
+    var t = this.props.t;
+    
     return h(Modal, {
       isOpen: true,
       onClose: this.closeLanguagePicker,
@@ -377,6 +381,8 @@ export class SettingsView extends Component {
   }
   
   render() {
+    var t = this.props.t;
+    
     return h('div', { className: 'settings-view', 'data-testid': 'settings-view' }, [
       h('div', { className: 'settings-view__header' }, [
         h('h1', { className: 'settings-view__title' }, t('settings.title'))
@@ -390,3 +396,16 @@ export class SettingsView extends Component {
     ]);
   }
 }
+
+
+/**
+ * Functional wrapper for SettingsView that provides translation
+ */
+export function SettingsView(props) {
+  var translation = useTranslation();
+  var t = translation.t;
+  
+  return h(SettingsViewClass, Object.assign({}, props, { t: t }));
+}
+
+export default SettingsView;
