@@ -248,13 +248,23 @@
   width: 100%;
   max-width: 100%;
   height: auto;
+  max-height: 200px; /* Limit height for KaiOS screens */
+  object-fit: contain; /* Maintain aspect ratio, show full image */
   display: block;
   margin-bottom: 4px;
   border-radius: var(--radius-sm);
+  background-color: var(--color-bg-secondary); /* Show background for letterboxing */
 }
 
 .post-item__media-image:last-child {
   margin-bottom: 0;
+}
+
+/* Adjust for very small screens */
+@media (max-width: 240px) {
+  .post-item__media-image {
+    max-height: 150px;
+  }
 }
 
 .post-item__media-placeholder {
@@ -306,9 +316,17 @@
   width: 100%;
   height: auto;
   max-height: 120px;
-  object-fit: cover;
+  object-fit: contain; /* Show full thumbnail without cropping */
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-sm);
+  background-color: var(--color-bg-secondary);
+}
+
+/* Adjust for very small screens */
+@media (max-width: 240px) {
+  .post-item__external-thumb {
+    max-height: 100px;
+  }
 }
 
 .post-item__external-info {
