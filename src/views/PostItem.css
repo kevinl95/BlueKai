@@ -65,11 +65,16 @@
 
 /* Avatar */
 .post-item__avatar {
-  width: 32px;
-  height: 32px;
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  min-width: 32px;
+  min-height: 32px;
   border-radius: var(--radius-md);
   flex-shrink: 0;
   object-fit: cover;
+  display: block;
 }
 
 .post-item__avatar--placeholder {
