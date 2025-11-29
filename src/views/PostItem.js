@@ -331,16 +331,15 @@ PostItem.prototype.render = function() {
   },
     // Author info
     h('header', { className: 'post-item__header' },
-      // Avatar (conditional based on data saver mode and manual load)
-      shouldShowImages && author.avatar && h('img', {
+      // Avatar - always show if available
+      author.avatar ? h('img', {
         className: 'post-item__avatar',
         src: author.avatar,
         alt: 'Avatar of ' + (author.displayName || author.handle),
         width: 32,
         height: 32,
         role: 'img'
-      }),
-      !shouldShowImages && h('div', {
+      }) : h('div', {
         className: 'post-item__avatar post-item__avatar--placeholder',
         'aria-label': 'Avatar placeholder',
         role: 'img'
