@@ -3,6 +3,8 @@
  * Simple wrapper for Iconify icons
  */
 
+import { h } from 'preact';
+
 function Icon(props) {
   var icon = props.icon;
   var size = props.size || '16';
