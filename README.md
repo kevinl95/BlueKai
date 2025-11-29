@@ -1,36 +1,35 @@
-# BlueKai - BlueSky Client for KaiOS
+<div align="center">
+  <img src="bluekai-logo.png" alt="BlueKai Logo" width="120" />
+  <h1>BlueKai</h1>
+  <p>A lightweight BlueSky client optimized for KaiOS 2.5 and newer devices</p>
+</div>
 
-A lightweight BlueSky client optimized for KaiOS 2.5 devices.
-
-> **TL;DR?** See [CHEATSHEET.md](CHEATSHEET.md) for quick commands.
+---
 
 ## Quick Start
 
-### For Browser Development (Hot Reload)
+See [CHEATSHEET.md](CHEATSHEET.md) for quick reference commands.
+
+### Browser Development
 ```bash
 npm install
 npm run dev
 # Opens at http://localhost:8080
 ```
 
-### For KaiOS Emulator Testing
-```bash
-npm install
-./scripts/serve-kaios.sh
-# Load in emulator: http://localhost:8080/manifest.webapp
-```
 
-That's it! Use `npm run dev` for development, `./scripts/serve-kaios.sh` for KaiOS testing.
+## Features
 
-## What Each Script Does
-
-| Script | Use Case | What It Does |
-|--------|----------|--------------|
-| `npm run dev` | Browser development | Webpack dev server with hot reload |
-| `npm run build` | Production build | Creates optimized bundle |
-| `./scripts/serve-kaios.sh` | KaiOS emulator | Builds & serves securely for emulator |
-| `./scripts/build-kaios.sh` | Manual build | Just builds to public/ (no server) |
-| `./scripts/create-icons.sh` | Icon generation | Creates icons from bluekai-logo.png |
+- Login with BlueSky credentials
+- View timeline with infinite scroll
+- View post details with threaded replies
+- Like, repost, and reply to posts
+- Compose new posts with character counter
+- D-pad navigation optimized for KaiOS
+- Offline support with service worker
+- Data saver mode for limited bandwidth
+- Internationalization (English, Spanish, French, Portuguese)
+- Accessibility features (ARIA labels, keyboard navigation)
 
 ## Project Structure
 
@@ -56,135 +55,67 @@ BlueKai/
 └── manifest.webapp         # KaiOS manifest
 ```
 
-## Development Workflow
+## Development Scripts
 
-1. **Make changes** to code in `src/`
-2. **Test in browser**: `npm run dev`
-3. **Test in KaiOS**: `./serve-kaios.sh`
-4. **Build for production**: `npm run build`
-
-## KaiOS Emulator Setup
-
-1. Install [KaiOS Simulator](https://developer.kaiostech.com/simulator)
-2. Run `./serve-kaios.sh`
-3. In simulator: "Open Hosted App" → `http://localhost:8080/manifest.webapp`
+| Script | Purpose |
+|--------|---------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Create production build |
+| `npm test` | Run test suite |
+| `./scripts/serve-kaios.sh` | Build and serve for KaiOS emulator |
+| `./scripts/build-kaios.sh` | Build for KaiOS without starting server |
+| `./scripts/create-icons.sh` | Generate app icons from logo |
 
 ## Testing
 
+### Unit Tests
+Unit tests are located alongside source files with `.test.js` extension.
+
 ```bash
-# Run all tests
 npm test
-
-# Test specific component
-open test-timeline.html
-open test-compose-view.html
-open test-post-detail.html
-
-# Test error handling
-open test-error-handling.html
-open test-error-handling-demo.html  # Interactive demo
 ```
 
-## Documentation
+### Component Tests
+Open HTML test files in a browser:
 
-- **Build Guide**: See [BUILD.md](BUILD.md) - Comprehensive build instructions and optimization
-- **Deployment Guide**: See [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment to GitHub Pages, AWS Amplify, and more
-- **Component Docs**: See `src/*/README.md` files
-- **Offline Support**: See [docs/OFFLINE-SUPPORT-GUIDE.md](docs/OFFLINE-SUPPORT-GUIDE.md)
-- **Error Handling**: See error handling documentation in source files
+```bash
+# Individual component tests
+open tests/html/test-timeline.html
+open tests/html/test-compose-view.html
+open tests/html/test-post-detail.html
+```
 
-## Features
+### Test Runners
+Run test suites programmatically:
 
-- ✅ Login with BlueSky credentials
-- ✅ View timeline
-- ✅ View post details with replies
-- ✅ Like, repost, reply to posts
-- ✅ Compose new posts
-- ✅ D-pad navigation
-- ✅ Offline support
-- ✅ Data saver mode
-- ✅ Comprehensive error handling
-  - Global error boundary
-  - Toast notifications
-  - Automatic retry with backoff
-  - User-friendly error messages
-  - Centralized error logging
+```bash
+node tests/runners/run-app-tests.js
+node tests/runners/run-component-tests.js
+node tests/runners/run-accessibility-tests.js
+```
+
 
 ## Tech Stack
 
 - **Framework**: Preact (React-like, 3KB)
-- **Build**: Webpack + Babel
-- **Target**: Gecko 48 (ES5)
+- **Build Tool**: Webpack + Babel
+- **Target**: Gecko 48 (ES5 transpiled)
 - **Styling**: Vanilla CSS
 - **API**: AT Protocol (BlueSky)
+- **State Management**: Custom Redux-like implementation
+- **Routing**: Custom hash-based router
 
 ## Browser Compatibility
 
-- KaiOS 2.5 (Gecko 48)
+- KaiOS 2.5 (Gecko 48) and newer
 - Firefox 48+
-- Modern browsers (for development)
 
-## Build and Deployment
+## Documentation
 
-For comprehensive build and deployment instructions, see **[BUILD.md](BUILD.md)**.
-
-### Quick Build Commands
-
-```bash
-# Development build with hot reload
-npm run dev
-
-# Production build (optimized, ES5, gzipped)
-npm run build:prod
-
-# Analyze bundle size
-npm run build:analyze
-
-# Test production build locally
-npm run serve
-```
-
-### Deployment
-
-**GitHub Pages (Automatic):**
-- Push to `main` branch
-- GitHub Actions automatically builds and deploys
-- App available at `https://yourusername.github.io/bluekai/`
-
-**AWS Amplify (If needed):**
-- Connect repository in Amplify Console
-- Automatic builds on push
-- See [BUILD.md](BUILD.md) for configuration
-
-**Manual Deployment:**
-```bash
-npm run build:prod
-# Upload dist/ contents to your hosting provider
-```
-
-For detailed deployment instructions, troubleshooting, and optimization tips, see **[BUILD.md](BUILD.md)**.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test in browser and KaiOS emulator
-5. Submit a pull request
+- [CHEATSHEET.md](CHEATSHEET.md) - Quick reference guide
+- [docs/OFFLINE-SUPPORT-GUIDE.md](docs/OFFLINE-SUPPORT-GUIDE.md) - Offline functionality guide
+- [tests/README.md](tests/README.md) - Testing documentation
 
 ## License
 
-MIT License - see LICENSE file
-
-## Support
-
-- **Issues**: GitHub Issues
-- **Docs**: See `docs/` directory
-- **KaiOS**: https://developer.kaiostech.com
-
----
-
-**Quick Reference:**
-- Development: `npm run dev`
-- KaiOS Testing: `./serve-kaios.sh`
-- Production Build: `npm run build`
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
