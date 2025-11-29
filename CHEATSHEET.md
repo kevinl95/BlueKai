@@ -8,12 +8,6 @@ npm run dev
 ```
 Opens at http://localhost:8080 with hot reload.
 
-### ...test in KaiOS emulator
-```bash
-./serve-kaios.sh
-```
-Then in emulator: `http://localhost:8080/manifest.webapp`
-
 ### ...build for production
 ```bash
 npm run build
@@ -22,26 +16,30 @@ Output in `dist/` directory.
 
 ### ...generate icons
 ```bash
-./create-icons.sh
+./scripts/create-icons.sh
 ```
 Requires `bluekai-logo.png` in root directory.
 
 ### ...run tests
 ```bash
 # Open in browser:
-open test-timeline.html
-open test-compose-view.html
-open test-post-detail.html
+open tests/html/test-timeline.html
+open tests/html/test-compose-view.html
+open tests/html/test-post-detail.html
+
+# Or run test suites:
+node tests/runners/run-app-tests.js
+node tests/runners/run-component-tests.js
 ```
 
 ## Common Issues
 
 | Problem | Solution |
 |---------|----------|
-| "Cannot GET /manifest.webapp" | Use `./serve-kaios.sh` not `npm run dev` |
-| Icons not showing | Run `./create-icons.sh` |
+| "Cannot GET /manifest.webapp" | Use `./scripts/serve-kaios.sh` not `npm run dev` |
+| Icons not showing | Run `./scripts/create-icons.sh` |
 | Build fails | `rm -rf node_modules && npm install` |
-| Hot reload not working | Use `npm run dev` not `./serve-kaios.sh` |
+| Hot reload not working | Use `npm run dev` not `./scripts/serve-kaios.sh` |
 
 ## File Locations
 
@@ -50,8 +48,15 @@ open test-post-detail.html
 | Source code | `src/` |
 | Components | `src/components/` |
 | Views | `src/views/` |
-| Tests | `test-*.html` |
-| Built app | `public/` (for KaiOS) or `dist/` (for webpack) |
+| Tests | `tests/html/` |
+| Test runners | `tests/runners/` |
+| Build scripts | `scripts/` |
+| Built
+## Scripts Explained
+
+| Script | When to Use |
+|--------|-------------|
+| `npm  app | `public/` (for KaiOS) or `dist/` (for webpack) |
 | Documentation | `docs/` |
 
 ## Scripts Explained
@@ -59,11 +64,7 @@ open test-post-detail.html
 | Script | When to Use |
 |--------|-------------|
 | `npm run dev` | Daily development in browser |
-| `./serve-kaios.sh` | Testing in KaiOS emulator |
+| `./scripts/serve-kaios.sh` | Testing in KaiOS emulator |
 | `npm run build` | Before deploying to production |
-| `./build-kaios.sh` | Manual build without starting server |
-| `./create-icons.sh` | After changing logo |
-
-## That's It!
-
-For more details, see [README.md](README.md) or [docs/](docs/)
+| `./scripts/build-kaios.sh` | Manual build without starting server |
+| `./scripts/create-icons.sh` | After changing logo |

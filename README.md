@@ -16,11 +16,11 @@ npm run dev
 ### For KaiOS Emulator Testing
 ```bash
 npm install
-./serve-kaios.sh
+./scripts/serve-kaios.sh
 # Load in emulator: http://localhost:8080/manifest.webapp
 ```
 
-That's it! Use `npm run dev` for development, `./serve-kaios.sh` for KaiOS testing.
+That's it! Use `npm run dev` for development, `./scripts/serve-kaios.sh` for KaiOS testing.
 
 ## What Each Script Does
 
@@ -28,9 +28,9 @@ That's it! Use `npm run dev` for development, `./serve-kaios.sh` for KaiOS testi
 |--------|----------|--------------|
 | `npm run dev` | Browser development | Webpack dev server with hot reload |
 | `npm run build` | Production build | Creates optimized bundle |
-| `./serve-kaios.sh` | KaiOS emulator | Builds & serves securely for emulator |
-| `./build-kaios.sh` | Manual build | Just builds to public/ (no server) |
-| `./create-icons.sh` | Icon generation | Creates icons from bluekai-logo.png |
+| `./scripts/serve-kaios.sh` | KaiOS emulator | Builds & serves securely for emulator |
+| `./scripts/build-kaios.sh` | Manual build | Just builds to public/ (no server) |
+| `./scripts/create-icons.sh` | Icon generation | Creates icons from bluekai-logo.png |
 
 ## Project Structure
 
@@ -42,10 +42,17 @@ BlueKai/
 │   ├── services/           # API clients
 │   ├── utils/              # Utilities
 │   ├── state/              # State management
-│   └── navigation/         # Routing & navigation
+│   ├── navigation/         # Routing & navigation
+│   ├── i18n/               # Internationalization
+│   └── styles/             # CSS styles
+├── tests/                  # Test files
+│   ├── html/               # HTML test pages
+│   ├── scripts/            # Verification scripts
+│   └── runners/            # Test runners
+├── scripts/                # Build & deployment scripts
+├── docs/                   # Documentation
 ├── public/                 # Built files (auto-generated)
 ├── dist/                   # Webpack output
-├── test-*.html             # Component tests
 └── manifest.webapp         # KaiOS manifest
 ```
 
