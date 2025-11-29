@@ -8,6 +8,7 @@ import ProfileHeader from './ProfileHeader.js';
 import PostList from './PostList.js';
 import LoadingIndicator from '../components/LoadingIndicator.js';
 import ErrorMessage from '../components/ErrorMessage.js';
+import './ProfileView.css';
 
 /**
  * ProfileView component

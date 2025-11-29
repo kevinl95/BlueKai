@@ -4,6 +4,7 @@
  */
 
 import { h } from 'preact';
+import './ProfileHeader.css';
 
 /**
  * ProfileHeader component
