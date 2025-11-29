@@ -446,6 +446,34 @@ ATPClient.prototype.getTimeline = function(options) {
 };
 
 /**
+ * Get author feed (posts by a specific user)
+ * @param {Object} options - Request options
+ * @param {string} options.actor - Actor identifier (handle or DID)
+ * @param {string} options.cursor - Pagination cursor (optional)
+ * @param {number} options.limit - Number of posts to fetch (optional)
+ * @returns {Promise} Promise that resolves with author feed data
+ */
+ATPClient.prototype.getAuthorFeed = function(options) {
+  if (!options || !options.actor) {
+    return Promise.reject(new Error('Actor is required'));
+  }
+  
+  var params = Object.assign({
+    limit: 50
+  }, options);
+  
+  var queryString = this.buildQueryString(params);
+  
+  return this.httpClient.get('/xrpc/app.bsky.feed.getAuthorFeed' + queryString)
+    .then(function(response) {
+      return {
+        feed: response.data.feed || [],
+        cursor: response.data.cursor || null
+      };
+    });
+};
+
+/**
  * Get a single post
  * @param {string} uri - Post URI
  * @returns {Promise} Promise that resolves with post data

@@ -33,7 +33,7 @@ export function ProfileHeader(props) {
   return h('div', { className: 'profile-header' },
     // Avatar
     h('div', { className: 'profile-header__avatar-container' },
-      !dataSaverMode && profile.avatar
+      profile.avatar
         ? h('img', {
             src: profile.avatar,
             alt: profile.displayName || profile.handle,

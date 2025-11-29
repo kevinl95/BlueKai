@@ -118,8 +118,8 @@ class ProfileViewClass extends Component {
 
     self.setState({ postsLoading: true, postsError: null });
 
-    // Use getTimeline with author filter
-    atpClient.getTimeline({ author: actor, cursor: cursor, limit: 20 })
+    // Use getAuthorFeed to get posts by this specific user
+    atpClient.getAuthorFeed({ actor: actor, cursor: cursor, limit: 20 })
       .then(function(response) {
         var feed = response.feed || [];
         var existingPosts = cursor ? self.state.posts : [];
