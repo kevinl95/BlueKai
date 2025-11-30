@@ -14,11 +14,6 @@ npm run build
 ```
 Output in `dist/` directory.
 
-### ...generate icons
-```bash
-./scripts/create-icons.sh
-```
-Requires `bluekai-logo.png` in root directory.
 
 ### ...run tests
 ```bash
