@@ -10,7 +10,7 @@ import { useAppState } from '../state/app-state.js';
 import { SessionManager } from '../state/session-manager.js';
 import Router from '../navigation/router.js';
 import NavigationManager from '../navigation/navigation-manager.js';
-import SoftkeyBar from '../navigation/SoftkeyBar.js';
+import ActionBar from '../navigation/ActionBar.js';
 import ErrorBoundary from './ErrorBoundary.js';
 import OfflineIndicator from './OfflineIndicator.js';
 import ATPClient from '../services/atp-client.js';
@@ -427,12 +427,12 @@ class AppContentClass extends Component {
       };
     }
     
-    // Timeline view - softkeys are set by TimelineView component
+    // Timeline view - actions are set by TimelineView component
     if (route === '/timeline') {
       return this.state.dynamicSoftkeys || {
-        left: null,
-        center: null,
-        right: null
+        left: { label: 'Refresh', icon: '🔄', action: null },
+        center: { label: 'Compose', icon: '✏️', action: null },
+        right: { label: 'Menu', icon: '☰', action: null }
       };
     }
     
@@ -736,9 +736,9 @@ class AppContentClass extends Component {
         },
         id: 'app-content'
       }, this.renderView()),
-      // Hide softkey bar on login and signup screens
-      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'softkey-navigation' },
-        h(SoftkeyBar, softkeyConfig)
+      // Hide action bar on login and signup screens
+      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
+        h(ActionBar, softkeyConfig)
       ),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {

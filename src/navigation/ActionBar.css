@@ -1,0 +1,115 @@
+/**
+ * ActionBar Component Styles
+ * Fixed navigation bar with actual buttons for browser-based KaiOS
+ */
+
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background-color: #1a1a1a;
+  border-top: 2px solid #333;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 var(--space-xs);
+  z-index: var(--z-sticky);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.action-bar__button {
+  flex: 1;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #444;
+  border-radius: var(--radius-md);
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  margin: 0 var(--space-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.action-bar__button:hover {
+  background-color: #2a2a2a;
+  border-color: var(--color-primary);
+}
+
+.action-bar__button:focus {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 2px;
+  background-color: #2a2a2a;
+  border-color: var(--color-primary);
+}
+
+.action-bar__button:active {
+  background-color: var(--color-primary);
+  transform: scale(0.98);
+}
+
+.action-bar__icon {
+  font-size: var(--font-size-md);
+  line-height: 1;
+}
+
+.action-bar__label {
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* KaiOS specific - 240x320 screen */
+@media (max-width: 240px) {
+  .action-bar {
+    height: 40px;
+    padding: 0 2px;
+  }
+  
+  .action-bar__button {
+    height: 32px;
+    font-size: var(--font-size-xs);
+    margin: 0 2px;
+    padding: 0 var(--space-xs);
+    min-width: 0;
+  }
+  
+  .action-bar__icon {
+    font-size: var(--font-size-sm);
+  }
+  
+  .action-bar__label {
+    font-size: 10px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .action-bar {
+    border-color: #666;
+    border-top-width: 3px;
+  }
+  
+  .action-bar__button {
+    border-width: 2px;
+  }
+  
+  .action-bar__button:focus {
+    outline-width: 4px;
+  }
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .action-bar {
+    background-color: #0a0a0a;
+    border-top-color: #2a2a2a;
+  }
+}
