@@ -27,9 +27,10 @@ function ActionBar(props) {
     left.label && h('button', {
       className: 'action-bar__button action-bar__button--left',
       onClick: left.action,
-      'aria-label': left.label,
+      'aria-label': left.label + ' (Press 1)',
       tabIndex: 0
     }, [
+      h('span', { className: 'action-bar__shortcut' }, '1'),
       left.icon && h('span', { className: 'action-bar__icon' }, left.icon),
       h('span', { className: 'action-bar__label' }, left.label)
     ]),
@@ -37,9 +38,10 @@ function ActionBar(props) {
     center.label && h('button', {
       className: 'action-bar__button action-bar__button--center',
       onClick: center.action,
-      'aria-label': center.label,
+      'aria-label': center.label + ' (Press 2)',
       tabIndex: 0
     }, [
+      h('span', { className: 'action-bar__shortcut' }, '2'),
       center.icon && h('span', { className: 'action-bar__icon' }, center.icon),
       h('span', { className: 'action-bar__label' }, center.label)
     ]),
@@ -47,9 +49,10 @@ function ActionBar(props) {
     right.label && h('button', {
       className: 'action-bar__button action-bar__button--right',
       onClick: right.action,
-      'aria-label': right.label,
+      'aria-label': right.label + ' (Press 3)',
       tabIndex: 0
     }, [
+      h('span', { className: 'action-bar__shortcut' }, '3'),
       right.icon && h('span', { className: 'action-bar__icon' }, right.icon),
       h('span', { className: 'action-bar__label' }, right.label)
     ])

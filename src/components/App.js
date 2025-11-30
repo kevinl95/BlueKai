@@ -104,6 +104,10 @@ class AppContentClass extends Component {
     // Monitor network status
     this.networkUnsubscribe = networkStatus.subscribe(this.handleNetworkChange);
     
+    // Add global keyboard shortcuts for browser-based navigation
+    this.handleGlobalKeyPress = this.handleGlobalKeyPress.bind(this);
+    document.addEventListener('keypress', this.handleGlobalKeyPress);
+    
     // Initialize router
     this.setupRoutes();
     this.router.init();
@@ -150,7 +154,35 @@ class AppContentClass extends Component {
       });
   }
   
+  /**
+   * Handle global keyboard shortcuts
+   */
+  handleGlobalKeyPress(event) {
+    // Only handle on authenticated screens
+    if (this.state.currentRoute === '/login' || this.state.currentRoute === '/signup') {
+      return;
+    }
+    
+    var key = event.key;
+    var softkeyConfig = this.getSoftkeyConfig();
+    
+    // Number key shortcuts
+    if (key === '1' && softkeyConfig.left && softkeyConfig.left.action) {
+      event.preventDefault();
+      softkeyConfig.left.action();
+    } else if (key === '2' && softkeyConfig.center && softkeyConfig.center.action) {
+      event.preventDefault();
+      softkeyConfig.center.action();
+    } else if (key === '3' && softkeyConfig.right && softkeyConfig.right.action) {
+      event.preventDefault();
+      softkeyConfig.right.action();
+    }
+  }
+  
   componentWillUnmount() {
+    // Clean up keyboard listener
+    document.removeEventListener('keypress', this.handleGlobalKeyPress);
+    
     // Clean up
     if (this.router) {
       this.router.destroy();
@@ -731,16 +763,15 @@ class AppContentClass extends Component {
       h('div', {
         style: {
           flex: 1,
-          overflow: 'auto'
+          overflow: 'auto',
+          paddingBottom: '52px' // Space for action bar
         },
         id: 'app-content'
-      }, [
-        // Show action bar at top on authenticated screens
-        (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
-          h(ActionBar, softkeyConfig)
-        ),
-        this.renderView()
-      ]),
+      }, this.renderView()),
+      // Show action bar at bottom on authenticated screens
+      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
+        h(ActionBar, softkeyConfig)
+      ),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
