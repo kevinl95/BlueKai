@@ -400,8 +400,12 @@ PostItem.prototype.render = function() {
   // Format timestamp using shared singleton (memoized)
   var timestamp = sharedDateFormatter.formatRelative(createdAt);
   
-  // Process text for display (linkify URLs) using shared singleton (memoized)
-  var processedText = sharedTextProcessor.linkify(sharedTextProcessor._escapeHtml(text), 'post-link');
+  // Process text for display (escape HTML and linkify URLs) using shared singleton
+  var processedText = sharedTextProcessor.processForDisplay(text, {
+    urlClass: 'post-link',
+    linkifyMentions: false,
+    linkifyHashtags: false
+  });
   
   // Handle click/selection
   var handleClick = function() {
