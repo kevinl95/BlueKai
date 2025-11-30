@@ -780,13 +780,25 @@ class AppContentClass extends Component {
           overflow: 'auto'
         },
         id: 'app-content'
-      }, [
-        // Show action bar at top on authenticated screens (only on first load)
-        (this.state.showActionBar && this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
-          h(ActionBar, softkeyConfig)
-        ),
-        this.renderView()
-      ]),
+      }, this.renderView()),
+      // Show keyboard shortcut hint on first load
+      (this.state.showActionBar && this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', {
+        style: {
+          position: 'fixed',
+          top: '10px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: '#1da1f2',
+          color: '#fff',
+          padding: '8px 12px',
+          borderRadius: '4px',
+          fontSize: '11px',
+          zIndex: 2000,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+          textAlign: 'center',
+          maxWidth: '90%'
+        }
+      }, 'Press 1-Refresh 2-Compose 3-Menu'),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
