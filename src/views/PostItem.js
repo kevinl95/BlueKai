@@ -289,23 +289,9 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
           alt: img.alt || 'Post image ' + (index + 1),
           loading: loadingStrategy,
           decoding: 'async', // Improve scroll performance during decode
-          onLoad: function() {
-            // Image loaded successfully - no layout shift needed
-          },
           onError: function(e) {
             // Handle image load errors gracefully
             e.target.style.display = 'none';
-          },
-          style: {
-            // Reserve fixed space to prevent any layout shift
-            aspectRatio: '16/9',
-            backgroundColor: '#f0f0f0',
-            minHeight: '120px', // Fixed minimum prevents collapse
-            maxHeight: '200px', // Consistent with CSS
-            width: '100%',
-            objectFit: 'contain',
-            // Ensure consistent rendering
-            imageRendering: 'auto'
           }
         });
       })
@@ -327,13 +313,7 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
         src: external.thumb,
         alt: external.title || 'Link preview',
         loading: 'eager', // Load external thumbs immediately
-        decoding: 'async',
-        style: {
-          aspectRatio: '16/9',
-          minHeight: '80px',
-          backgroundColor: '#f0f0f0',
-          objectFit: 'contain'
-        }
+        decoding: 'async'
       }),
       h('div', { className: 'post-item__external-info' },
         external.title && h('div', { className: 'post-item__external-title' }, external.title),
