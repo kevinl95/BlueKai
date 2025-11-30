@@ -119,14 +119,17 @@ class AppContentClass extends Component {
     this.setupRoutes();
     this.router.init();
     
-    // Initialize global navigation manager
-    this.navigationManager = new NavigationManager({
-      onSelect: function(element) {
-        if (element && element.click) {
-          element.click();
+    // Initialize global navigation manager (only on KaiOS)
+    var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+    if (isKaiOS) {
+      this.navigationManager = new NavigationManager({
+        onSelect: function(element) {
+          if (element && element.click) {
+            element.click();
+          }
         }
-      }
-    });
+      });
+    }
     
     // Validate and restore session
     // Requirements: 5.4 - Implement initial session check and restoration
@@ -307,17 +310,23 @@ class AppContentClass extends Component {
       routeParams: params || {}
     });
     
-    // Update navigation manager for new view
-    var self = this;
-    setTimeout(function() {
-      if (self.navigationManager) {
-        // Update focusable elements for the new view
-        var focusableElements = document.querySelectorAll(
-          'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
-        );
-        self.navigationManager.updateFocusableElements(focusableElements);
-      }
-    }, 100);
+    // Skip NavigationManager updates in browser environment to prevent scroll interference
+    // Only enable for actual KaiOS devices
+    var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+    
+    if (isKaiOS) {
+      // Update navigation manager for new view (KaiOS only)
+      var self = this;
+      setTimeout(function() {
+        if (self.navigationManager) {
+          // Update focusable elements for the new view
+          var focusableElements = document.querySelectorAll(
+            'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+          );
+          self.navigationManager.updateFocusableElements(focusableElements);
+        }
+      }, 100);
+    }
   }
   
   /**

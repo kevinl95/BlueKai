@@ -166,25 +166,36 @@ function LoginView(props) {
           autocomplete: 'current-password'
         }),
         
-        error && h(ErrorMessage, {
-          error: error,
-          onRetry: handleRetry,
-          inline: true
-        }),
-        
-        // Temporary debug output - remove after testing
+        // Error message display
         error && h('div', {
           style: {
-            padding: '8px',
+            padding: '12px',
             backgroundColor: '#ffebee',
-            border: '1px solid #f44336',
-            borderRadius: '4px',
-            margin: '8px 0',
-            fontSize: '11px',
+            border: '2px solid #f44336',
+            borderRadius: '6px',
+            margin: '12px 0',
+            fontSize: '14px',
             color: '#d32f2f',
-            fontFamily: 'monospace'
+            textAlign: 'center',
+            fontWeight: '500'
           }
-        }, 'Debug - Error status: ' + (error.status || 'none') + ', message: ' + (error.message || 'none')),
+        }, [
+          h('div', { style: { fontSize: '16px', marginBottom: '8px' } }, '⚠️'),
+          h('div', { style: { marginBottom: '8px' } }, error.status === 401 ? 'Invalid username or password.' : 'Login failed. Please try again.'),
+          h('button', {
+            type: 'button',
+            onClick: handleRetry,
+            style: {
+              padding: '6px 12px',
+              backgroundColor: '#f44336',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              fontSize: '12px',
+              cursor: 'pointer'
+            }
+          }, 'Try Again')
+        ]),
         
         h(Button, {
           type: 'submit',

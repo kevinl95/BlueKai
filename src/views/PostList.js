@@ -32,6 +32,7 @@ function PostListClass(props) {
   this.bufferSize = props.bufferSize || 3; // Number of items to render above/below viewport
   this.lastScrollTime = 0; // Track scroll activity
   this.keyboardNavigationEnabled = props.keyboardNavigationEnabled !== false; // Default enabled
+  this.isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
   
   // Bind methods
   this.handleScroll = this.handleScroll.bind(this);
@@ -62,8 +63,9 @@ PostListClass.prototype.componentDidMount = function() {
   // Listen for window resize
   window.addEventListener('resize', this.updateDimensions);
   
-  // Set up keyboard navigation
-  if (this.props.navigationManager) {
+  // Set up keyboard navigation only for KaiOS devices
+  var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+  if (isKaiOS && this.props.navigationManager) {
     this.props.navigationManager.updateFocusableElements([this.containerRef]);
   }
 };
@@ -88,8 +90,9 @@ PostListClass.prototype.componentWillUnmount = function() {
  * Component lifecycle - update
  */
 PostListClass.prototype.componentDidUpdate = function(prevProps) {
-  // If posts changed, update navigation
-  if (this.props.posts !== prevProps.posts && this.props.navigationManager) {
+  // If posts changed, update navigation only for KaiOS
+  var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+  if (isKaiOS && this.props.posts !== prevProps.posts && this.props.navigationManager) {
     this.props.navigationManager.updateFocusableElements([this.containerRef]);
   }
 };
@@ -138,6 +141,11 @@ PostListClass.prototype.checkScrollActivity = function() {
  * Handle keyboard navigation
  */
 PostListClass.prototype.handleKeyDown = function(event) {
+  // Completely disable keyboard navigation in browser environments
+  if (!this.isKaiOS) {
+    return;
+  }
+  
   var posts = this.props.posts || [];
   if (posts.length === 0) {
     return;
@@ -353,8 +361,8 @@ PostListClass.prototype.render = function() {
   return h('div', {
     ref: this.setContainerRef,
     className: 'post-list',
-    onKeyDown: this.handleKeyDown,
-    tabIndex: 0,
+    onKeyDown: this.isKaiOS ? this.handleKeyDown : undefined,
+    tabIndex: this.isKaiOS ? 0 : undefined,
     role: 'list',
     'aria-label': 'Post list'
   },
