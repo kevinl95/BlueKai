@@ -253,6 +253,8 @@ PostItem.prototype.handleUnrepost = function() {
  * Render post embed (images, external links, etc.)
  */
 PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
+  var self = this;
+  
   if (!embed) {
     return null;
   }
