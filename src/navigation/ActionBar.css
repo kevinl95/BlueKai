@@ -22,10 +22,10 @@
 .action-bar__button {
   flex: 1;
   height: 40px;
-  background: transparent;
-  border: 1px solid #444;
+  background: #2a2a2a;
+  border: 2px solid #555;
   border-radius: var(--radius-md);
-  color: var(--color-text-inverse);
+  color: #ffffff;
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   display: flex;
@@ -38,19 +38,22 @@
 }
 
 .action-bar__button:hover {
-  background-color: #2a2a2a;
+  background-color: #3a3a3a;
   border-color: var(--color-primary);
+  color: #ffffff;
 }
 
 .action-bar__button:focus {
   outline: 3px solid var(--color-primary);
   outline-offset: 2px;
-  background-color: #2a2a2a;
+  background-color: #3a3a3a;
   border-color: var(--color-primary);
+  color: #ffffff;
 }
 
 .action-bar__button:active {
   background-color: var(--color-primary);
+  color: #ffffff;
   transform: scale(0.98);
 }
 
