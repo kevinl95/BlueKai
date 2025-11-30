@@ -35,24 +35,9 @@
   color: var(--color-text-secondary);
 }
 
-/* Focus state - high contrast for D-pad navigation - WCAG AA 3:1 */
+/* Focus state - disabled for cursor navigation */
 .post-item--focused {
-  background-color: #e6f2ff;
-  border: 3px solid var(--color-focus);
-  padding: calc(var(--space-sm) - 2px);
-  box-shadow: 0 0 0 4px var(--color-focus-shadow);
-  color: #000;
-}
-
-.post-item--focused .post-item__author-name,
-.post-item--focused .post-item__content {
-  color: #000;
-}
-
-.post-item--focused .post-item__author-handle,
-.post-item--focused .post-item__timestamp,
-.post-item--focused .post-item__engagement {
-  color: #333;
+  /* Focus highlighting disabled - using natural scrolling with cursor */
 }
 
 /* Header with author info */

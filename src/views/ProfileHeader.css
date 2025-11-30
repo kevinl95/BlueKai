@@ -185,11 +185,29 @@
     font-size: var(--font-size-md);
   }
   
-  .profile-header__stat-value {
-    font-size: var(--font-size-base);
+  /* Stack stats vertically on tiny screens for better readability */
+  .profile-header__stats {
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-xs) 0;
+  }
+  
+  .profile-header__stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-xs) var(--space-sm);
+    text-align: left;
   }
   
   .profile-header__stat-label {
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
+    order: 1;
+  }
+  
+  .profile-header__stat-value {
+    font-size: var(--font-size-md);
+    order: 2;
+    margin-bottom: 0;
   }
 }

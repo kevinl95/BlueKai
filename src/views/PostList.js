@@ -261,8 +261,7 @@ PostListClass.prototype.render = function() {
       ref: this.setContainerRef,
       className: 'post-list',
       role: 'list',
-      'aria-label': 'Post list',
-      style: { overflowY: 'auto', height: '100%' }
+      'aria-label': 'Post list'
     },
       allPosts
     );
