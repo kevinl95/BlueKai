@@ -63,7 +63,7 @@ function SoftkeyBar(props) {
       onClick: left.action && left.label ? handleLeftClick : null,
       role: left.label ? 'button' : 'presentation',
       'aria-label': left.label ? 'Left softkey: ' + left.label : undefined,
-      tabIndex: left.action && left.label ? 0 : -1
+      tabIndex: -1
     },
       left.label || ''
     ),
@@ -72,7 +72,7 @@ function SoftkeyBar(props) {
       onClick: center.action && center.label ? handleCenterClick : null,
       role: center.label ? 'button' : 'presentation',
       'aria-label': center.label ? 'Center softkey: ' + center.label : undefined,
-      tabIndex: center.action && center.label ? 0 : -1
+      tabIndex: -1
     },
       center.label || ''
     ),
@@ -81,7 +81,7 @@ function SoftkeyBar(props) {
       onClick: right.action && right.label ? handleRightClick : null,
       role: right.label ? 'button' : 'presentation',
       'aria-label': right.label ? 'Right softkey: ' + right.label : undefined,
-      tabIndex: right.action && right.label ? 0 : -1
+      tabIndex: -1
     },
       right.label || ''
     )
