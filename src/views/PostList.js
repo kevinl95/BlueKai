@@ -30,12 +30,15 @@ function PostListClass(props) {
   this.containerRef = null;
   this.itemHeight = props.itemHeight || 120; // Estimated height per post
   this.bufferSize = props.bufferSize || 3; // Number of items to render above/below viewport
+  this.lastScrollTime = 0; // Track scroll activity
+  this.keyboardNavigationEnabled = props.keyboardNavigationEnabled !== false; // Default enabled
   
   // Bind methods
   this.handleScroll = this.handleScroll.bind(this);
   this.handleKeyDown = this.handleKeyDown.bind(this);
   this.setContainerRef = this.setContainerRef.bind(this);
   this.updateDimensions = this.updateDimensions.bind(this);
+  this.checkScrollActivity = this.checkScrollActivity.bind(this);
   
   // Performance optimization: RAF throttle scroll handler
   this.handleScrollThrottled = performance.rafThrottle(this.handleScroll);
@@ -74,6 +77,11 @@ PostListClass.prototype.componentWillUnmount = function() {
   }
   
   window.removeEventListener('resize', this.updateDimensions);
+  
+  // Clear scroll timeout
+  if (this.scrollTimeout) {
+    clearTimeout(this.scrollTimeout);
+  }
 };
 
 /**
@@ -105,6 +113,24 @@ PostListClass.prototype.handleScroll = function() {
     this.setState({
       scrollTop: this.containerRef.scrollTop
     });
+    
+    // Track scroll activity to disable keyboard nav during scrolling
+    this.lastScrollTime = Date.now();
+    
+    // Re-enable keyboard nav after scrolling stops
+    clearTimeout(this.scrollTimeout);
+    this.scrollTimeout = setTimeout(this.checkScrollActivity, 150);
+  }
+};
+
+/**
+ * Check if scrolling has stopped and re-enable keyboard navigation
+ */
+PostListClass.prototype.checkScrollActivity = function() {
+  var timeSinceScroll = Date.now() - this.lastScrollTime;
+  if (timeSinceScroll >= 150) {
+    // Scrolling has stopped, keyboard nav is now safe
+    this.keyboardNavigationEnabled = this.props.keyboardNavigationEnabled !== false;
   }
 };
 
@@ -114,6 +140,18 @@ PostListClass.prototype.handleScroll = function() {
 PostListClass.prototype.handleKeyDown = function(event) {
   var posts = this.props.posts || [];
   if (posts.length === 0) {
+    return;
+  }
+  
+  // Check if user is actively scrolling - if so, don't interfere
+  var timeSinceScroll = Date.now() - this.lastScrollTime;
+  if (timeSinceScroll < 150) {
+    // User is actively scrolling, don't intercept keys
+    return;
+  }
+  
+  // Only enable keyboard navigation if explicitly enabled
+  if (!this.keyboardNavigationEnabled) {
     return;
   }
   
@@ -145,12 +183,35 @@ PostListClass.prototype.handleKeyDown = function(event) {
   
   if (newIndex !== focusedIndex) {
     this.setState({ focusedIndex: newIndex });
-    this.scrollToIndex(newIndex);
+    
+    // Only scroll to item if it was changed by keyboard navigation
+    // and use gentle scrolling
+    this.scrollToIndexGently(newIndex);
   }
 };
 
 /**
- * Scroll to make an item visible
+ * Scroll to make an item visible (gentle version that doesn't interrupt user scrolling)
+ */
+PostListClass.prototype.scrollToIndexGently = function(index) {
+  if (!this.containerRef) {
+    return;
+  }
+  
+  // Try to find the actual element and scroll to it gently
+  var postElements = this.containerRef.querySelectorAll('[data-focusable="true"]');
+  if (postElements && postElements[index]) {
+    // Use 'nearest' instead of 'center' to avoid jarring movements
+    postElements[index].scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'nearest',  // Only scroll if not visible
+      inline: 'nearest'
+    });
+  }
+};
+
+/**
+ * Scroll to make an item visible (legacy function for compatibility)
  */
 PostListClass.prototype.scrollToIndex = function(index) {
   if (!this.containerRef) {

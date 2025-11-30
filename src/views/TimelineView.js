@@ -359,7 +359,8 @@ TimelineViewClass.prototype.render = function() {
       dataSaverMode: dataSaverMode,
       onSelectPost: this.handleSelectPost,
       navigationManager: this.props.navigationManager,
-      emptyMessage: 'No posts in your timeline'
+      emptyMessage: 'No posts in your timeline',
+      keyboardNavigationEnabled: false // Disable to prevent scroll conflicts
     }),
     
     // Loading more indicator
