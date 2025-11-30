@@ -12,11 +12,13 @@
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
   display: flex;
-  align-items: center;
+  align-items: flex-start; /* Position at top for KaiOS */
   justify-content: center;
   z-index: var(--z-modal);
   padding: var(--space-lg);
+  padding-top: var(--space-md); /* Less padding at top */
   animation: modal-fade-in var(--transition-base);
+  overflow-y: auto; /* Allow scrolling if modal is tall */
 }
 
 @keyframes modal-fade-in {
@@ -34,10 +36,11 @@
   box-shadow: var(--shadow-lg);
   max-width: 400px;
   width: 100%;
-  max-height: 80%;
+  max-height: calc(100vh - 80px); /* Leave room for softkey bar and padding */
   display: flex;
   flex-direction: column;
   animation: modal-slide-up var(--transition-base);
+  margin-bottom: 40px; /* Space for softkey bar */
 }
 
 @keyframes modal-slide-up {
@@ -113,25 +116,27 @@
 /* KaiOS specific - 240x320 screen */
 @media (max-width: 240px) {
   .modal-overlay {
-    padding: 0;
+    padding: var(--space-xs);
+    padding-top: var(--space-xs);
     align-items: flex-start; /* Position modal at top for better accessibility */
   }
   
   .modal {
     max-width: 100%;
-    max-height: 90%; /* Leave room for scrolling */
-    border-radius: 0;
+    max-height: calc(100vh - 60px); /* Leave room for softkey bar */
+    border-radius: var(--radius-sm);
     margin-top: 0;
+    margin-bottom: 40px; /* Space for softkey bar */
   }
   
   .modal__header,
   .modal__content,
   .modal__footer {
-    padding: var(--space-md);
+    padding: var(--space-sm);
   }
   
   .modal__content {
-    max-height: 200px; /* Limit height so modal doesn't extend off screen */
+    max-height: 180px; /* Limit height so modal doesn't extend off screen */
     overflow-y: auto;
   }
 }
