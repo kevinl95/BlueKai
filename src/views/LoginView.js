@@ -108,9 +108,8 @@ function LoginView(props) {
         console.error('Login failed:', err);
         setLoading(false);
         
-        // Map error to user-friendly message
-        var errorMessage = getLoginErrorMessage(err);
-        setError(errorMessage);
+        // Set the original error object so ErrorMessage can process it properly
+        setError(err);
       });
   };
   
@@ -120,44 +119,6 @@ function LoginView(props) {
   var handleRetry = function() {
     setError(null);
     setValidationErrors({});
-  };
-  
-  /**
-   * Get user-friendly error message for login errors
-   * Requirements: 9.2 - Indicate whether issue is credentials or connectivity
-   */
-  var getLoginErrorMessage = function(err) {
-    if (!err) {
-      return t('login.error');
-    }
-    
-    // Network errors
-    if (err.message && (
-      err.message.indexOf('Network') !== -1 ||
-      err.message.indexOf('Failed to fetch') !== -1 ||
-      err.message.indexOf('timeout') !== -1
-    )) {
-      return t('login.networkError');
-    }
-    
-    // Authentication errors (401)
-    if (err.status === 401 || 
-        (err.message && err.message.indexOf('Invalid credentials') !== -1)) {
-      return t('login.error');
-    }
-    
-    // Rate limiting (429)
-    if (err.status === 429) {
-      return t('errors.rateLimited');
-    }
-    
-    // Server errors (500+)
-    if (err.status && err.status >= 500) {
-      return t('errors.serverError');
-    }
-    
-    // Generic error
-    return err.message || t('login.error');
   };
   
   return h('main', { 

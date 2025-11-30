@@ -796,9 +796,10 @@ class AppContentClass extends Component {
           zIndex: 2000,
           boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
           textAlign: 'center',
-          maxWidth: '90%'
+          maxWidth: '90%',
+          lineHeight: '1.3'
         }
-      }, 'Press 1-Refresh 2-Compose 3-Menu'),
+      }, 'Press 1-Refresh • 2-Compose • 3-Menu'),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
