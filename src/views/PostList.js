@@ -189,9 +189,12 @@ PostListClass.prototype.handleKeyDown = function(event) {
   if (newIndex !== focusedIndex) {
     this.setState({ focusedIndex: newIndex });
     
-    // Only scroll to item if it was changed by keyboard navigation
-    // and use gentle scrolling
-    this.scrollToIndexGently(newIndex);
+    // Only auto-scroll on KaiOS devices with D-pad navigation
+    if (this.isKaiOS) {
+      // Only scroll to item if it was changed by keyboard navigation
+      // and use gentle scrolling
+      this.scrollToIndexGently(newIndex);
+    }
   }
 };
 
@@ -199,7 +202,8 @@ PostListClass.prototype.handleKeyDown = function(event) {
  * Scroll to make an item visible (gentle version that doesn't interrupt user scrolling)
  */
 PostListClass.prototype.scrollToIndexGently = function(index) {
-  if (!this.containerRef) {
+  // Only auto-scroll on KaiOS devices
+  if (!this.isKaiOS || !this.containerRef) {
     return;
   }
   
@@ -219,7 +223,8 @@ PostListClass.prototype.scrollToIndexGently = function(index) {
  * Scroll to make an item visible (legacy function for compatibility)
  */
 PostListClass.prototype.scrollToIndex = function(index) {
-  if (!this.containerRef) {
+  // Only auto-scroll on KaiOS devices  
+  if (!this.isKaiOS || !this.containerRef) {
     return;
   }
   

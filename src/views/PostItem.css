@@ -16,6 +16,8 @@
   /* Performance optimizations */
   contain: layout style;
   transform: translateZ(0); /* Force new stacking context for better compositing */
+  /* Prevent scroll anchoring to avoid scroll jumping */
+  overflow-anchor: none;
 }
 
 .post-item:last-child {
@@ -244,9 +246,7 @@
   margin-bottom: 4px;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-secondary); /* Show background for letterboxing */
-  /* Performance optimizations for scrolling */
-  will-change: transform;
-  transform: translateZ(0); /* Force hardware acceleration */
+  /* Improved layout stability - remove problematic hardware acceleration */
   image-rendering: optimizeSpeed; /* Prioritize speed over quality during scroll */
 }
 

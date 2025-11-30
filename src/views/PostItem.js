@@ -283,9 +283,10 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
           loading: 'lazy',
           decoding: 'async', // Improve scroll performance during decode
           style: {
-            // Reserve space to prevent layout shift
-            minHeight: '100px',
-            backgroundColor: '#f0f0f0'
+            // Use aspect ratio to reserve space and prevent layout shift
+            aspectRatio: '16/9', // Common social media aspect ratio
+            backgroundColor: '#f0f0f0',
+            minHeight: 'auto' // Let aspect-ratio handle height
           }
         });
       })

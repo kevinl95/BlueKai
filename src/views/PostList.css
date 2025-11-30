@@ -13,6 +13,10 @@
   background-color: var(--color-bg-primary);
   position: relative;
   outline: none;
+  /* Prevent scroll anchoring that causes jumping behavior */
+  overflow-anchor: none;
+  /* Improve scroll performance */
+  scroll-behavior: auto; /* Disable smooth scroll for better manual control */
 }
 
 /* Spacer for virtual scrolling - maintains scroll height */
@@ -70,15 +74,15 @@
   outline-offset: -3px;
 }
 
-/* Ensure smooth scrolling */
+/* Ensure natural scrolling behavior */
 .post-list {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* Already set above */
 }
 
-/* Performance optimization */
+/* Performance optimization - remove problematic transforms */
 .post-list__items {
   backface-visibility: hidden;
-  transform: translateZ(0);
+  /* Removed translateZ(0) to prevent scroll positioning issues */
 }
 
 /* Reduced motion support */
