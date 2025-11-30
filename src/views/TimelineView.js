@@ -95,7 +95,7 @@ TimelineViewClass.prototype.componentWillUnmount = function() {
     window.removeEventListener('scroll', this._scrollHandler);
     this._scrollHandler = null;
   }
-  this._observerSetup = false;
+  this._loadMoreElement = null;
 };
 
 /**
@@ -372,13 +372,19 @@ TimelineViewClass.prototype.render = function() {
     !loadingMore && this.state.hasMore && h('div', {
       className: 'timeline-view__load-more',
       ref: function(el) {
-        if (el && !this._observerSetup) {
-          this._observerSetup = true;
+        // Store reference to the current element
+        this._loadMoreElement = el;
+        
+        if (el && !this._scrollHandler) {
           // Simple scroll detection for load more with throttling
           var self = this;
           var checkScrollThrottled = performance.rafThrottle(function() {
-            if (el.getBoundingClientRect().top < window.innerHeight + 200) {
-              self.loadMore();
+            // Check if the element is still valid and mounted
+            var currentEl = self._loadMoreElement;
+            if (currentEl && document.body.contains(currentEl)) {
+              if (currentEl.getBoundingClientRect().top < window.innerHeight + 200) {
+                self.loadMore();
+              }
             }
           });
           window.addEventListener('scroll', checkScrollThrottled, { passive: true });
