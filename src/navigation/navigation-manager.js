@@ -188,8 +188,9 @@ NavigationManager.prototype.applyFocus = function() {
     element.classList.add(this.options.focusClass);
     
     // Scroll element into view if needed
+    // Use 'center' for better visibility with fixed softkey bar
     if (element.scrollIntoView) {
-      element.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      element.scrollIntoView({ block: 'center', behavior: 'smooth' });
     }
   }
 };

@@ -731,7 +731,8 @@ class AppContentClass extends Component {
       h('div', {
         style: {
           flex: 1,
-          overflow: 'auto'
+          overflow: 'auto',
+          paddingBottom: '40px' // Space for softkey bar
         },
         id: 'app-content'
       }, this.renderView()),
