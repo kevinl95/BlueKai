@@ -21,6 +21,9 @@ function PostList(props) {
 function PostListClass(props) {
   Component.call(this, props);
   
+  // Threshold for enabling virtual scrolling (only for large lists)
+  this.VIRTUAL_SCROLL_THRESHOLD = 50;
+  
   this.state = {
     scrollTop: 0,
     containerHeight: 0,
@@ -29,7 +32,7 @@ function PostListClass(props) {
   
   this.containerRef = null;
   this.itemHeight = props.itemHeight || 120; // Estimated height per post
-  this.bufferSize = props.bufferSize || 8; // Number of items to render above/below viewport (increased for smoother scrolling)
+  this.bufferSize = props.bufferSize || 8; // Items to render above/below viewport (only used with virtual scrolling)
   this.lastScrollTime = 0; // Track scroll activity
   this.keyboardNavigationEnabled = props.keyboardNavigationEnabled !== false; // Default enabled
   
@@ -116,10 +119,10 @@ PostListClass.prototype.updateDimensions = function() {
  */
 PostListClass.prototype.handleScroll = function() {
   if (this.containerRef) {
-    // Only update state if virtual scrolling is active (posts >= 50)
+    // Only update state if virtual scrolling is active (large lists)
     // This prevents unnecessary re-renders during normal scrolling
     var posts = this.props.posts || [];
-    var useVirtualScrolling = this.props.useVirtualScrolling !== false && posts.length >= 50;
+    var useVirtualScrolling = this.props.useVirtualScrolling !== false && posts.length >= this.VIRTUAL_SCROLL_THRESHOLD;
     
     if (useVirtualScrolling) {
       this.setState({
@@ -320,7 +323,7 @@ PostListClass.prototype.render = function() {
   
   // For variable-height content (posts with images), disable virtual scrolling
   // Virtual scrolling requires fixed heights, which we can't guarantee with media
-  if (!useVirtualScrolling || posts.length < 50) {
+  if (!useVirtualScrolling || posts.length < this.VIRTUAL_SCROLL_THRESHOLD) {
     // Render all posts directly (better for variable heights)
     var allPosts = [];
     for (var i = 0; i < posts.length; i++) {
