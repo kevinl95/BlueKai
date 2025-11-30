@@ -8,10 +8,7 @@
 .post-detail {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow-y: auto;
   background: var(--color-bg-primary);
-  padding-bottom: 60px; /* Space for softkey bar */
 }
 
 .post-detail__main {
@@ -22,8 +19,6 @@
 
 .post-detail__replies {
   flex: 1;
-  overflow-y: auto;
-  padding-bottom: 60px; /* Space for softkey bar to prevent last comment from being cut off */
 }
 
 .post-detail__replies-header {
