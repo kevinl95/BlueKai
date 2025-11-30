@@ -10,6 +10,11 @@ import DateFormatter from '../utils/date-formatter.js';
 import TextProcessor from '../utils/text-processor.js';
 import Modal from '../components/Modal.js';
 
+// Shared singleton instances to avoid re-creation on every render
+// This improves scroll performance by maintaining memoization caches
+var sharedDateFormatter = new DateFormatter();
+var sharedTextProcessor = new TextProcessor();
+
 /**
  * @class PostItem
  * @description Component to display a single BlueSky post with interaction support
@@ -370,10 +375,6 @@ PostItem.prototype.render = function() {
     return null;
   }
   
-  // Initialize utilities
-  var dateFormatter = new DateFormatter();
-  var textProcessor = new TextProcessor();
-  
   // Extract post data
   var author = post.author || {};
   var record = post.record || {};
@@ -396,11 +397,15 @@ PostItem.prototype.render = function() {
                     (post.repostCount || 0);
   var replyCount = post.replyCount || 0;
   
-  // Format timestamp
-  var timestamp = dateFormatter.formatRelative(createdAt);
+  // Format timestamp using shared singleton (memoized)
+  var timestamp = sharedDateFormatter.formatRelative(createdAt);
   
-  // Process text for display (linkify URLs)
-  var processedText = textProcessor.linkify(textProcessor._escapeHtml(text), 'post-link');
+  // Process text for display (escape HTML and linkify URLs) using shared singleton
+  var processedText = sharedTextProcessor.processForDisplay(text, {
+    urlClass: 'post-link',
+    linkifyMentions: false,
+    linkifyHashtags: false
+  });
   
   // Handle click/selection
   var handleClick = function() {
