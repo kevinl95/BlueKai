@@ -37,7 +37,6 @@ class SettingsViewClass extends Component {
     
     this.settingsItems = [
       { id: 'dataSaver', type: 'toggle' },
-      { id: 'language', type: 'picker' },
       { id: 'about', type: 'info' }
     ];
     
@@ -179,8 +178,6 @@ class SettingsViewClass extends Component {
     
     if (item.type === 'toggle') {
       this.toggleDataSaver();
-    } else if (item.type === 'picker') {
-      this.openLanguagePicker();
     }
     // Info items don't have actions
   }
@@ -316,26 +313,6 @@ class SettingsViewClass extends Component {
       ]);
     }
     
-    if (item.id === 'language') {
-      var currentLang = this.languages.find(function(lang) {
-        return lang.code === this.state.language;
-      }.bind(this));
-      
-      return h('div', {
-        key: item.id,
-        className: className,
-        'data-testid': 'settings-item-language',
-        onClick: this.openLanguagePicker,
-        style: { cursor: 'pointer' }
-      }, [
-        h('div', { className: 'settings-view__label' }, t('settings.language')),
-        h('div', {
-          className: 'settings-view__value',
-          'data-testid': 'language-value'
-        }, currentLang ? currentLang.label : 'English')
-      ]);
-    }
-    
     if (item.id === 'about') {
       return h('div', {
         key: item.id,
@@ -353,40 +330,7 @@ class SettingsViewClass extends Component {
     return null;
   }
   
-  /**
-   * Render language picker modal
-   * 
-   * @returns {JSX.Element|null} Language picker modal
-   */
-  renderLanguagePicker() {
-    if (!this.state.editingLanguage) {
-      return null;
-    }
-    
-    var t = this.props.t;
-    
-    return h(Modal, {
-      isOpen: true,
-      onClose: this.closeLanguagePicker,
-      title: t('settings.language'),
-      'data-testid': 'language-picker-modal'
-    }, [
-      h('div', { className: 'settings-view__language-picker' }, 
-        this.languages.map(function(lang, index) {
-          var isFocused = this.state.languageSelectedIndex === index;
-          var className = 'settings-view__language-option' + 
-            (isFocused ? ' settings-view__language-option--focused' : '');
-          
-          return h('div', {
-            key: lang.code,
-            className: className,
-            'data-testid': 'language-option-' + lang.code,
-            'aria-selected': isFocused
-          }, lang.label);
-        }.bind(this))
-      )
-    ]);
-  }
+
   
   render() {
     var t = this.props.t;
@@ -399,8 +343,7 @@ class SettingsViewClass extends Component {
         this.settingsItems.map(function(item, index) {
           return this.renderSettingsItem(item, index);
         }.bind(this))
-      ),
-      this.renderLanguagePicker()
+      )
     ]);
   }
 }
