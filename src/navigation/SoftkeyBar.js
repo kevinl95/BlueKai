@@ -27,21 +27,27 @@ function SoftkeyBar(props) {
   var right = props.right || {};
 
   var handleLeftClick = function(e) {
+    console.log('SoftkeyBar: Left softkey clicked', left);
     e.preventDefault();
+    e.stopPropagation();
     if (left.action) {
       left.action();
     }
   };
 
   var handleCenterClick = function(e) {
+    console.log('SoftkeyBar: Center softkey clicked', center);
     e.preventDefault();
+    e.stopPropagation();
     if (center.action) {
       center.action();
     }
   };
 
   var handleRightClick = function(e) {
+    console.log('SoftkeyBar: Right softkey clicked', right);
     e.preventDefault();
+    e.stopPropagation();
     if (right.action) {
       right.action();
     }

@@ -254,7 +254,16 @@ PostActionMenu.prototype.render = function() {
           className: className,
           role: 'menuitem',
           'aria-selected': isSelected,
-          tabIndex: isSelected ? 0 : -1
+          tabIndex: isSelected ? 0 : -1,
+          onClick: !loading ? function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('PostActionMenu: Item clicked:', action.id);
+            // Set the selected index and execute action
+            self.setState({ selectedIndex: index }, function() {
+              self.handleAction();
+            });
+          } : null
         },
           h('span', { className: 'post-action-menu__icon' }, action.icon),
           ' ',
