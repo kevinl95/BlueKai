@@ -129,22 +129,31 @@ PostDetailView.prototype.handleCloseActionMenu = function() {
 PostDetailView.prototype.handleAction = function(actionId) {
   var post = this.state.selectedPost;
   
+  console.log('PostDetailView: handleAction called with:', actionId, 'post:', post);
+  
   if (!post) {
+    console.error('PostDetailView: No post selected');
     return Promise.reject(new Error('No post selected'));
   }
   
   switch (actionId) {
     case 'like':
+      console.log('PostDetailView: Calling handleLike');
       return this.handleLike(post);
     case 'unlike':
+      console.log('PostDetailView: Calling handleUnlike');
       return this.handleUnlike(post);
     case 'repost':
+      console.log('PostDetailView: Calling handleRepost');
       return this.handleRepost(post);
     case 'unrepost':
+      console.log('PostDetailView: Calling handleUnrepost');
       return this.handleUnrepost(post);
     case 'reply':
+      console.log('PostDetailView: Calling handleReply');
       return this.handleReply(post);
     default:
+      console.error('PostDetailView: Unknown action:', actionId);
       return Promise.reject(new Error('Unknown action: ' + actionId));
   }
 };

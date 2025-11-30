@@ -160,8 +160,11 @@ PostActionMenu.prototype.handleAction = function() {
   var selectedAction = actions[this.state.selectedIndex];
   
   if (!selectedAction) {
+    console.log('PostActionMenu: No action selected');
     return;
   }
+  
+  console.log('PostActionMenu: Executing action:', selectedAction.id);
   
   // Set loading state
   this.setState({ loading: true, feedback: null });
@@ -172,7 +175,8 @@ PostActionMenu.prototype.handleAction = function() {
     
     if (promise && promise.then) {
       promise
-        .then(function() {
+        .then(function(result) {
+          console.log('PostActionMenu: Action successful:', selectedAction.id, result);
           // Show success feedback
           self.setState({
             loading: false,
@@ -190,6 +194,7 @@ PostActionMenu.prototype.handleAction = function() {
           }, 500);
         })
         .catch(function(error) {
+          console.error('PostActionMenu: Action failed:', selectedAction.id, error);
           // Show error feedback
           self.setState({
             loading: false,
@@ -201,11 +206,14 @@ PostActionMenu.prototype.handleAction = function() {
         });
     } else {
       // No promise returned, just close
+      console.log('PostActionMenu: No promise returned, closing');
       this.setState({ loading: false });
-      if (this.props.onClose) {
-        this.props.onClose();
+      if (self.props.onClose) {
+        self.props.onClose();
       }
     }
+  } else {
+    console.log('PostActionMenu: No onAction callback provided');
   }
 };
 
