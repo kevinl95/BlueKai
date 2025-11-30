@@ -160,9 +160,11 @@ PostListClass.prototype.scrollToIndex = function(index) {
   // Try to find the actual element and scroll to it (works with variable heights)
   var postElements = this.containerRef.querySelectorAll('[data-focusable="true"]');
   if (postElements && postElements[index]) {
+    // Use 'center' to keep focused item visible and centered
+    // This ensures scrolling works at the bottom of the list
     postElements[index].scrollIntoView({
       behavior: 'smooth',
-      block: 'nearest'
+      block: 'center'
     });
     return;
   }
