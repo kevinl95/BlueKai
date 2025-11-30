@@ -245,13 +245,12 @@ PostListClass.prototype.render = function() {
     var allPosts = [];
     for (var i = 0; i < posts.length; i++) {
       var post = posts[i];
-      var isFocused = i === this.state.focusedIndex;
       
       allPosts.push(
         h(PostItem, {
           key: post.uri || i,
           post: post,
-          focused: isFocused,
+          focused: false, // Disable focus-based navigation, use natural scrolling
           dataSaverMode: dataSaverMode,
           onSelect: onSelectPost
         })
@@ -261,10 +260,9 @@ PostListClass.prototype.render = function() {
     return h('div', {
       ref: this.setContainerRef,
       className: 'post-list',
-      onKeyDown: this.handleKeyDown,
-      tabIndex: 0,
       role: 'list',
-      'aria-label': 'Post list'
+      'aria-label': 'Post list',
+      style: { overflowY: 'auto', height: '100%' }
     },
       allPosts
     );

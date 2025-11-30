@@ -301,7 +301,9 @@ class SettingsViewClass extends Component {
       return h('div', {
         key: item.id,
         className: className,
-        'data-testid': 'settings-item-data-saver'
+        'data-testid': 'settings-item-data-saver',
+        onClick: this.toggleDataSaver,
+        style: { cursor: 'pointer' }
       }, [
         h('div', { className: 'settings-view__label' }, t('settings.dataSaver')),
         h('div', {
@@ -322,7 +324,9 @@ class SettingsViewClass extends Component {
       return h('div', {
         key: item.id,
         className: className,
-        'data-testid': 'settings-item-language'
+        'data-testid': 'settings-item-language',
+        onClick: this.openLanguagePicker,
+        style: { cursor: 'pointer' }
       }, [
         h('div', { className: 'settings-view__label' }, t('settings.language')),
         h('div', {

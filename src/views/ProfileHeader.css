@@ -188,4 +188,8 @@
   .profile-header__stat-value {
     font-size: var(--font-size-base);
   }
+  
+  .profile-header__stat-label {
+    font-size: var(--font-size-xs);
+  }
 }
