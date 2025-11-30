@@ -29,7 +29,7 @@ function PostListClass(props) {
   
   this.containerRef = null;
   this.itemHeight = props.itemHeight || 120; // Estimated height per post
-  this.bufferSize = props.bufferSize || 3; // Number of items to render above/below viewport
+  this.bufferSize = props.bufferSize || 8; // Number of items to render above/below viewport (increased for smoother scrolling)
   this.lastScrollTime = 0; // Track scroll activity
   this.keyboardNavigationEnabled = props.keyboardNavigationEnabled !== false; // Default enabled
   
@@ -116,16 +116,25 @@ PostListClass.prototype.updateDimensions = function() {
  */
 PostListClass.prototype.handleScroll = function() {
   if (this.containerRef) {
-    this.setState({
-      scrollTop: this.containerRef.scrollTop
-    });
+    // Only update state if virtual scrolling is active (posts >= 50)
+    // This prevents unnecessary re-renders during normal scrolling
+    var posts = this.props.posts || [];
+    var useVirtualScrolling = this.props.useVirtualScrolling !== false && posts.length >= 50;
     
-    // Track scroll activity to disable keyboard nav during scrolling
-    this.lastScrollTime = Date.now();
+    if (useVirtualScrolling) {
+      this.setState({
+        scrollTop: this.containerRef.scrollTop
+      });
+    }
     
-    // Re-enable keyboard nav after scrolling stops
-    clearTimeout(this.scrollTimeout);
-    this.scrollTimeout = setTimeout(this.checkScrollActivity, 150);
+    // Track scroll activity for keyboard nav timing (KaiOS only)
+    if (this.isKaiOS) {
+      this.lastScrollTime = Date.now();
+      
+      // Re-enable keyboard nav after scrolling stops
+      clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(this.checkScrollActivity, 150);
+    }
   }
 };
 
@@ -317,8 +326,9 @@ PostListClass.prototype.render = function() {
     for (var i = 0; i < posts.length; i++) {
       var post = posts[i];
       
-      // Preload images for first few visible posts to prevent layout shifts
-      var shouldPreloadImages = i < 5; // Preload first 5 posts
+      // Preload images for first visible posts to prevent layout shifts
+      // Use a wider window (15 posts) to ensure smoother scrolling
+      var shouldPreloadImages = i < 15;
       
       allPosts.push(
         h(PostItem, {
