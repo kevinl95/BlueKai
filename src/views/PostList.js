@@ -32,7 +32,12 @@ function PostListClass(props) {
   this.bufferSize = props.bufferSize || 3; // Number of items to render above/below viewport
   this.lastScrollTime = 0; // Track scroll activity
   this.keyboardNavigationEnabled = props.keyboardNavigationEnabled !== false; // Default enabled
-  this.isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+  
+  // Detect KaiOS environment for D-pad cursor navigation
+  var userAgent = navigator.userAgent;
+  this.isKaiOS = userAgent.includes('KAIOS') || userAgent.includes('KaiOS');
+  
+  console.log('PostList KaiOS detection:', this.isKaiOS, 'UserAgent:', userAgent.substring(0, 50));
   
   // Bind methods
   this.handleScroll = this.handleScroll.bind(this);
@@ -64,8 +69,7 @@ PostListClass.prototype.componentDidMount = function() {
   window.addEventListener('resize', this.updateDimensions);
   
   // Set up keyboard navigation only for KaiOS devices
-  var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
-  if (isKaiOS && this.props.navigationManager) {
+  if (this.isKaiOS && this.props.navigationManager) {
     this.props.navigationManager.updateFocusableElements([this.containerRef]);
   }
 };
@@ -91,8 +95,7 @@ PostListClass.prototype.componentWillUnmount = function() {
  */
 PostListClass.prototype.componentDidUpdate = function(prevProps) {
   // If posts changed, update navigation only for KaiOS
-  var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
-  if (isKaiOS && this.props.posts !== prevProps.posts && this.props.navigationManager) {
+  if (this.isKaiOS && this.props.posts !== prevProps.posts && this.props.navigationManager) {
     this.props.navigationManager.updateFocusableElements([this.containerRef]);
   }
 };
@@ -141,7 +144,7 @@ PostListClass.prototype.checkScrollActivity = function() {
  * Handle keyboard navigation
  */
 PostListClass.prototype.handleKeyDown = function(event) {
-  // Completely disable keyboard navigation in browser environments
+  // Only handle D-pad navigation on KaiOS devices
   if (!this.isKaiOS) {
     return;
   }
@@ -151,13 +154,7 @@ PostListClass.prototype.handleKeyDown = function(event) {
     return;
   }
   
-  // Check if user is actively scrolling - if so, don't interfere
-  var timeSinceScroll = Date.now() - this.lastScrollTime;
-  if (timeSinceScroll < 150) {
-    // User is actively scrolling, don't intercept keys
-    return;
-  }
-  
+  // On KaiOS, users navigate with D-pad cursor, not scrolling
   // Only enable keyboard navigation if explicitly enabled
   if (!this.keyboardNavigationEnabled) {
     return;

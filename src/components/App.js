@@ -119,8 +119,12 @@ class AppContentClass extends Component {
     this.setupRoutes();
     this.router.init();
     
-    // Initialize global navigation manager (only on KaiOS)
-    var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+    // Initialize global navigation manager (only on actual KaiOS devices)
+    var userAgent = navigator.userAgent;
+    var isKaiOS = userAgent.includes('KAIOS') || userAgent.includes('KaiOS');
+    
+    // KaiOS devices need NavigationManager for D-pad cursor navigation
+    // Browsers need natural scrolling without cursor interference
     if (isKaiOS) {
       this.navigationManager = new NavigationManager({
         onSelect: function(element) {
@@ -129,6 +133,9 @@ class AppContentClass extends Component {
           }
         }
       });
+      console.log('KaiOS detected - NavigationManager enabled for D-pad navigation');
+    } else {
+      console.log('Browser environment detected - NavigationManager disabled for natural scrolling');
     }
     
     // Validate and restore session
@@ -311,8 +318,9 @@ class AppContentClass extends Component {
     });
     
     // Skip NavigationManager updates in browser environment to prevent scroll interference
-    // Only enable for actual KaiOS devices
-    var isKaiOS = navigator.userAgent.includes('KAIOS') || navigator.userAgent.includes('Mobile');
+    // Only enable for actual KaiOS devices that use D-pad cursor navigation
+    var userAgent = navigator.userAgent;
+    var isKaiOS = userAgent.includes('KAIOS') || userAgent.includes('KaiOS');
     
     if (isKaiOS) {
       // Update navigation manager for new view (KaiOS only)
