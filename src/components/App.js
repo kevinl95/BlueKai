@@ -545,6 +545,10 @@ class AppContentClass extends Component {
         cacheManager: this.cacheManager,
         navigationManager: this.navigationManager,
         onSoftkeyUpdate: this.handleSoftkeyUpdate,
+        onNavigateToCompose: function() {
+          self.replyContext = null; // Clear any reply context
+          self.router.navigate('/compose');
+        },
         onReply: function(post) {
           // Store reply context and navigate
           self.replyContext = post;
