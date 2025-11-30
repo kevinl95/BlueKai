@@ -1,0 +1,86 @@
+/**
+ * KeyboardHint Styles
+ */
+
+.keyboard-hint {
+  position: fixed;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm);
+  z-index: var(--z-toast);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+  max-width: 220px;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.keyboard-hint__content {
+  color: #fff;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.keyboard-hint__title {
+  font-weight: var(--font-weight-bold);
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.keyboard-hint__shortcuts {
+  display: flex;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.keyboard-hint__close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.keyboard-hint__close:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 240px) {
+  .keyboard-hint {
+    bottom: 8px;
+    max-width: 200px;
+    padding: 6px;
+  }
+  
+  .keyboard-hint__title {
+    font-size: 11px;
+  }
+  
+  .keyboard-hint__shortcuts {
+    font-size: 9px;
+    gap: 6px;
+  }
+}

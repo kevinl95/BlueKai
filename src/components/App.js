@@ -13,6 +13,7 @@ import NavigationManager from '../navigation/navigation-manager.js';
 import ActionBar from '../navigation/ActionBar.js';
 import ErrorBoundary from './ErrorBoundary.js';
 import OfflineIndicator from './OfflineIndicator.js';
+import KeyboardHint from './KeyboardHint.js';
 import ATPClient from '../services/atp-client.js';
 import CacheManager from '../utils/cache-manager.js';
 import StorageManager from '../utils/storage.js';
@@ -83,7 +84,8 @@ class AppContentClass extends Component {
       routeParams: {},
       isOnline: networkStatus.getStatus(),
       showMainMenu: false,
-      dynamicSoftkeys: null // Softkeys set by child components
+      dynamicSoftkeys: null, // Softkeys set by child components
+      showActionBar: true // Show on first load, hide after user interaction
     };
   }
   
@@ -107,6 +109,11 @@ class AppContentClass extends Component {
     // Add global keyboard shortcuts for browser-based navigation
     this.handleGlobalKeyPress = this.handleGlobalKeyPress.bind(this);
     document.addEventListener('keypress', this.handleGlobalKeyPress);
+    
+    // Hide action bar after first interaction (scroll or key press)
+    this.handleFirstInteraction = this.handleFirstInteraction.bind(this);
+    document.addEventListener('scroll', this.handleFirstInteraction, { once: true, capture: true });
+    document.addEventListener('keydown', this.handleFirstInteraction, { once: true });
     
     // Initialize router
     this.setupRoutes();
@@ -152,6 +159,13 @@ class AppContentClass extends Component {
         self.router.navigate('/login', true);
         self.setState({ isInitialized: true });
       });
+  }
+  
+  /**
+   * Hide action bar after first user interaction
+   */
+  handleFirstInteraction() {
+    this.setState({ showActionBar: false });
   }
   
   /**
@@ -763,15 +777,16 @@ class AppContentClass extends Component {
       h('div', {
         style: {
           flex: 1,
-          overflow: 'auto',
-          paddingBottom: '52px' // Space for action bar
+          overflow: 'auto'
         },
         id: 'app-content'
-      }, this.renderView()),
-      // Show action bar at bottom on authenticated screens
-      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
-        h(ActionBar, softkeyConfig)
-      ),
+      }, [
+        // Show action bar at top on authenticated screens (only on first load)
+        (this.state.showActionBar && this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
+          h(ActionBar, softkeyConfig)
+        ),
+        this.renderView()
+      ]),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
