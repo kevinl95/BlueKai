@@ -317,12 +317,16 @@ PostListClass.prototype.render = function() {
     for (var i = 0; i < posts.length; i++) {
       var post = posts[i];
       
+      // Preload images for first few visible posts to prevent layout shifts
+      var shouldPreloadImages = i < 5; // Preload first 5 posts
+      
       allPosts.push(
         h(PostItem, {
           key: post.uri || i,
           post: post,
           focused: false, // Disable focus-based navigation, use natural scrolling
           dataSaverMode: dataSaverMode,
+          shouldPreloadImages: shouldPreloadImages,
           onSelect: onSelectPost
         })
       );

@@ -18,6 +18,9 @@
   transform: translateZ(0); /* Force new stacking context for better compositing */
   /* Prevent scroll anchoring to avoid scroll jumping */
   overflow-anchor: none;
+  /* Content visibility for better rendering performance */
+  content-visibility: auto;
+  contain-intrinsic-size: 0 150px; /* Reserve approximate height */
 }
 
 .post-item:last-child {
@@ -241,13 +244,16 @@
   max-width: 100%;
   height: auto;
   max-height: 200px; /* Limit height for KaiOS screens */
+  min-height: 120px; /* Prevent collapse during loading */
   object-fit: contain; /* Maintain aspect ratio, show full image */
   display: block;
   margin-bottom: 4px;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-secondary); /* Show background for letterboxing */
-  /* Improved layout stability - remove problematic hardware acceleration */
+  /* Improved layout stability */
   image-rendering: optimizeSpeed; /* Prioritize speed over quality during scroll */
+  /* Force consistent sizing to prevent layout shifts */
+  aspect-ratio: 16/9;
 }
 
 .post-item__media-image:last-child {

@@ -275,18 +275,35 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
     
     return h('div', { className: 'post-item__media' },
       images.map(function(img, index) {
+        // Preload critical images to prevent layout shifts
+        var isFirstImage = index === 0;
+        var shouldPreload = self.props.shouldPreloadImages || isFirstImage;
+        var loadingStrategy = shouldPreload ? 'eager' : 'lazy';
+        
         return h('img', {
           key: index,
           className: 'post-item__media-image',
           src: img.thumb || img.fullsize,
           alt: img.alt || 'Post image ' + (index + 1),
-          loading: 'lazy',
+          loading: loadingStrategy,
           decoding: 'async', // Improve scroll performance during decode
+          onLoad: function() {
+            // Image loaded successfully - no layout shift needed
+          },
+          onError: function(e) {
+            // Handle image load errors gracefully
+            e.target.style.display = 'none';
+          },
           style: {
-            // Use aspect ratio to reserve space and prevent layout shift
-            aspectRatio: '16/9', // Common social media aspect ratio
+            // Reserve fixed space to prevent any layout shift
+            aspectRatio: '16/9',
             backgroundColor: '#f0f0f0',
-            minHeight: 'auto' // Let aspect-ratio handle height
+            minHeight: '120px', // Fixed minimum prevents collapse
+            maxHeight: '200px', // Consistent with CSS
+            width: '100%',
+            objectFit: 'contain',
+            // Ensure consistent rendering
+            imageRendering: 'auto'
           }
         });
       })
@@ -306,7 +323,15 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
       shouldShowImages && external.thumb && h('img', {
         className: 'post-item__external-thumb',
         src: external.thumb,
-        alt: external.title || 'Link preview'
+        alt: external.title || 'Link preview',
+        loading: 'eager', // Load external thumbs immediately
+        decoding: 'async',
+        style: {
+          aspectRatio: '16/9',
+          minHeight: '80px',
+          backgroundColor: '#f0f0f0',
+          objectFit: 'contain'
+        }
       }),
       h('div', { className: 'post-item__external-info' },
         external.title && h('div', { className: 'post-item__external-title' }, external.title),
