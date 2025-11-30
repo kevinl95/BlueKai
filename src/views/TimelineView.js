@@ -79,7 +79,7 @@ TimelineViewClass.prototype.componentDidMount = function() {
   if (this.props.onSoftkeyUpdate) {
     this.props.onSoftkeyUpdate({
       left: { label: 'Refresh', action: this.refresh },
-      center: { label: 'Select', action: null },
+      center: { label: 'Compose', action: this.props.onNavigateToCompose },
       right: { label: 'Menu', action: this.props.onOpenMainMenu }
     });
   }
