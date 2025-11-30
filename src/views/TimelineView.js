@@ -13,6 +13,7 @@ import ErrorMessage from '../components/ErrorMessage.js';
 import ATPClient from '../services/atp-client.js';
 import CacheManager from '../utils/cache-manager.js';
 import StorageManager from '../utils/storage.js';
+import * as performance from '../utils/performance.js';
 
 /**
  * @class TimelineView
@@ -83,6 +84,18 @@ TimelineViewClass.prototype.componentDidMount = function() {
       right: { label: 'Menu', action: this.props.onOpenMainMenu }
     });
   }
+};
+
+/**
+ * Component lifecycle - unmount
+ */
+TimelineViewClass.prototype.componentWillUnmount = function() {
+  // Clean up scroll handler to prevent memory leaks
+  if (this._scrollHandler) {
+    window.removeEventListener('scroll', this._scrollHandler);
+    this._scrollHandler = null;
+  }
+  this._observerSetup = false;
 };
 
 /**
@@ -360,14 +373,17 @@ TimelineViewClass.prototype.render = function() {
       ref: function(el) {
         if (el && !this._observerSetup) {
           this._observerSetup = true;
-          // Simple scroll detection for load more
+          // Simple scroll detection for load more with throttling
           var self = this;
-          var checkScroll = function() {
+          var checkScrollThrottled = performance.rafThrottle(function() {
             if (el.getBoundingClientRect().top < window.innerHeight + 200) {
               self.loadMore();
             }
-          };
-          window.addEventListener('scroll', checkScroll);
+          });
+          window.addEventListener('scroll', checkScrollThrottled, { passive: true });
+          
+          // Store reference for cleanup
+          this._scrollHandler = checkScrollThrottled;
         }
       }.bind(this)
     }),

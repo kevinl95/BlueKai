@@ -280,7 +280,13 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
           className: 'post-item__media-image',
           src: img.thumb || img.fullsize,
           alt: img.alt || 'Post image ' + (index + 1),
-          loading: 'lazy'
+          loading: 'lazy',
+          decoding: 'async', // Improve scroll performance during decode
+          style: {
+            // Reserve space to prevent layout shift
+            minHeight: '100px',
+            backgroundColor: '#f0f0f0'
+          }
         });
       })
     );
