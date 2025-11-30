@@ -731,15 +731,16 @@ class AppContentClass extends Component {
       h('div', {
         style: {
           flex: 1,
-          overflow: 'auto',
-          paddingBottom: '40px' // Space for softkey bar
+          overflow: 'auto'
         },
         id: 'app-content'
-      }, this.renderView()),
-      // Hide action bar on login and signup screens
-      (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
-        h(ActionBar, softkeyConfig)
-      ),
+      }, [
+        // Show action bar at top on authenticated screens
+        (this.state.currentRoute !== '/login' && this.state.currentRoute !== '/signup') && h('div', { id: 'action-navigation' },
+          h(ActionBar, softkeyConfig)
+        ),
+        this.renderView()
+      ]),
       // Render MainMenu when open
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
