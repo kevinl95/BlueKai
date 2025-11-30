@@ -95,7 +95,7 @@ export function getErrorMessage(error, defaultMessage) {
 export function getStatusMessage(status) {
   var statusMessages = {
     400: ERROR_MESSAGES.BadRequest,
-    401: ERROR_MESSAGES.AuthError,
+    401: ERROR_MESSAGES.InvalidCredentials, // Use more specific message for login failures
     403: ERROR_MESSAGES.Forbidden,
     404: ERROR_MESSAGES.NotFound,
     429: ERROR_MESSAGES.RateLimitError,

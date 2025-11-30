@@ -172,6 +172,20 @@ function LoginView(props) {
           inline: true
         }),
         
+        // Temporary debug output - remove after testing
+        error && h('div', {
+          style: {
+            padding: '8px',
+            backgroundColor: '#ffebee',
+            border: '1px solid #f44336',
+            borderRadius: '4px',
+            margin: '8px 0',
+            fontSize: '11px',
+            color: '#d32f2f',
+            fontFamily: 'monospace'
+          }
+        }, 'Debug - Error status: ' + (error.status || 'none') + ', message: ' + (error.message || 'none')),
+        
         h(Button, {
           type: 'submit',
           loading: loading,

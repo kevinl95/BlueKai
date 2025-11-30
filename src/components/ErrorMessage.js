@@ -26,7 +26,23 @@ function ErrorMessage(props) {
     className += ' error-message--inline';
   }
   
-  return h('div', { className: className, role: 'alert', 'aria-live': 'assertive' },
+  return h('div', { 
+    className: className, 
+    role: 'alert', 
+    'aria-live': 'assertive',
+    style: {
+      // Fallback styles in case CSS doesn't load
+      display: 'flex',
+      flexDirection: inline ? 'row' : 'column',
+      alignItems: 'center',
+      padding: '12px',
+      backgroundColor: '#fff3cd',
+      border: '2px solid #ffc107',
+      borderRadius: '4px',
+      margin: '8px 0',
+      minHeight: '40px'
+    }
+  },
     h('div', { className: 'error-message__icon' }, '⚠'),
     h('div', { className: 'error-message__content' },
       h('div', { className: 'error-message__title' }, title),
