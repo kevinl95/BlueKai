@@ -28,7 +28,7 @@ function ActionBar(props) {
       className: 'action-bar__button action-bar__button--left',
       onClick: left.action,
       'aria-label': left.label + ' (Press 1)',
-      tabIndex: 0
+      tabIndex: -1
     }, [
       h('span', { className: 'action-bar__shortcut' }, '1'),
       left.icon && h('span', { className: 'action-bar__icon' }, left.icon),
@@ -39,7 +39,7 @@ function ActionBar(props) {
       className: 'action-bar__button action-bar__button--center',
       onClick: center.action,
       'aria-label': center.label + ' (Press 2)',
-      tabIndex: 0
+      tabIndex: -1
     }, [
       h('span', { className: 'action-bar__shortcut' }, '2'),
       center.icon && h('span', { className: 'action-bar__icon' }, center.icon),
@@ -50,7 +50,7 @@ function ActionBar(props) {
       className: 'action-bar__button action-bar__button--right',
       onClick: right.action,
       'aria-label': right.label + ' (Press 3)',
-      tabIndex: 0
+      tabIndex: -1
     }, [
       h('span', { className: 'action-bar__shortcut' }, '3'),
       right.icon && h('span', { className: 'action-bar__icon' }, right.icon),

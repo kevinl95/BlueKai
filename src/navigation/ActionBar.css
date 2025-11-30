@@ -68,12 +68,12 @@
 }
 
 .action-bar__icon {
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   line-height: 1;
 }
 
 .action-bar__label {
-  font-size: var(--font-size-sm);
+  font-size: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
