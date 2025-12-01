@@ -84,23 +84,23 @@
 }
 
 .main-menu__item--focused {
-  background: #1da1f2;
-  color: #ffffff;
-  border-left-color: #0d8bd9;
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-left-color: var(--color-primary-dark);
   font-weight: var(--font-weight-bold);
-  outline: 3px solid #1da1f2;
+  outline: 3px solid var(--color-primary);
   outline-offset: -3px;
 }
 
 /* High contrast focus indicators for accessibility - WCAG AA 3:1 */
 .main-menu__item--focused:focus {
-  outline: 3px solid #1da1f2;
+  outline: 3px solid var(--color-primary);
   outline-offset: -3px;
   box-shadow: 0 0 0 4px rgba(29, 161, 242, 0.3);
 }
 
 .main-menu__icon {
-  font-size: 20px;
+  font-size: var(--font-size-xl);
   width: 24px;
   text-align: center;
   flex-shrink: 0;
@@ -135,7 +135,7 @@
   }
   
   .main-menu__icon {
-    font-size: 18px;
+    font-size: var(--font-size-lg);
     width: 20px;
   }
   
@@ -159,7 +159,7 @@
   }
   
   .main-menu__item--focused {
-    background: #1da1f2;
-    color: #ffffff;
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
   }
 }
