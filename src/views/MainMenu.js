@@ -14,6 +14,7 @@ import './MainMenu.css';
  * @param {Object} props
  * @param {Function} props.onClose - Callback when menu is closed
  * @param {Function} props.onNavigateToProfile - Callback to navigate to user profile
+ * @param {Function} props.onNavigateToNotifications - Callback to navigate to notifications
  * @param {Function} props.onNavigateToSettings - Callback to navigate to settings
  * @param {Function} props.onLogout - Callback to handle logout
  * @param {Object} props.currentUser - Current user data with handle/did
@@ -25,6 +26,7 @@ function MainMenu(props) {
   return h(MainMenuClass, {
     onClose: props.onClose,
     onNavigateToProfile: props.onNavigateToProfile,
+    onNavigateToNotifications: props.onNavigateToNotifications,
     onNavigateToSettings: props.onNavigateToSettings,
     onLogout: props.onLogout,
     currentUser: props.currentUser,
@@ -83,6 +85,13 @@ class MainMenuClass extends Component {
         label: t('menu.profile'),
         icon: '👤',
         action: this.props.onNavigateToProfile
+      },
+      {
+        id: 'notifications',
+        labelKey: 'menu.notifications',
+        label: t('menu.notifications'),
+        icon: '🔔',
+        action: this.props.onNavigateToNotifications
       },
       {
         id: 'settings',

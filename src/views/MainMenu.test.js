@@ -46,13 +46,14 @@ function runMainMenuTests() {
   };
   
   // Test 1: Component renders with menu items
-  test('renders menu with Profile, Settings, Logout options', function() {
+  test('renders menu with Profile, Notifications, Settings, Logout options', function() {
     var container = document.createElement('div');
     
     render(h(MainMenu, {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -61,7 +62,7 @@ function runMainMenuTests() {
     assert(menu !== null, 'Menu should render');
     
     var items = container.querySelectorAll('.main-menu__item');
-    assert(items.length === 3, 'Should have 3 menu items');
+    assert(items.length === 4, 'Should have 4 menu items');
   });
   
   // Test 2: Menu has correct ARIA attributes
@@ -72,6 +73,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -89,6 +91,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -109,6 +112,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -130,6 +134,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -157,6 +162,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -190,11 +196,12 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
     
-    // Move to last item
+    // Move to last item (need 3 arrow downs now since we have 4 items)
     var event1 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
     document.dispatchEvent(event1);
     
@@ -203,17 +210,22 @@ function runMainMenuTests() {
       document.dispatchEvent(event2);
       
       setTimeout(function() {
-        // Now at last item, move down again
         var event3 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
         document.dispatchEvent(event3);
         
         setTimeout(function() {
-          var items = container.querySelectorAll('.main-menu__item');
-          var focusedItem = container.querySelector('.main-menu__item--focused');
+          // Now at last item, move down again
+          var event4 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+          document.dispatchEvent(event4);
           
-          assert(items[0] === focusedItem, 'Should wrap to first item');
-          
-          document.body.removeChild(container);
+          setTimeout(function() {
+            var items = container.querySelectorAll('.main-menu__item');
+            var focusedItem = container.querySelector('.main-menu__item--focused');
+            
+            assert(items[0] === focusedItem, 'Should wrap to first item');
+            
+            document.body.removeChild(container);
+          }, 50);
         }, 50);
       }, 50);
     }, 50);
@@ -228,6 +240,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -259,6 +272,7 @@ function runMainMenuTests() {
       onNavigateToProfile: function() {
         profileCalled = true;
       },
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -285,24 +299,30 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {
         settingsCalled = true;
       },
       onLogout: function() {}
     }), container);
     
-    // Move to Settings (second item)
-    var downEvent = new KeyboardEvent('keydown', { key: 'ArrowDown' });
-    document.dispatchEvent(downEvent);
+    // Move to Settings (third item now, after notifications)
+    var downEvent1 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+    document.dispatchEvent(downEvent1);
     
     setTimeout(function() {
-      var enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-      document.dispatchEvent(enterEvent);
+      var downEvent2 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+      document.dispatchEvent(downEvent2);
       
       setTimeout(function() {
-        assert(settingsCalled, 'onNavigateToSettings should be called');
+        var enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+        document.dispatchEvent(enterEvent);
         
-        document.body.removeChild(container);
+        setTimeout(function() {
+          assert(settingsCalled, 'onNavigateToSettings should be called');
+          
+          document.body.removeChild(container);
+        }, 50);
       }, 50);
     }, 50);
   });
@@ -316,11 +336,12 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
     
-    // Move to Logout (third item)
+    // Move to Logout (fourth item now)
     var down1 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
     document.dispatchEvent(down1);
     
@@ -329,14 +350,19 @@ function runMainMenuTests() {
       document.dispatchEvent(down2);
       
       setTimeout(function() {
-        var enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
-        document.dispatchEvent(enterEvent);
+        var down3 = new KeyboardEvent('keydown', { key: 'ArrowDown' });
+        document.dispatchEvent(down3);
         
         setTimeout(function() {
-          var confirmation = container.querySelector('.logout-confirmation__backdrop');
-          assert(confirmation !== null, 'Logout confirmation should be displayed');
+          var enterEvent = new KeyboardEvent('keydown', { key: 'Enter' });
+          document.dispatchEvent(enterEvent);
           
-          document.body.removeChild(container);
+          setTimeout(function() {
+            var confirmation = container.querySelector('.logout-confirmation__backdrop');
+            assert(confirmation !== null, 'Logout confirmation should be displayed');
+            
+            document.body.removeChild(container);
+          }, 50);
         }, 50);
       }, 50);
     }, 50);
@@ -355,6 +381,7 @@ function runMainMenuTests() {
         closeCalled = true;
       },
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -382,6 +409,7 @@ function runMainMenuTests() {
         closeCalled = true;
       },
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -404,6 +432,7 @@ function runMainMenuTests() {
       currentUser: mockUser,
       onClose: function() {},
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
@@ -425,6 +454,7 @@ function runMainMenuTests() {
         closeCalled = true;
       },
       onNavigateToProfile: function() {},
+      onNavigateToNotifications: function() {},
       onNavigateToSettings: function() {},
       onLogout: function() {}
     }), container);
