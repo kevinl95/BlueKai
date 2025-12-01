@@ -17,6 +17,11 @@
   overflow-anchor: none;
   /* Improve scroll performance */
   scroll-behavior: auto; /* Disable smooth scroll for better manual control */
+  /* Prevent text size adjustment after modal close */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 /* Spacer for virtual scrolling - maintains scroll height */

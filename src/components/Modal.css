@@ -19,6 +19,11 @@
   padding-top: var(--space-md); /* Less padding at top */
   animation: modal-fade-in var(--transition-base);
   overflow-y: auto; /* Allow scrolling if modal is tall */
+  /* Prevent text size adjustment when modal appears/disappears */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @keyframes modal-fade-in {
@@ -41,6 +46,11 @@
   flex-direction: column;
   animation: modal-slide-up var(--transition-base);
   margin-bottom: 40px; /* Space for softkey bar */
+  /* Prevent text size adjustment from slide animation */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @keyframes modal-slide-up {
