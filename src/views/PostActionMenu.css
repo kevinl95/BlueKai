@@ -17,6 +17,11 @@
   max-height: 60vh;
   overflow-y: auto;
   animation: menu-slide-up var(--transition-base);
+  /* Prevent text size adjustment when menu appears/disappears */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @keyframes menu-slide-up {

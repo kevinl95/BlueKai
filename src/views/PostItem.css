@@ -17,6 +17,11 @@
   contain: layout paint;
   /* Prevent scroll anchoring to avoid scroll jumping */
   overflow-anchor: none;
+  /* Prevent text size adjustment after modal close */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .post-item:last-child {

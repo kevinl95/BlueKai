@@ -17,6 +17,11 @@
   justify-content: center;
   z-index: var(--z-modal);
   animation: overlay-fade-in var(--transition-base);
+  /* Prevent text size adjustment when modal appears/disappears */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @keyframes overlay-fade-in {
@@ -38,6 +43,11 @@
   box-shadow: var(--shadow-xl);
   animation: menu-scale-in var(--transition-base);
   outline: none;
+  /* Prevent text size adjustment from scale animation */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 @keyframes menu-scale-in {
