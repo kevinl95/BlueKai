@@ -166,7 +166,8 @@
     "logout": "Logout",
     "logoutConfirm": "Are you sure you want to logout?",
     "logoutConfirmYes": "Logout",
-    "logoutConfirmNo": "Cancel"
+    "logoutConfirmNo": "Cancel",
+    "instructions": "↑↓ Navigate • Enter Select • Back Close"
   },
   "settings": {
     "title": "Settings",

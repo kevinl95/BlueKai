@@ -161,11 +161,13 @@
   "menu": {
     "title": "القائمة",
     "profile": "ملفي الشخصي",
+    "notifications": "الإشعارات",
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "logoutConfirm": "هل أنت متأكد من تسجيل الخروج؟",
     "logoutConfirmYes": "تسجيل الخروج",
-    "logoutConfirmNo": "إلغاء"
+    "logoutConfirmNo": "إلغاء",
+    "instructions": "↑↓ التنقل • Enter اختيار • Back إغلاق"
   },
   "settings": {
     "title": "الإعدادات",

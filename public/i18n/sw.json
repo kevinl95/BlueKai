@@ -161,11 +161,13 @@
   "menu": {
     "title": "Menyu",
     "profile": "Wasifu Wangu",
+    "notifications": "Arifa",
     "settings": "Mipangilio",
     "logout": "Toka",
     "logoutConfirm": "Una uhakika unataka kutoka?",
     "logoutConfirmYes": "Toka",
-    "logoutConfirmNo": "Ghairi"
+    "logoutConfirmNo": "Ghairi",
+    "instructions": "↑↓ Safiri • Enter Chagua • Back Funga"
   },
   "settings": {
     "title": "Mipangilio",

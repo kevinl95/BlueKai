@@ -161,11 +161,13 @@
   "menu": {
     "title": "Menu",
     "profile": "Profil Saya",
+    "notifications": "Notifikasi",
     "settings": "Pengaturan",
     "logout": "Keluar",
     "logoutConfirm": "Yakin ingin keluar?",
     "logoutConfirmYes": "Keluar",
-    "logoutConfirmNo": "Batal"
+    "logoutConfirmNo": "Batal",
+    "instructions": "↑↓ Navigasi • Enter Pilih • Back Tutup"
   },
   "settings": {
     "title": "Pengaturan",

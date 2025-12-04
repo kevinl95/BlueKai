@@ -161,11 +161,13 @@
   "menu": {
     "title": "मेनू",
     "profile": "मेरी प्रोफ़ाइल",
+    "notifications": "सूचनाएं",
     "settings": "सेटिंग्स",
     "logout": "लॉगआउट",
     "logoutConfirm": "क्या आप वाकई लॉगआउट करना चाहते हैं?",
     "logoutConfirmYes": "लॉगआउट",
-    "logoutConfirmNo": "रद्द करें"
+    "logoutConfirmNo": "रद्द करें",
+    "instructions": "↑↓ नेविगेट • Enter चुनें • Back बंद करें"
   },
   "settings": {
     "title": "सेटिंग्स",
