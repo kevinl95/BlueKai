@@ -72,6 +72,7 @@ class AppContentClass extends Component {
     this.openMainMenu = this.openMainMenu.bind(this);
     this.closeMainMenu = this.closeMainMenu.bind(this);
     this.handleNavigateToProfile = this.handleNavigateToProfile.bind(this);
+    this.handleNavigateToNotifications = this.handleNavigateToNotifications.bind(this);
     this.handleNavigateToSettings = this.handleNavigateToSettings.bind(this);
     
     // Bind softkey update handler
@@ -430,6 +431,14 @@ class AppContentClass extends Component {
     
     this.closeMainMenu();
     this.router.navigate('/profile/' + handle);
+  }
+  
+  /**
+   * Navigate to notifications
+   */
+  handleNavigateToNotifications() {
+    this.closeMainMenu();
+    this.router.navigate('/notifications');
   }
   
   /**
@@ -820,6 +829,7 @@ class AppContentClass extends Component {
       this.state.showMainMenu && h(MainMenu, {
         onClose: this.closeMainMenu,
         onNavigateToProfile: this.handleNavigateToProfile,
+        onNavigateToNotifications: this.handleNavigateToNotifications,
         onNavigateToSettings: this.handleNavigateToSettings,
         onLogout: this.handleLogout,
         currentUser: context.state.user

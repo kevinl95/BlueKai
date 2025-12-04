@@ -10,6 +10,11 @@ import DateFormatter from '../utils/date-formatter.js';
 import TextProcessor from '../utils/text-processor.js';
 import Modal from '../components/Modal.js';
 
+// Shared singleton instances to avoid re-creation on every render
+// This improves scroll performance by maintaining memoization caches
+var sharedDateFormatter = new DateFormatter();
+var sharedTextProcessor = new TextProcessor();
+
 /**
  * @class PostItem
  * @description Component to display a single BlueSky post with interaction support
@@ -253,6 +258,8 @@ PostItem.prototype.handleUnrepost = function() {
  * Render post embed (images, external links, etc.)
  */
 PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
+  var self = this;
+  
   if (!embed) {
     return null;
   }
@@ -287,23 +294,9 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
           alt: img.alt || 'Post image ' + (index + 1),
           loading: loadingStrategy,
           decoding: 'async', // Improve scroll performance during decode
-          onLoad: function() {
-            // Image loaded successfully - no layout shift needed
-          },
           onError: function(e) {
             // Handle image load errors gracefully
             e.target.style.display = 'none';
-          },
-          style: {
-            // Reserve fixed space to prevent any layout shift
-            aspectRatio: '16/9',
-            backgroundColor: '#f0f0f0',
-            minHeight: '120px', // Fixed minimum prevents collapse
-            maxHeight: '200px', // Consistent with CSS
-            width: '100%',
-            objectFit: 'contain',
-            // Ensure consistent rendering
-            imageRendering: 'auto'
           }
         });
       })
@@ -325,13 +318,7 @@ PostItem.prototype.renderEmbed = function(embed, shouldShowImages) {
         src: external.thumb,
         alt: external.title || 'Link preview',
         loading: 'eager', // Load external thumbs immediately
-        decoding: 'async',
-        style: {
-          aspectRatio: '16/9',
-          minHeight: '80px',
-          backgroundColor: '#f0f0f0',
-          objectFit: 'contain'
-        }
+        decoding: 'async'
       }),
       h('div', { className: 'post-item__external-info' },
         external.title && h('div', { className: 'post-item__external-title' }, external.title),
@@ -388,10 +375,6 @@ PostItem.prototype.render = function() {
     return null;
   }
   
-  // Initialize utilities
-  var dateFormatter = new DateFormatter();
-  var textProcessor = new TextProcessor();
-  
   // Extract post data
   var author = post.author || {};
   var record = post.record || {};
@@ -414,11 +397,15 @@ PostItem.prototype.render = function() {
                     (post.repostCount || 0);
   var replyCount = post.replyCount || 0;
   
-  // Format timestamp
-  var timestamp = dateFormatter.formatRelative(createdAt);
+  // Format timestamp using shared singleton (memoized)
+  var timestamp = sharedDateFormatter.formatRelative(createdAt);
   
-  // Process text for display (linkify URLs)
-  var processedText = textProcessor.linkify(textProcessor._escapeHtml(text), 'post-link');
+  // Process text for display (escape HTML and linkify URLs) using shared singleton
+  var processedText = sharedTextProcessor.processForDisplay(text, {
+    urlClass: 'post-link',
+    linkifyMentions: false,
+    linkifyHashtags: false
+  });
   
   // Handle click/selection
   var handleClick = function() {

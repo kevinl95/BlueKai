@@ -62,6 +62,13 @@ export const inlineTranslations = {
             following: "Following",
             editProfile: "Edit Profile"
         },
+        menu: {
+            title: "Menu",
+            profile: "My Profile",
+            notifications: "Notifications",
+            settings: "Settings",
+            logout: "Logout"
+        },
         navigation: {
             timeline: "Timeline",
             notifications: "Notifications",

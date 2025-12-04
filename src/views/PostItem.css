@@ -13,14 +13,15 @@
   cursor: pointer;
   outline: none;
   transition: background-color var(--transition-fast);
-  /* Performance optimizations */
-  contain: layout style;
-  transform: translateZ(0); /* Force new stacking context for better compositing */
+  /* CSS containment for scroll performance */
+  contain: layout paint;
   /* Prevent scroll anchoring to avoid scroll jumping */
   overflow-anchor: none;
-  /* Content visibility for better rendering performance */
-  content-visibility: auto;
-  contain-intrinsic-size: 0 150px; /* Reserve approximate height */
+  /* Prevent text size adjustment after modal close */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 .post-item:last-child {
@@ -241,19 +242,14 @@
 
 .post-item__media-image {
   width: 100%;
-  max-width: 100%;
-  height: auto;
-  max-height: 200px; /* Limit height for KaiOS screens */
-  min-height: 120px; /* Prevent collapse during loading */
+  /* Use fixed height to prevent any layout shift during image loading */
+  /* Height calculated for KaiOS 240px wide screens: 240 * 9/16 = 135px */
+  height: 135px;
   object-fit: contain; /* Maintain aspect ratio, show full image */
   display: block;
   margin-bottom: 4px;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-secondary); /* Show background for letterboxing */
-  /* Improved layout stability */
-  image-rendering: optimizeSpeed; /* Prioritize speed over quality during scroll */
-  /* Force consistent sizing to prevent layout shifts */
-  aspect-ratio: 16/9;
 }
 
 .post-item__media-image:last-child {
@@ -263,7 +259,7 @@
 /* Adjust for very small screens */
 @media (max-width: 240px) {
   .post-item__media-image {
-    max-height: 150px;
+    height: 100px; /* Smaller fixed height for very small screens */
   }
 }
 
@@ -314,8 +310,7 @@
 
 .post-item__external-thumb {
   width: 100%;
-  height: auto;
-  max-height: 120px;
+  height: 80px; /* Fixed height to prevent layout shift */
   object-fit: contain; /* Show full thumbnail without cropping */
   border-radius: var(--radius-sm);
   margin-bottom: var(--space-sm);
@@ -325,7 +320,7 @@
 /* Adjust for very small screens */
 @media (max-width: 240px) {
   .post-item__external-thumb {
-    max-height: 100px;
+    height: 60px; /* Smaller fixed height for very small screens */
   }
 }
 
