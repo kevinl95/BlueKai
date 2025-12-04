@@ -46,7 +46,7 @@ node tests/runners/run-component-tests.js
 | Tests | `tests/html/` |
 | Test runners | `tests/runners/` |
 | Build scripts | `scripts/` |
-| Built
+
 ## Scripts Explained
 
 | Script | When to Use |
