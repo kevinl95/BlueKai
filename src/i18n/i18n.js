@@ -11,14 +11,14 @@ let translations = {};
 let fallbackTranslations = inlineTranslations.en || {};
 
 // Supported languages array - defined at module level
-var supportedLanguages = ['en', 'es', 'fr', 'pt', 'ar', 'hi', 'id', 'sw'];
+const supportedLanguages = ['en', 'es', 'fr', 'pt', 'ar', 'hi', 'id', 'sw'];
 
 /**
  * Get list of supported languages
  * @returns {Array<string>} Array of supported language codes
  */
 function getSupportedLanguages() {
-  return supportedLanguages.slice(); // Return a copy to prevent external modification
+  return [...supportedLanguages]; // Return a copy to prevent external modification
 }
 
 /**
