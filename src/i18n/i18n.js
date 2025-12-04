@@ -15,15 +15,39 @@ let fallbackTranslations = inlineTranslations.en || {};
  * @returns {string} Language code (e.g., 'en', 'es', 'fr', 'pt')
  */
 function detectLanguage() {
+  // Supported languages
+  var supportedLanguages = ['en', 'es', 'fr', 'pt', 'ar', 'hi', 'id', 'sw'];
+  
   // Try navigator.language first (standard)
   if (typeof navigator !== 'undefined' && navigator.language) {
     var lang = navigator.language.toLowerCase();
+    console.log('Browser language detected:', lang);
+    
     // Extract primary language code (e.g., 'en-US' -> 'en')
     var primaryLang = lang.split('-')[0];
-    return primaryLang;
+    
+    // Check if we support this language
+    if (supportedLanguages.indexOf(primaryLang) !== -1) {
+      console.log('Using supported language:', primaryLang);
+      return primaryLang;
+    } else {
+      console.log('Unsupported language "' + primaryLang + '", falling back to English');
+    }
+  }
+  
+  // Also try navigator.languages array (newer browsers)
+  if (typeof navigator !== 'undefined' && navigator.languages && navigator.languages.length > 0) {
+    for (var i = 0; i < navigator.languages.length; i++) {
+      var langCode = navigator.languages[i].toLowerCase().split('-')[0];
+      if (supportedLanguages.indexOf(langCode) !== -1) {
+        console.log('Using language from navigator.languages:', langCode);
+        return langCode;
+      }
+    }
   }
   
   // Fallback to English
+  console.log('Using fallback language: en');
   return 'en';
 }
 
@@ -68,6 +92,9 @@ function loadTranslations(lang) {
  */
 function initI18n(lang) {
   var targetLang = lang || detectLanguage();
+  
+  console.log('Initializing i18n with target language:', targetLang);
+  console.log('Available browser languages:', typeof navigator !== 'undefined' ? navigator.languages : 'Not available');
   
   // Try to load English translations from file
   return loadTranslations('en')
@@ -219,10 +246,42 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 // Export for ES modules
+// Export a debug function for testing language detection
+function debugLanguageDetection() {
+  console.log('=== Language Detection Debug ===');
+  console.log('navigator.language:', typeof navigator !== 'undefined' ? navigator.language : 'undefined');
+  console.log('navigator.languages:', typeof navigator !== 'undefined' ? navigator.languages : 'undefined');
+  console.log('Detected language:', detectLanguage());
+  console.log('Current i18n language:', currentLanguage);
+  console.log('================================');
+}
+
+// Function to re-detect and change language
+function redetectLanguage() {
+  var newLang = detectLanguage();
+  console.log('Re-detecting language, found:', newLang);
+  if (newLang !== currentLanguage) {
+    console.log('Language changed from', currentLanguage, 'to', newLang);
+    return changeLanguage(newLang);
+  } else {
+    console.log('Language unchanged:', currentLanguage);
+    return Promise.resolve();
+  }
+}
+
+// Make debug functions globally available
+if (typeof window !== 'undefined') {
+  window.debugLanguageDetection = debugLanguageDetection;
+  window.redetectLanguage = redetectLanguage;
+}
+
+// Export all functions
 export {
   initI18n,
   t,
   getCurrentLanguage,
   changeLanguage,
-  detectLanguage
+  getSupportedLanguages,
+  debugLanguageDetection,
+  redetectLanguage
 };
