@@ -244,7 +244,7 @@ class MainMenuClass extends Component {
         
         // Instructions
         h('div', { className: 'main-menu__instructions' },
-          '↑↓ Navigate • Enter Select • Back Close'
+          t('menu.instructions')
         )
       ),
       

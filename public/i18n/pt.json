@@ -161,11 +161,13 @@
   "menu": {
     "title": "Menu",
     "profile": "Meu Perfil",
+    "notifications": "Notificações",
     "settings": "Configurações",
     "logout": "Sair",
     "logoutConfirm": "Tem certeza de que deseja sair?",
     "logoutConfirmYes": "Sair",
-    "logoutConfirmNo": "Cancelar"
+    "logoutConfirmNo": "Cancelar",
+    "instructions": "↑↓ Navegar • Enter Selecionar • Back Fechar"
   },
   "settings": {
     "title": "Configurações",
