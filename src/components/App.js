@@ -790,7 +790,6 @@ class AppContentClass extends Component {
       role: 'application',
       'aria-label': 'BlueKai - BlueSky client for KaiOS'
     },
-      h(OfflineIndicator, { isOnline: this.state.isOnline }),
       h('div', {
         style: {
           flex: 1,
