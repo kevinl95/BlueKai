@@ -10,13 +10,22 @@ let currentLanguage = 'en';
 let translations = {};
 let fallbackTranslations = inlineTranslations.en || {};
 
+// Supported languages array - defined at module level
+var supportedLanguages = ['en', 'es', 'fr', 'pt', 'ar', 'hi', 'id', 'sw'];
+
+/**
+ * Get list of supported languages
+ * @returns {Array<string>} Array of supported language codes
+ */
+function getSupportedLanguages() {
+  return supportedLanguages.slice(); // Return a copy to prevent external modification
+}
+
 /**
  * Detect language from browser/device settings
  * @returns {string} Language code (e.g., 'en', 'es', 'fr', 'pt')
  */
 function detectLanguage() {
-  // Supported languages
-  var supportedLanguages = ['en', 'es', 'fr', 'pt', 'ar', 'hi', 'id', 'sw'];
   
   // Try navigator.language first (standard)
   if (typeof navigator !== 'undefined' && navigator.language) {
@@ -241,6 +250,7 @@ if (typeof module !== 'undefined' && module.exports) {
     t: t,
     getCurrentLanguage: getCurrentLanguage,
     changeLanguage: changeLanguage,
+    getSupportedLanguages: getSupportedLanguages,
     detectLanguage: detectLanguage
   };
 }
@@ -282,6 +292,7 @@ export {
   getCurrentLanguage,
   changeLanguage,
   getSupportedLanguages,
+  detectLanguage,
   debugLanguageDetection,
   redetectLanguage
 };
